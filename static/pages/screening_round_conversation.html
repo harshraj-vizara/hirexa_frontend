@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire XA - Quick Interview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/screening_round_conversation.css">
+    <link rel="stylesheet" href="/static/css/user_dropdown.css">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Shared HIRE XA chrome -->
+        <header class="dash-header">
+            <div class="dash-brand">
+                <div class="dash-brand-name">HIRE <span class="ai">XA</span></div>
+                <div class="dash-brand-sub">XCEED TALENT ACQUISITION</div>
+            </div>
+            <div data-user-dropdown></div>
+        </header>
+
+        <div class="dash-blob" aria-hidden="true"></div>
+
+        <!-- Frosted glass panel (Rectangle 171) -->
+        <div class="dash-panel" aria-hidden="true"></div>
+
+        <aside class="dash-sidebar">
+            <a class="side-item" href="/b4kx" title="Back">
+                <span class="side-icon icon-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9886E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                </span>
+                <span class="side-label">Back</span>
+            </a>
+            <a class="side-item" href="/b4kx">
+                <span class="side-icon icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/>
+                    </svg>
+                </span>
+                <span class="side-label">Home</span>
+            </a>
+            <a class="side-item" href="/d2mw">
+                <span class="side-icon icon-green">
+                    <svg viewBox="0 0 24 24" fill="#8EC49E">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <span class="side-label">Jobs</span>
+            </a>
+            <a class="side-item active" href="/p8eu">
+                <span class="side-icon icon-pink">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#DE9CA7" stroke-width="1.8" stroke-linejoin="round">
+                        <polygon points="6,4 20,12 6,20"/>
+                    </svg>
+                </span>
+                <span class="side-label">Quick</span>
+            </a>
+        </aside>
+
+        <main class="qi-main">
+            <div class="qi-title-block">
+                <h1 class="qi-title">
+                    Skip sourcing.
+                    <span class="qi-title-italic">Interview directly.</span>
+                </h1>
+                <p class="qi-sub">For referrals or candidates you've already identified. Drop their resume, pick the agents, send the interview link.</p>
+            </div>
+
+            <!-- Two-column form: Candidate + Role -->
+            <section class="qi-row">
+                <!-- Candidate card -->
+                <div class="qi-card qi-card-candidate">
+                    <div class="qi-card-label">Candidate</div>
+
+                    <!-- Resume dropzone -->
+                    <label class="qi-dropzone" id="qi-dropzone" tabindex="0">
+                        <input type="file" id="qi-resume" accept=".pdf,.doc,.docx" hidden>
+                        <span class="qi-dz-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 3v12"/><polyline points="7 8 12 3 17 8"/><path d="M5 21h14"/>
+                            </svg>
+                        </span>
+                        <span class="qi-dz-title">Upload referral resume</span>
+                        <span class="qi-dz-sub">Drop a resume from an internal referral. They skip screening and go straight to interview.</span>
+                        <span class="qi-dz-btn" id="qi-dz-btn">Choose file</span>
+                        <span class="qi-dz-filename hidden" id="qi-dz-filename"></span>
+                    </label>
+
+                    <!-- Name + Email + Phone -->
+                    <div class="qi-input-grid">
+                        <div class="qi-field">
+                            <label class="qi-field-label" for="qi-name">Name</label>
+                            <input type="text" id="qi-name" class="qi-input" placeholder="Enter" autocomplete="off" data-validate="name">
+                        </div>
+                        <div class="qi-field">
+                            <label class="qi-field-label" for="qi-email">Email</label>
+                            <input type="email" id="qi-email" class="qi-input" placeholder="Enter" autocomplete="off" data-validate="email">
+                        </div>
+                        <div class="qi-field">
+                            <label class="qi-field-label" for="qi-phone">Phone</label>
+                            <input type="tel" id="qi-phone" class="qi-input" placeholder="9876543210" autocomplete="off" data-validate="mobile" maxlength="10">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role card -->
+                <div class="qi-card qi-card-role">
+                    <div class="qi-card-label">Role</div>
+
+                    <div class="qi-field qi-field-full">
+                        <label class="qi-field-label-strong" for="qi-role-trigger">Interview for</label>
+                        <div class="qi-role-wrap">
+                            <button class="qi-role-trigger" id="qi-role-trigger" type="button">
+                                <span class="qi-role-text" id="qi-role-text">Select</span>
+                                <svg class="qi-role-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                            <div class="qi-role-menu hidden" id="qi-role-menu">
+                                <div class="qi-role-search-wrap">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9B9C9E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+                                    <input type="text" id="qi-role-search" class="qi-role-search" placeholder="Search a role">
+                                </div>
+                                <div class="qi-role-options" id="qi-role-options">
+                                    <div class="qi-role-empty">Loading roles…</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI panel hint (shown after role selected) -->
+                    <div class="qi-role-hint hidden" id="qi-role-hint">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        <span id="qi-role-hint-text">AI will reuse the interviewer panel saved for this role. You can adjust the picks below.</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interviewers strip -->
+            <section class="qi-interviewers" id="qi-interviewers-card">
+                <div class="qi-int-head">
+                    <div class="qi-card-label">Interviewers</div>
+                    <button class="qi-int-toggle hidden" id="qi-int-toggle" type="button">Show all</button>
+                </div>
+                <div class="qi-int-grid" id="qi-int-grid">
+                    <div class="qi-int-placeholder">Pick a role first - we'll suggest the right interview panel for it.</div>
+                </div>
+            </section>
+
+            <!-- Bottom action row -->
+            <div class="qi-actions">
+                <button class="qi-btn qi-btn-ghost" onclick="QI.goBack()">Back</button>
+                <button class="qi-btn qi-btn-primary" id="qi-submit" onclick="QI.submit()" disabled>
+                    <span id="qi-submit-label">Send interview invite</span>
+                </button>
+            </div>
+
+            <div class="qi-toast hidden" id="qi-toast"></div>
+        </main>
+    </div>
+
+    <script src="/static/js/validation.js"></script>
+    <script src="/static/js/screening_round_conversation.js"></script>
+    <script src="/static/js/user_dropdown.js"></script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+/* =========================================================
+   HIRE XA — Upload Resumes page (Figma pixel match)
+   Reuses dashboard.css for header / sidebar / blob.
+   ========================================================= */
+
+:root {
+    --ur-bg: #F8F9FB;
+    --ur-blue: #4CABF6;
+    --ur-blue-soft: #EEF7FE;
+    --ur-blue-tint: #E2F2FF;
+    --ur-text: #24282B;
+    --ur-text-muted: #5B6168;
+    --ur-text-faint: #9B9C9E;
+    --ur-divider: rgba(96, 96, 96, 0.56);
+    --ur-shadow-card: 0px 1px 4.2px rgba(0, 0, 0, 0.17);
+    --ur-shadow-soft: 0px 1px 4.2px rgba(0, 0, 0, 0.10);
+    --ur-shadow-btn: 1px 2px 2.4px rgba(0, 0, 0, 0.19);
+}
+
+.ur-main {
+    position: relative;
+    z-index: 3;
+    padding: 76px 55px 60px 146px;
+    /* Lock to viewport — only the resume list inside .ur-list scrolls; the
+       page itself doesn't grow. Flex column so .ur-grid can absorb the
+       remaining vertical space below the title/desc. */
+    height: calc(100vh - 80px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ---------- Title row ---------- */
+.ur-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0 0 8px 0;
+    font-weight: 500;
+    flex-wrap: wrap;
+}
+.ur-title-bold {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 121.02%;
+    color: var(--ur-text);
+}
+.ur-title-italic {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 30px;
+    line-height: 121.02%;
+    letter-spacing: -0.07em;
+    color: var(--ur-text-muted);
+}
+.ur-desc {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    color: var(--ur-text-faint);
+    margin: 0 0 35px 0;
+    max-width: 540px;
+}
+
+/* ---------- Two-column grid ---------- */
+.ur-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 900px) minmax(0, 480px);
+    grid-template-rows: 1fr;     /* row stretches to fill the .ur-main flex space */
+    column-gap: 44px;
+    flex: 1 1 auto;
+    min-height: 0;               /* allow children to be smaller than content if needed */
+}
+/* Dropzone stays at its natural size, top-aligned — only the list card
+   stretches to fill the grid row (so its inner list can scroll). */
+.ur-dropzone { align-self: start; }
+
+/* ---------- Left card: uploaded resume list ---------- */
+.ur-list-card {
+    background: #FFFFFF;
+    border-radius: 14px;
+    box-shadow: var(--ur-shadow-card);
+    min-height: 0;          /* let grid row decide; .ur-list scrolls inside */
+    height: 100%;           /* fill the 1fr grid row */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.ur-list-head {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 0.1em;
+    color: var(--ur-text);
+    text-transform: uppercase;
+    padding: 24px 44px 18px;
+    /* Faded divider — barely visible per Figma */
+    border-bottom: 0.5px solid rgba(155, 156, 158, 0.18);
+}
+.ur-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 4px 44px 12px;
+}
+.ur-list::-webkit-scrollbar { width: 6px; }
+.ur-list::-webkit-scrollbar-thumb {
+    background: rgba(155, 156, 158, 0.4);
+    border-radius: 3px;
+}
+
+/* ---------- Single resume row ---------- */
+.ur-row {
+    display: grid;
+    grid-template-columns: 38px 1fr 38px;
+    column-gap: 16px;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 0.5px solid rgba(155, 156, 158, 0.18);
+}
+.ur-row:last-child { border-bottom: 0; }
+
+.ur-file-tile {
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    background: linear-gradient(141.93deg, #4CABF6 58.77%, #D3ECFF 98.19%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 14px;
+    color: #FFFFFF;
+    letter-spacing: 0.04em;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+}
+.ur-file-tile[data-type="pdf"]  { color: #FFFFFF; }
+.ur-file-tile[data-type="docx"] { color: #FFFFFF; font-size: 10px; }
+.ur-file-tile[data-type="doc"]  { color: #FFFFFF; }
+
+.ur-row-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.ur-row-name {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--ur-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ur-row-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    color: var(--ur-text-faint);
+}
+.ur-row-status {
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 0.5px solid rgba(155, 156, 158, 0.3);
+}
+.ur-row-status.pending,
+.ur-row-status.extracting {
+    color: #B98A00;
+    background: #FFF7DE;
+    border-color: rgba(255, 211, 60, 0.45);
+}
+.ur-row-status.ready {
+    color: #1E7A4D;
+    background: #E5F8EE;
+    border-color: rgba(30, 122, 77, 0.25);
+}
+.ur-row-status.error {
+    color: #B00020;
+    background: #FFE0E5;
+    border-color: rgba(176, 0, 32, 0.25);
+}
+
+.ur-delete-btn {
+    width: 38px;
+    height: 38px;
+    border: 0;
+    background: #FFE3E3;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: #E85454;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+.ur-delete-btn:hover {
+    background: #FFCDCD;
+    transform: scale(1.05);
+}
+.ur-delete-btn svg { width: 20px; height: 20px; display: block; }
+
+/* ---------- Empty state ---------- */
+.ur-empty {
+    text-align: center;
+    padding: 80px 30px;
+    color: var(--ur-text-faint);
+}
+.ur-empty p {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--ur-text);
+    margin: 0 0 6px 0;
+}
+.ur-empty span {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+}
+
+/* ---------- Right card: dropzone ---------- */
+.ur-dropzone {
+    background: #FFFFFF;
+    border: 0.5px dashed var(--ur-text-faint);
+    border-radius: 10px;
+    box-shadow: var(--ur-shadow-soft);
+    padding: 26px 22px 22px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    cursor: pointer;
+}
+.ur-dropzone.is-dragover {
+    border-color: var(--ur-blue);
+    background: #F1F8FF;
+}
+.ur-drop-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 5px;
+    background: var(--ur-blue-tint);
+    border: 0.5px solid var(--ur-blue);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.ur-drop-icon svg { width: 16px; height: 16px; display: block; }
+.ur-drop-title {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: var(--ur-text);
+    margin-bottom: 6px;
+}
+.ur-drop-sub {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 9px;
+    line-height: 12px;
+    letter-spacing: 0.06em;
+    color: var(--ur-text-faint);
+    margin: 0 0 14px 0;
+    max-width: 220px;
+}
+.ur-choose-btn {
+    background: var(--ur-blue-soft);
+    color: var(--ur-blue);
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    border: 0;
+    border-radius: 4px;
+    padding: 7px 24px;
+    cursor: pointer;
+    box-shadow: var(--ur-shadow-btn);
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+.ur-choose-btn:hover {
+    background: #E4F1FE;
+}
+.ur-choose-btn:active {
+    transform: translateY(1px);
+}
+
+/* ---------- Bottom action row ----------
+   Width = left list (900) + column gap (44) + right dropzone (480) = 1424px.
+   Keeps Back at the list card's left edge and Start AI screening at the
+   dropzone card's right edge. */
+.ur-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 60px;
+    width: 100%;
+    max-width: 1424px;
+}
+.ur-btn-back,
+.ur-btn-primary {
+    /* Match the wizard's Continue button (Steps 1–4): same padding, radius,
+       and font-size so the action footer feels consistent across the app. */
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 19px;
+    letter-spacing: 0.04em;
+    border: 0;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+.ur-btn-back {
+    background: var(--ur-blue-soft);
+    color: var(--ur-blue);
+    box-shadow: var(--ur-shadow-btn);
+}
+.ur-btn-back:hover { background: #E4F1FE; }
+.ur-btn-primary {
+    background: var(--ur-blue);
+    color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(76, 171, 246, 0.35), 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+.ur-btn-primary:hover:not(:disabled) {
+    background: #3D9EE8;
+}
+.ur-btn-primary:disabled {
+    background: #B7D9F3;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+.ur-btn-primary.is-loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* ---------- Toast ---------- */
+.ur-toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    min-width: 240px;
+    max-width: 420px;
+    padding: 12px 18px;
+    background: #24282B;
+    color: #FFFFFF;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    transform: translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    z-index: 100;
+}
+.ur-toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+.ur-toast.error { background: #B00020; }
+.ur-toast.success { background: #1E7A4D; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1080px) {
+    /* On narrow viewports both cards stack — fall back to natural page scroll
+       so nothing gets clipped. */
+    .ur-main {
+        height: auto;
+        min-height: calc(100vh - 80px);
+        overflow: visible;
+        display: block;
+    }
+    .ur-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        row-gap: 28px;
+    }
+    .ur-list-card {
+        height: auto;
+        min-height: 360px;
+    }
+    .ur-dropzone { align-self: stretch; }
+}
+@media (max-width: 720px) {
+    .ur-main { padding: 50px 24px 40px 90px; }
+    .ur-title { gap: 6px; }
+    .ur-title-bold, .ur-title-italic { font-size: 24px; }
+    .ur-list-head { padding: 16px 20px 12px; }
+    .ur-list { padding: 0 20px; }
+}

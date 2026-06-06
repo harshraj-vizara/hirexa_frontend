@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire XA - Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/settings.css">
+    <link rel="stylesheet" href="/static/css/user_dropdown.css">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="page-loader" id="page-loader" aria-hidden="true"><span class="page-loader-spin"></span></div>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="dash-header">
+            <div class="dash-brand">
+                <div class="dash-brand-name">HIRE <span class="ai">XA</span></div>
+                <div class="dash-brand-sub">XCEED TALENT ACQUISITION</div>
+            </div>
+            <div data-user-dropdown></div>
+        </header>
+
+        <!-- Yellow blob -->
+        <div class="dash-blob" aria-hidden="true"></div>
+
+        <!-- Frosted glass panel (Rectangle 171) -->
+        <div class="dash-panel" aria-hidden="true"></div>
+
+        <!-- Sidebar -->
+        <aside class="dash-sidebar">
+            <a class="side-item" href="/b4kx" title="Back">
+                <span class="side-icon icon-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9886E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                </span>
+                <span class="side-label">Back</span>
+            </a>
+            <a class="side-item" href="/b4kx">
+                <span class="side-icon icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/>
+                    </svg>
+                </span>
+                <span class="side-label">Home</span>
+            </a>
+            <a class="side-item" href="/d2mw">
+                <span class="side-icon icon-green">
+                    <svg viewBox="0 0 24 24" fill="#8EC49E">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <span class="side-label">Jobs</span>
+            </a>
+            <a class="side-item" href="/p8eu">
+                <span class="side-icon icon-pink">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#DE9CA7" stroke-width="1.8" stroke-linejoin="round">
+                        <polygon points="6,4 20,12 6,20"/>
+                    </svg>
+                </span>
+                <span class="side-label">Quick</span>
+            </a>
+        </aside>
+
+        <!-- Main content -->
+        <main class="settings-main">
+            <!-- Title card -->
+            <div class="set-card set-title-card">
+                <h1 class="set-title">Settings</h1>
+                <p class="set-subtitle">Customise your hiring workspace, company<br>profile, and AI preference</p>
+            </div>
+
+            <!-- Settings card -->
+            <div class="set-card set-main-card">
+                <!-- Appearance -->
+                <div class="set-appearance">
+                    <span class="set-appearance-label">Appearance</span>
+                    <label class="set-toggle" for="set-appearance-toggle" aria-label="Toggle appearance">
+                        <input type="checkbox" id="set-appearance-toggle">
+                        <span class="set-toggle-track"><span class="set-toggle-thumb"></span></span>
+                    </label>
+                </div>
+
+                <!-- Core Values -->
+                <h2 class="set-section-title">Core Values</h2>
+                <p class="set-section-desc">Used by HireXA AI for candidate matching and hiring recommendations</p>
+                <div class="set-chips" id="set-cv-chips"></div>
+                <div class="set-cv-search-wrap">
+                    <input type="text" id="set-cv-search" class="set-text-input" placeholder="Search or create new values.." autocomplete="off">
+                    <div class="set-cv-suggest" id="set-cv-suggest" hidden></div>
+                </div>
+
+                <!-- Company Details -->
+                <div class="set-cd-head">
+                    <h2 class="set-section-title">Company Details</h2>
+                    <button type="button" class="set-edit-btn" id="set-edit-btn" title="Edit details" aria-label="Edit details">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </button>
+                </div>
+
+                <!-- Read-only notice (members only) -->
+                <p class="set-readonly-note" id="set-readonly-note" hidden>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span>These details can be edited only by your workspace admin.</span>
+                </p>
+
+                <div class="set-grid">
+                    <div class="set-field">
+                        <label for="set-name">Company Name</label>
+                        <input type="text" id="set-name" class="set-text-input" placeholder="Company name" data-validate="company">
+                    </div>
+                    <div class="set-field">
+                        <label for="set-email-trigger">Company Email</label>
+                        <button type="button" class="set-text-input set-email-trigger" id="set-email-trigger">
+                            <span id="set-email-text" class="set-email-text">Not connected</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                    </div>
+                    <div class="set-field">
+                        <label for="set-website">Website</label>
+                        <input type="text" id="set-website" class="set-text-input" placeholder="company.com" data-validate="url">
+                    </div>
+                    <div class="set-field">
+                        <label for="set-whatsapp">Whatsapp Business</label>
+                        <input type="text" id="set-whatsapp" class="set-text-input" placeholder="+91 90000 00000" data-validate="phone">
+                    </div>
+                    <div class="set-field">
+                        <label for="set-address">Company Address</label>
+                        <div class="set-ac-wrap">
+                            <input type="text" id="set-address" class="set-text-input" placeholder="Search city" autocomplete="off">
+                            <div class="set-ac-list" id="set-address-list" hidden></div>
+                        </div>
+                    </div>
+                    <div class="set-field">
+                        <label for="set-hq">Headquarters</label>
+                        <div class="set-ac-wrap">
+                            <input type="text" id="set-hq" class="set-text-input" placeholder="Search country" autocomplete="off">
+                            <div class="set-ac-list" id="set-hq-list" hidden></div>
+                        </div>
+                    </div>
+                    <div class="set-field">
+                        <label for="set-size">Company Size</label>
+                        <input type="text" id="set-size" class="set-text-input" placeholder="e.g. 200-500">
+                    </div>
+                    <div class="set-field">
+                        <label>Company Logo</label>
+                        <label class="set-text-input set-logo" id="set-logo-label">
+                            <span id="set-logo-text" class="set-email-text">(Optional)</span>
+                            <span class="set-logo-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            </span>
+                            <input type="file" id="set-logo" accept="image/*" hidden>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="set-status" id="set-status"></div>
+                <button type="button" class="set-save-btn" id="set-save-btn">Save Changes</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/validation.js"></script>
+    <script src="/static/js/settings.js"></script>
+    <script src="/static/js/user_dropdown.js"></script>
+</body>
+</html>

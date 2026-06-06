@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire XA - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="dash-header">
+            <div class="dash-brand">
+                <div class="dash-brand-name">HIRE <span class="ai">XA</span></div>
+                <div class="dash-brand-sub">XCEED TALENT ACQUISITION</div>
+            </div>
+            <div class="dash-user" id="user-dropdown">
+                <button class="user-trigger" id="user-dropdown-trigger">
+                    <div class="user-avatar" id="user-avatar">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.34 0-10 1.67-10 5v3h20v-3c0-3.33-6.66-5-10-5z" fill="#FFD33C"/>
+                        </svg>
+                    </div>
+                    <span class="user-name" id="user-name">Muskan</span>
+                    <svg class="user-chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="user-dropdown-menu" id="user-dropdown-menu">
+                    <div class="dd-email" id="dropdown-user-email">user@example.com</div>
+                    <button class="dd-item" id="profile-btn">
+                        <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>
+                        <span>Profile</span>
+                    </button>
+                    <button class="dd-item dd-complete" id="complete-setup-btn">
+                        <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+                        <span>Complete setup !</span>
+                    </button>
+                    <button class="dd-item" id="settings-btn">
+                        <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        <span>Settings</span>
+                    </button>
+                    <button class="dd-item disabled" id="help-btn" disabled aria-disabled="true">
+                        <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        <span>Get help</span>
+                    </button>
+                    <div class="dd-divider"></div>
+                    <button class="dd-item disabled" id="upgrade-btn" disabled aria-disabled="true">
+                        <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+                        <span>Upgrade plan</span>
+                    </button>
+                    <button class="dd-item disabled" id="learn-more-btn" disabled aria-disabled="true">
+                        <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="17"/><circle cx="12" cy="7.5" r="0.6" fill="#24282B" stroke="none"/></svg>
+                        <span>Learn more</span>
+                    </button>
+                    <div class="dd-divider"></div>
+                    <button class="dd-item logout" id="logout-btn">
+                        <svg class="dd-icon" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Yellow blob (top-right corner) -->
+        <div class="dash-blob" aria-hidden="true"></div>
+
+        <!-- Frosted glass panel (Rectangle 171) — overlays blob + content area -->
+        <div class="dash-panel" aria-hidden="true"></div>
+
+        <!-- Left sidebar -->
+        <aside class="dash-sidebar">
+            <a class="side-item active" href="/b4kx">
+                <span class="side-icon icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/>
+                    </svg>
+                </span>
+                <span class="side-label active-label">Home</span>
+            </a>
+            <a class="side-item" href="/d2mw">
+                <span class="side-icon icon-green">
+                    <svg viewBox="0 0 24 24" fill="#8EC49E">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <span class="side-label">Jobs</span>
+            </a>
+            <a class="side-item" href="/p8eu">
+                <span class="side-icon icon-pink">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#DE9CA7" stroke-width="1.8" stroke-linejoin="round">
+                        <polygon points="6,4 20,12 6,20"/>
+                    </svg>
+                </span>
+                <span class="side-label">Quick</span>
+            </a>
+        </aside>
+
+        <!-- Main content -->
+        <main class="dash-main">
+            <div class="dash-kicker">
+                <span class="kicker-dot"></span>
+                <span class="kicker-text"><span id="welcome-prefix">WELCOME</span>, <span id="welcome-name">MUSKAN</span></span>
+            </div>
+            <h1 class="dash-title">
+                <span class="title-bold" id="dash-title-bold">Let's hire</span>
+                <span class="title-italic" id="dash-title-italic">your first role.</span>
+            </h1>
+            <p class="dash-desc" id="dash-desc">Hire XA turns a job idea into a shortlist of interviewed candidates usually in 3–5 days. Pick where you want to start.</p>
+
+            <div class="dash-cards">
+                <a class="dash-card" href="/c8qr">
+                    <div class="card-icon icon-blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#7DB5E2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L14.4 8.6L21 9.3L16 13.8L17.5 20.5L12 17L6.5 20.5L8 13.8L3 9.3L9.6 8.6L12 2Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Recruitment Pipeline</h3>
+                    <p class="card-text">Start a recruitment pipeline. Add the role, AI writes the JD, posts to LinkedIn, sources &amp; screens candidates.</p>
+                    <span class="card-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#FFD33C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                    </span>
+                </a>
+
+                <a class="dash-card offset-down" href="/p8eu">
+                    <div class="card-icon icon-pink">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#DE9CA7" stroke-width="1.5" stroke-linejoin="round">
+                            <polygon points="6,4 20,12 6,20"/>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Quick Interview</h3>
+                    <p class="card-text">Launch a standalone AI screening interview for a specific candidate.</p>
+                    <span class="card-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#FFD33C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                    </span>
+                </a>
+
+                <a class="dash-card" href="/d2mw">
+                    <div class="card-icon icon-green">
+                        <svg viewBox="0 0 24 24" fill="#8EC49E">
+                            <rect x="3" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="14" width="7" height="7" rx="1"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Hiring Dashboard</h3>
+                    <p class="card-text">Track all pipelines, view stats, manage candidate flow and interview progress.</p>
+                    <span class="card-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#FFD33C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                    </span>
+                </a>
+
+                <a class="dash-card offset-down" href="/j5sb">
+                    <div class="card-icon icon-purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#9886E9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3v12"/>
+                            <path d="M7 8l5-5 5 5"/>
+                            <path d="M5 18v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2"/>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Upload Resumes</h3>
+                    <p class="card-text">Bulk upload your researched resumes and let AI screen them for you</p>
+                    <span class="card-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#FFD33C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                    </span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Workspace Ready celebration (shown once right after onboarding) -->
+    <div class="ws-ready-overlay" id="ws-ready-overlay" hidden>
+        <div class="ws-ready-card" role="dialog" aria-modal="true" aria-labelledby="ws-ready-title">
+            <h2 class="ws-ready-title" id="ws-ready-title">Your Workplace is <em>Ready!</em></h2>
+            <div class="ws-ready-check" aria-hidden="true">
+                <svg viewBox="0 0 66 66" width="66" height="66" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="ws-ready-circle" cx="33" cy="33" r="32.9" fill="#CEEAFF" stroke="#000000" stroke-width="0.2"/>
+                    <path class="ws-ready-tick" d="M21 34.5 L29.5 43 L46 25" stroke="#4CABF6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <button class="ws-ready-btn" id="ws-ready-btn">Go to Homepage</button>
+        </div>
+    </div>
+
+    <!-- First-login company-setup flow: Disclaimer -> Welcome/setup (Figma) -->
+    <div class="cs-overlay" id="cs-overlay">
+        <!-- Disclaimer (612 x 307) -->
+        <div class="cs-card cs-disclaimer" id="cs-disclaimer" role="dialog" aria-modal="true" aria-labelledby="cs-disclaimer-title">
+            <h2 id="cs-disclaimer-title">Disclaimer</h2>
+            <p>Emails and WhatsApp messages will be sent to candidates using HireXA's official email account (<a href="mailto:hello@hirexa.ai">hello@hirexa.ai</a>) and HireXA's WhatsApp account until the Company email and whatsapp is submitted by the admin.</p>
+            <button type="button" class="cs-primary-btn" id="cs-setup-now">Setup Now</button>
+            <button type="button" class="cs-later-btn" id="cs-disclaimer-later">Setup Later</button>
+        </div>
+
+        <!-- Welcome to HireXA setup (612 x 690) -->
+        <div class="cs-card cs-welcome" id="cs-welcome" role="dialog" aria-modal="true" aria-labelledby="cs-welcome-title">
+            <button type="button" class="cs-welcome-close" id="cs-welcome-close" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="20" height="20">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <h2 id="cs-welcome-title">Welcome to HireXA</h2>
+            <p class="cs-sub">Complete your setup to start hiring</p>
+            <div class="cs-options">
+                <!-- Connect Company Email = inline dropdown -->
+                <div class="cs-accordion">
+                    <button type="button" class="cs-option cs-acc-head" id="cs-email-toggle" aria-expanded="false" aria-controls="cs-email-panel">
+                        <span>Connect Company Email</span>
+                        <svg class="cs-acc-tick" id="cs-acc-tick" viewBox="0 0 24 24" width="19" height="19" hidden aria-hidden="true">
+                            <circle class="cs-acc-tick-circle" cx="12" cy="12" r="9.4" fill="#CEEAFF" stroke="#4CABF6" stroke-width="2.6"/>
+                            <path class="cs-acc-tick-path" d="M7.4 12.4 L10.6 15.6 L16.6 9" fill="none" stroke="#4CABF6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <svg class="cs-acc-chevron" viewBox="0 0 24 24" fill="none" stroke="#5B6168" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="cs-acc-panel" id="cs-email-panel" hidden>
+                        <button type="button" class="cs-prov-row" id="cs-prov-google">
+                            <svg class="cs-prov-icon" viewBox="0 0 48 48" width="20" height="20"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+                            <span>Continue with Google Workspace</span>
+                        </button>
+                        <button type="button" class="cs-prov-row" id="cs-prov-microsoft">
+                            <svg class="cs-prov-icon" viewBox="0 0 23 23" width="18" height="18"><rect x="1" y="1" width="10" height="10" fill="#F25022"/><rect x="12" y="1" width="10" height="10" fill="#7FBA00"/><rect x="1" y="12" width="10" height="10" fill="#00A4EF"/><rect x="12" y="12" width="10" height="10" fill="#FFB900"/></svg>
+                            <span>Continue with Microsoft 365</span>
+                        </button>
+                        <button type="button" class="cs-prov-row cs-prov-smtp" id="cs-prov-smtp">
+                            <span>Other Provider → Setup SMTP</span>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="cs-option" data-setup="whatsapp">Connect WhatsApp Business</button>
+                <button type="button" class="cs-option" data-setup="recruiters">Invite Recruiters</button>
+            </div>
+            <button type="button" class="cs-primary-btn" id="cs-welcome-continue">Continue</button>
+            <button type="button" class="cs-later-btn" id="cs-welcome-later">Setup Later</button>
+        </div>
+
+        <!-- SMTP Manual Setup (612 x 690) -->
+        <div class="cs-card cs-smtp-card" id="cs-smtp-card" role="dialog" aria-modal="true" aria-labelledby="cs-smtp-title">
+            <button type="button" class="cs-back" id="cs-smtp-back" aria-label="Back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="20" height="20"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <button type="button" class="cs-welcome-close" id="cs-smtp-close" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <h2 id="cs-smtp-title">SMTP Manual Setup</h2>
+            <p class="cs-sub">Complete your setup to start hiring</p>
+
+            <form class="cs-smtp2-form" id="cs-smtp-form" novalidate>
+                <div class="cs-field">
+                    <input id="smtp-host" class="cs-input" type="text" placeholder="SMTP Host" required>
+                    <span class="cs-info" title="Your provider's outgoing mail server, e.g. smtp.gmail.com or smtp.office365.com">&#9432;</span>
+                </div>
+                <div class="cs-field">
+                    <input id="smtp-port" class="cs-input" type="number" placeholder="Port" required>
+                    <span class="cs-info" title="465 for SSL, 587 for TLS / STARTTLS">&#9432;</span>
+                </div>
+                <div class="cs-field">
+                    <input id="smtp-username" class="cs-input" type="text" placeholder="Username" required>
+                </div>
+                <div class="cs-field">
+                    <input id="smtp-password" class="cs-input" type="password" placeholder="Password / API Key" required>
+                    <span class="cs-info" title="Use an app password / API key if your provider requires one">&#9432;</span>
+                </div>
+                <div class="cs-field">
+                    <select id="smtp-security" class="cs-input cs-select" required>
+                        <option value="" disabled selected>Encryption: TLS / SSL</option>
+                        <option value="ssl">SSL (port 465)</option>
+                        <option value="starttls">TLS / STARTTLS (port 587)</option>
+                    </select>
+                    <span class="cs-info" title="SSL for port 465, TLS / STARTTLS for port 587">&#9432;</span>
+                </div>
+                <div class="cs-smtp-error" id="cs-smtp-error"></div>
+                <button type="submit" class="cs-primary-btn cs-smtp2-btn" id="cs-smtp-connect">Test Connection</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast for connect results -->
+    <div class="cs-toast" id="cs-toast" hidden></div>
+
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/user_dropdown.js"></script>
+    <script>
+        // Company-setup flow: Disclaimer -> Welcome (with an inline Connect
+        // Company Email dropdown) -> SMTP Manual Setup card. Always wired; only
+        // the auto-open of the Disclaimer is gated on first login.
+        (function () {
+            const overlay = document.getElementById('cs-overlay');
+            if (!overlay) return;
+            const disclaimer = document.getElementById('cs-disclaimer');
+            const welcome = document.getElementById('cs-welcome');
+            const smtpCard = document.getElementById('cs-smtp-card');
+            const toast = document.getElementById('cs-toast');
+
+            let userEmail = '';
+            try { userEmail = (JSON.parse(localStorage.getItem('fluenzoUser') || '{}').email) || ''; } catch (_) {}
+
+            const val = (id) => (document.getElementById(id)?.value || '').trim();
+            const showCard = (card) => {
+                [disclaimer, welcome, smtpCard].forEach(c => c && c.classList.toggle('active', c === card));
+            };
+            const openOverlay = (card) => { showCard(card); overlay.classList.add('show'); };
+            const close = () => { overlay.classList.remove('show'); setTimeout(() => showCard(null), 240); };
+
+            let toastTimer = null;
+            const showToast = (msg, kind) => {
+                if (!toast) return;
+                toast.textContent = msg;
+                toast.className = 'cs-toast ' + (kind || 'success');
+                toast.hidden = false;
+                requestAnimationFrame(() => toast.classList.add('show'));
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => { toast.hidden = true; }, 300);
+                }, 4500);
+            };
+
+            // ---------- Connect Company Email dropdown (inside Welcome) ----------
+            const emailToggle = document.getElementById('cs-email-toggle');
+            const emailPanel = document.getElementById('cs-email-panel');
+            const connTick = document.getElementById('cs-acc-tick');
+
+            const setConnectedTick = (on, animate) => {
+                if (!connTick) return;
+                // NOTE: connTick is an <svg> element. The `.hidden` IDL property
+                // only reflects on HTMLElement, NOT SVGElement, so we must toggle
+                // the attribute directly or it never becomes visible.
+                if (on) {
+                    connTick.removeAttribute('hidden');
+                    if (animate) {
+                        connTick.classList.remove('animate');
+                        void connTick.getBoundingClientRect();
+                        requestAnimationFrame(() => connTick.classList.add('animate'));
+                    }
+                } else {
+                    connTick.setAttribute('hidden', '');
+                    connTick.classList.remove('animate');
+                }
+            };
+
+            // The only connected signal is the blue tick on the header.
+            async function loadEmailStatus() {
+                if (!userEmail) return;
+                try {
+                    const res = await fetch('/api/email/status?email=' + encodeURIComponent(userEmail));
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    setConnectedTick(!!data.connected);
+                } catch (_) {}
+            }
+            const setPanel = (open) => {
+                if (!emailPanel) return;
+                emailPanel.hidden = !open;
+                emailToggle?.setAttribute('aria-expanded', String(open));
+                emailToggle?.classList.toggle('open', open);
+            };
+            emailToggle?.addEventListener('click', () => setPanel(emailPanel.hidden));
+
+            // After a successful connect: show the Welcome modal with the dropdown
+            // collapsed and the blue tick animating on the header.
+            const showConnected = () => { openOverlay(welcome); setPanel(false); setConnectedTick(true, true); };
+
+            document.getElementById('cs-prov-google')?.addEventListener('click', () => {
+                if (!userEmail) return showToast('Please sign in again.', 'error');
+                window.location.href = '/api/email/google/connect?email=' + encodeURIComponent(userEmail);
+            });
+            document.getElementById('cs-prov-microsoft')?.addEventListener('click', () => {
+                if (!userEmail) return showToast('Please sign in again.', 'error');
+                window.location.href = '/api/email/microsoft/connect?email=' + encodeURIComponent(userEmail);
+            });
+            document.getElementById('cs-prov-smtp')?.addEventListener('click', () => showCard(smtpCard));
+
+            // ---------- SMTP Manual Setup ----------
+            const smtpForm = document.getElementById('cs-smtp-form');
+            smtpForm?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const err = document.getElementById('cs-smtp-error');
+                err.textContent = '';
+                if (!userEmail) { err.textContent = 'Please sign in again.'; return; }
+                const username = val('smtp-username');
+                const security = val('smtp-security');
+                if (!val('smtp-host') || !val('smtp-port') || !username || !val('smtp-password')) {
+                    err.textContent = 'Please fill in all fields.'; return;
+                }
+                if (!security) { err.textContent = 'Please choose an encryption type.'; return; }
+                const btn = document.getElementById('cs-smtp-connect');
+                btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Testing…';
+                try {
+                    const fd = new FormData();
+                    fd.append('email', userEmail);
+                    fd.append('from_email', username);   // SMTP username is the mailbox address
+                    fd.append('smtp_host', val('smtp-host'));
+                    fd.append('smtp_port', val('smtp-port'));
+                    fd.append('smtp_security', security);
+                    fd.append('smtp_username', username);
+                    fd.append('smtp_password', val('smtp-password'));
+                    const res = await fetch('/api/email/smtp/connect', { method: 'POST', body: fd });
+                    const data = await res.json().catch(() => ({}));
+                    if (res.ok) {
+                        smtpForm.reset();
+                        showConnected();   // tick only, no message
+                    } else {
+                        // 409 => "This email is already added"
+                        err.textContent = data.detail || 'Could not connect. Check the details.';
+                    }
+                } catch (_) { err.textContent = 'Connection error. Please try again.'; }
+                btn.disabled = false; btn.textContent = orig;
+            });
+            document.getElementById('cs-smtp-close')?.addEventListener('click', close);
+            document.getElementById('cs-smtp-back')?.addEventListener('click', () => { openOverlay(welcome); setPanel(true); });
+
+            // ---------- Card navigation ----------
+            document.getElementById('cs-setup-now')?.addEventListener('click', () => showCard(welcome));
+            document.getElementById('cs-disclaimer-later')?.addEventListener('click', close);
+            document.getElementById('cs-welcome-close')?.addEventListener('click', close);
+            document.getElementById('cs-welcome-later')?.addEventListener('click', close);
+            document.getElementById('cs-welcome-continue')?.addEventListener('click', close);
+
+            // Open the Welcome modal with the email dropdown expanded.
+            const openEmail = () => { openOverlay(welcome); setPanel(true); };
+            window.CompanyEmailSetup = { open: openEmail };
+
+            // "Complete setup !" in the header user menu -> open the Welcome modal.
+            document.getElementById('complete-setup-btn')?.addEventListener('click', () => {
+                document.getElementById('user-dropdown')?.classList.remove('open');
+                openOverlay(welcome);
+            });
+
+            // "Complete setup !" is admin-only. Hide it for invited members:
+            // instant hide from the cached role, then confirm with the server.
+            (function () {
+                const completeBtn = document.getElementById('complete-setup-btn');
+                if (!completeBtn) return;
+                let cached = null;
+                try { cached = JSON.parse(localStorage.getItem('fluenzoUser') || 'null'); } catch (_) {}
+                if (cached && cached.is_admin === false) completeBtn.style.display = 'none';
+                if (!userEmail) return;
+                fetch('/api/team/me?email=' + encodeURIComponent(userEmail))
+                    .then(r => r.ok ? r.json() : null)
+                    .then(d => {
+                        if (!d) return;
+                        completeBtn.style.display = d.is_admin ? '' : 'none';
+                        try {
+                            const u = JSON.parse(localStorage.getItem('fluenzoUser') || '{}');
+                            u.is_admin = !!d.is_admin;
+                            localStorage.setItem('fluenzoUser', JSON.stringify(u));
+                        } catch (_) {}
+                    })
+                    .catch(() => {});
+            })();
+
+            // "Invite Recruiters" (Welcome card) → Profile page, where the admin
+            // adds and manages team members.
+            document.querySelector('[data-setup="recruiters"]')?.addEventListener('click', () => {
+                window.location.href = '/m3xk';
+            });
+
+            // ---------- OAuth return (#email=...) ----------
+            // On a fresh successful connect we set the tick directly and SKIP the
+            // status fetch below, so it can't race-hide the tick. Success shows
+            // only the tick (no toast); errors still toast.
+            const hash = window.location.hash || '';
+            let oauthHandled = false;
+            if (hash.indexOf('email=') !== -1) {
+                const v = hash.split('email=')[1];
+                try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch (_) {}
+                if (v === 'google_connected' || v === 'microsoft_connected') {
+                    showConnected();
+                    oauthHandled = true;
+                } else {
+                    const errs = {
+                        already_added: 'This email is already added.',
+                        google_error: 'Could not connect Google. Please try again.',
+                        microsoft_error: 'Could not connect Microsoft. Please try again.',
+                        google_norefresh: 'Google did not return access. Remove HireXA from your Google account permissions, then try again.',
+                    };
+                    if (errs[v]) showToast(errs[v], 'error');
+                }
+            }
+
+            // Reflect the connection state (the tick) on a normal load — but not
+            // right after a fresh connect (showConnected already handled it).
+            if (!oauthHandled) loadEmailStatus();
+
+            // ---------- Opened from Settings "Company Email" ----------
+            try {
+                if (localStorage.getItem('openEmailConnect') === '1') {
+                    localStorage.removeItem('openEmailConnect');
+                    openEmail();
+                }
+            } catch (_) {}
+
+            // ---------- "Complete setup !" from the header menu on any page ----------
+            try {
+                if (localStorage.getItem('openCompleteSetup') === '1') {
+                    localStorage.removeItem('openCompleteSetup');
+                    openOverlay(welcome);
+                }
+            } catch (_) {}
+
+            // ---------- First-login auto-open ----------
+            let flagged = false;
+            try { flagged = localStorage.getItem('companySetupPrompt') === '1'; } catch (_) {}
+            if (flagged) {
+                try { localStorage.removeItem('companySetupPrompt'); } catch (_) {}
+                openOverlay(disclaimer);
+            }
+        })();
+    </script>
+    <script>
+        // One-time "Workspace is Ready" popup after the onboarding flow.
+        (function () {
+            let flagged = false;
+            try { flagged = localStorage.getItem('workspaceReady') === '1'; } catch (_) {}
+            if (!flagged) return;
+            try { localStorage.removeItem('workspaceReady'); } catch (_) {}
+
+            const overlay = document.getElementById('ws-ready-overlay');
+            const btn = document.getElementById('ws-ready-btn');
+            if (!overlay) return;
+
+            overlay.hidden = false;
+            requestAnimationFrame(() => overlay.classList.add('show'));
+
+            const close = () => {
+                overlay.classList.remove('show');
+                setTimeout(() => { overlay.hidden = true; }, 280);
+            };
+            btn?.addEventListener('click', close);
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+        })();
+    </script>
+</body>
+</html>

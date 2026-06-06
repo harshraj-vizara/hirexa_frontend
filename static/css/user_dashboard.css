@@ -1,0 +1,246 @@
+/* =========================================================
+   Hire XA — Admin User Dashboard (full team table)
+   Figma: "User Dashboard for Admin"
+   App-shell + modals are shared (dashboard.css / profile.css);
+   this file styles the page body only.
+   ========================================================= */
+.ud-main {
+    position: relative;
+    z-index: 3;
+    box-sizing: border-box;
+    min-height: calc(100vh - 80px);
+    padding: 30px 56px 36px 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ---- Heading ---- */
+.ud-header { margin-bottom: 2px; }
+.ud-heading { margin: 0 0 6px; line-height: 1.05; }
+.ud-h-all {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 30px;
+    color: #24282B;
+}
+.ud-h-users {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 30px;
+    letter-spacing: -0.04em;
+    color: #5B6168;
+}
+.ud-sub {
+    margin: 0;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: #9B9C9E;
+}
+
+/* ---- Toolbar: filter chips (left) + search (right) ----
+   Constrained to the table width (839px) so the search box lines up with the
+   table's right edge. */
+.ud-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 1080px; max-width: 100%; }
+.ud-chips { display: flex; align-items: center; gap: 12px; }
+.ud-chip {
+    height: 26px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 13px;
+    background: #EEF7FE;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.11);
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: #4CABF6;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.ud-chip:hover { background: #E2F0FD; }
+.ud-chip.is-active {
+    background: #FFD33C;
+    border: 0.5px solid #EAB000;
+    box-shadow: none;
+    color: #24282B;
+    font-weight: 400;
+}
+
+.ud-search { position: relative; flex: none; }
+.ud-search input {
+    width: 220px;
+    height: 32px;
+    box-sizing: border-box;
+    padding: 0 38px 0 14px;
+    background: #FFFFFF;
+    border: 0.6px solid #4CABF6;
+    border-radius: 16px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: #24282B;
+    outline: none;
+}
+.ud-search input::placeholder { color: #9B9C9E; }
+.ud-search-ic {
+    position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #CEEAFF; display: flex; align-items: center; justify-content: center;
+}
+
+/* ---- Table card ----
+   Width tracks the Figma frame (839 -> 960); height auto-fits the rows. Pushed
+   down a touch from the toolbar. */
+.ud-table-card {
+    width: 1080px;
+    max-width: 100%;
+    margin-top: 18px;
+    background: #FFFFFF;
+    border: 0.5px solid #4CABF6;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.20);
+    overflow: hidden;
+}
+.ud-table { width: 100%; }
+
+/* Shared grid for header + rows. USER widest; the three numeric columns and
+   actions are narrow. */
+.ud-thead, .ud-row {
+    display: grid;
+    grid-template-columns: 2.4fr 1.2fr 0.95fr 0.95fr 1.1fr 0.95fr 1fr 0.8fr;
+    align-items: center;
+    column-gap: 12px;
+    padding: 0 28px;
+}
+.ud-thead {
+    height: 43px;
+    border-bottom: 0.5px solid #4CABF6;
+}
+.ud-thead span {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #828D97;
+}
+/* Every column except USER is centred (header + values). */
+.ud-thead span:not(:first-child) { text-align: center; }
+
+.ud-row {
+    min-height: 61px;
+    border-bottom: 0.5px solid rgba(76, 171, 246, 0.55);
+}
+.ud-row:last-child { border-bottom: 0; }
+
+.ud-row-user { min-width: 0; }
+.ud-row-name {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    color: #24282B;
+    display: flex; align-items: center;
+}
+.ud-row-email {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: #9B9C9E;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ud-row-role {
+    text-align: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: #24282B;
+}
+/* Centred cells: STATUS pill + CREATED date. */
+.ud-cell-status { text-align: center; }
+
+.ud-pill {
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 10px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: #24282B;
+}
+.ud-pill.active { background: #8EC49E; }
+.ud-pill.pending { background: #F2D99B; }
+
+.ud-stat {
+    text-align: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 14.5px;
+    letter-spacing: 0.06em;
+    color: #4CABF6;
+}
+.ud-created {
+    text-align: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: #24282B;
+}
+
+.ud-row-actions { display: flex; align-items: center; justify-content: center; gap: 16px; }
+.ud-row-action { background: none; border: 0; cursor: pointer; display: flex; color: #4CABF6; padding: 0; }
+.ud-row-action.ud-del { color: #9B9C9E; }
+.ud-row-action.ud-del:hover { color: #E2574C; }
+.ud-row-self { font-family: 'Lexend Deca', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: 0.06em; color: #9B9C9E; }
+
+/* "Admin" pill beside a promoted member's name */
+.ud-admin-pill {
+    display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 7px;
+    background: #E7F2FF; color: #2F8FE0;
+    font-family: 'Lexend Deca', sans-serif; font-weight: 400; font-size: 8.5px;
+    letter-spacing: 0.08em; text-transform: uppercase; vertical-align: middle;
+}
+
+.ud-empty {
+    padding: 34px 20px;
+    text-align: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 12px;
+    color: #9B9C9E;
+}
+
+/* ---- Footer: Add User. Pinned to the bottom of the page (margin-top:auto
+   absorbs the free space below the auto-height table), still bottom-right. ---- */
+.ud-footer { display: flex; justify-content: flex-end; width: 1080px; max-width: 100%; margin-top: auto; }
+.ud-add-btn {
+    height: 38px;
+    padding: 0 32px;
+    background: #4CABF6;
+    border: 0;
+    border-radius: 8px;
+    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.19);
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.ud-add-btn:hover { background: #3FA1F2; }
+.ud-add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (max-width: 1100px) {
+    .ud-main { padding: 26px 20px 32px 92px; }
+    .ud-search input { width: 170px; }
+    .ud-thead, .ud-row { padding: 0 14px; column-gap: 6px; }
+}

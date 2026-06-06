@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire XA - Candidate Feedback</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/hiring_feedback.css">
+    <link rel="stylesheet" href="/static/css/user_dropdown.css">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Shared HIRE XA chrome -->
+        <header class="dash-header">
+            <div class="dash-brand">
+                <div class="dash-brand-name">HIRE <span class="ai">XA</span></div>
+                <div class="dash-brand-sub">XCEED TALENT ACQUISITION</div>
+            </div>
+            <div data-user-dropdown></div>
+        </header>
+
+        <!-- Yellow blob background -->
+        <div class="dash-blob" aria-hidden="true"></div>
+
+        <!-- Frosted glass panel (Rectangle 171) -->
+        <div class="dash-panel" aria-hidden="true"></div>
+
+        <!-- Sidebar -->
+        <aside class="dash-sidebar">
+            <a class="side-item" id="hf-back-link" href="/d2mw" title="Back">
+                <span class="side-icon icon-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9886E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                </span>
+                <span class="side-label">Back</span>
+            </a>
+            <a class="side-item" href="/b4kx">
+                <span class="side-icon icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/>
+                    </svg>
+                </span>
+                <span class="side-label">Home</span>
+            </a>
+            <a class="side-item active" href="/d2mw">
+                <span class="side-icon icon-green">
+                    <svg viewBox="0 0 24 24" fill="#8EC49E">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <span class="side-label">Jobs</span>
+            </a>
+            <a class="side-item" href="/p8eu">
+                <span class="side-icon icon-pink">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#DE9CA7" stroke-width="1.8" stroke-linejoin="round">
+                        <polygon points="6,4 20,12 6,20"/>
+                    </svg>
+                </span>
+                <span class="side-label">Quick</span>
+            </a>
+        </aside>
+
+        <main class="hf-main">
+            <!-- Loading -->
+            <div class="hf-loading" id="hf-loading">
+                <div class="hf-spinner"></div>
+                <p>Loading feedback...</p>
+            </div>
+
+            <div class="hf-detail hidden" id="hf-detail">
+                <!-- Hero card: name / role-date-duration / recommendation pill / overall score -->
+                <section class="hf-hero" id="hf-hero">
+                    <div class="hf-hero-left">
+                        <h1 class="hf-cand-name" id="d-candidate-name">Candidate</h1>
+                        <p class="hf-cand-meta">
+                            <span id="d-role">-</span>
+                            <span class="hf-dot-sep">·</span>
+                            <span id="d-date">-</span>
+                            <span class="hf-dot-sep">·</span>
+                            <span id="d-duration">-</span>
+                        </p>
+                    </div>
+                    <div class="hf-hero-right">
+                        <span class="hf-rec-pill" id="d-rec-pill">-</span>
+                        <div class="hf-score-line">
+                            <span class="hf-score-num" id="d-overall">-</span>
+                            <span class="hf-score-denom">/ 10</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Row: Dimensional scorecard + Proctoring/radar -->
+                <section class="hf-row hf-row-2">
+                    <div class="hf-card hf-card-scorecard">
+                        <div class="hf-card-title">DIMENSIONAL SCORECARD</div>
+                        <div class="hf-dims-grid" id="d-dims"></div>
+                    </div>
+                    <div class="hf-card hf-card-proctor">
+                        <div class="hf-card-title">PROCTORING &amp; BEHAVIOUR</div>
+                        <div class="hf-radar-wrap" id="d-radar"></div>
+                    </div>
+                </section>
+
+                <!-- Row: Strengths + Improvements -->
+                <section class="hf-row hf-row-2-eq">
+                    <div class="hf-card hf-card-list">
+                        <div class="hf-card-title">KEY STRENGTHS</div>
+                        <ul class="hf-bullets" id="d-strengths"></ul>
+                    </div>
+                    <div class="hf-card hf-card-list">
+                        <div class="hf-card-title">AREAS FOR IMPROVEMENT</div>
+                        <ul class="hf-bullets" id="d-improvements"></ul>
+                    </div>
+                </section>
+
+                <!-- Interview panel rows -->
+                <section class="hf-card hf-card-panel">
+                    <div class="hf-card-title hf-card-title-divider">INTERVIEW PANEL - AGENT REVIEWS</div>
+                    <div class="hf-agents" id="d-agents"></div>
+                </section>
+
+                <!-- Bottom action row — single right-aligned action (the row's
+                     flex-end justification puts the lone button on the right). -->
+                <section class="hf-actions">
+                    <button class="hf-btn hf-btn-ghost" id="d-watch-btn" onclick="HF.watchInterview()">Watch interview</button>
+                </section>
+            </div>
+
+            <!-- Empty / error state -->
+            <div class="hf-empty hidden" id="hf-empty">
+                <h2>No feedback available</h2>
+                <p>This candidate hasn't completed an interview yet, or the feedback is still being generated.</p>
+                <a href="/d2mw" class="hf-btn hf-btn-primary">Back to Jobs</a>
+            </div>
+
+            <div class="hf-toast hidden" id="hf-toast"></div>
+        </main>
+    </div>
+
+    <script src="/static/js/hiring_feedback.js"></script>
+    <script src="/static/js/user_dropdown.js"></script>
+</body>
+</html>

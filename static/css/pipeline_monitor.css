@@ -1,0 +1,671 @@
+/* ==========================================================================
+   PIPELINE MONITOR — "Jobs posted." (HIRE XA Figma redesign)
+   Shared chrome via dashboard.css (header / sidebar / blob / dropdown).
+   This file owns: title, summary line, filter pills, big bordered table,
+   row-level status pills + toggle + outcome dropdown, + New Role CTA.
+   ========================================================================== */
+
+/* Lock the WHOLE page to the viewport — no body-level scroll on this view.
+   The only scrollable region is .pm-tbody (the table rows). Anything else
+   that grows beyond the viewport is intentionally clipped. */
+html, body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Main column — matches the 146px left inset used across pipeline.html /
+   dashboard.html so all HIRE XA pages share the same left edge.
+   Locked to viewport height minus the 80px sticky header. overflow:hidden so
+   even unexpected content growth can never trigger page scroll. */
+.pm-main {
+    padding: 28px 60px 24px 146px;
+    height: calc(100vh - 80px);
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+/* === Title === */
+.pm-title {
+    margin: 20px 0 6px 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 52px;
+    line-height: 1.12;
+    color: #24282B;
+}
+.pm-title-bold {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #24282B;
+}
+.pm-title-italic {
+    font-family: 'Fraunces', 'Lexend Deca', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: #5B6168;
+    letter-spacing: -0.07em;
+    margin-left: 8px;
+}
+.pm-subtitle {
+    margin: 0 0 22px 0;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.4;
+    color: #9B9C9E;
+}
+
+/* === Filter pills (same chip style as Step 4 / dashboard) === */
+/* Pills + search share a row; search hugs the right edge. */
+.pm-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 1300px;
+    margin-bottom: 22px;
+}
+.pm-toolbar .pm-pills {
+    margin-bottom: 0;
+    max-width: none;
+    flex: 1 1 auto;
+}
+.pm-search { position: relative; flex: none; margin-left: auto; }
+.pm-search input {
+    width: 240px;
+    height: 30px;
+    box-sizing: border-box;
+    padding: 0 36px 0 14px;
+    border: 0.5px solid #4CABF6;
+    border-radius: 16px;
+    background: #FFFFFF;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: #24282B;
+    outline: none;
+    transition: box-shadow 0.15s ease;
+}
+.pm-search input::placeholder { color: #9B9C9E; }
+.pm-search input:focus { box-shadow: 0 0 0 3px rgba(76, 171, 246, 0.15); }
+.pm-search-icon {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background: #CEEAFF;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pm-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 22px;
+    max-width: 1100px;
+}
+.pm-pill {
+    height: 28px;
+    padding: 0 16px;
+    border-radius: 14px;
+    border: 0.5px solid transparent;
+    background: #EEF7FE;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: #4CABF6;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.11);
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    white-space: nowrap;
+}
+.pm-pill:hover { transform: translateY(-1px); }
+.pm-pill.active {
+    background: #FFD33C;
+    border-color: #EAB000;
+    color: #24282B;
+    box-shadow: none;
+}
+.pm-pill.readonly { cursor: default; }
+.pm-pill.readonly:hover { transform: none; }
+
+/* === Empty state === */
+.pm-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding: 56px 24px;
+    max-width: 1100px;
+    color: #5B6168;
+}
+.pm-empty.hidden { display: none; }
+.pm-empty h4 { margin: 0; font-size: 16px; color: #24282B; }
+.pm-empty p { margin: 0 0 8px 0; font-size: 13px; color: #9B9C9E; }
+
+/* === Table card ===
+   Fixed-height card: thead pinned at top, tbody scrolls internally so the page
+   stays within the viewport regardless of how many roles the recruiter has. */
+.pm-table-card {
+    max-width: 1300px;
+    border: 0.5px solid #4CABF6;
+    border-radius: 4px;
+    background: #FFFFFF;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+}
+.pm-table-card.hidden { display: none; }
+
+.pm-thead, .pm-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 14px;
+}
+.pm-thead {
+    height: 38px;
+    border-bottom: 0.5px solid #4CABF6;
+    background: #FAFCFF;
+    flex-shrink: 0;   /* never collapse — header stays pinned */
+}
+
+/* Body is the only scrollable region on this page. Height is computed off the
+   viewport so the recruiter never has to page-scroll to see the footnote /
+   + New Role CTA. ~460px reserves space for: dash-header (80) + .pm-main
+   padding (28+24) + title block (~84) + subtitle (~43) + pills (~50) + thead
+   (~38) + footnote (~30) + bottom button area (~80) + safety. Tweak this
+   constant if the title size or chrome heights change. */
+.pm-tbody {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 460px);
+    min-height: 200px;
+}
+/* Subtle scrollbar styling so it doesn't fight the Figma look */
+.pm-tbody::-webkit-scrollbar          { width: 8px; }
+.pm-tbody::-webkit-scrollbar-track    { background: transparent; }
+.pm-tbody::-webkit-scrollbar-thumb    { background: rgba(76, 171, 246, 0.35); border-radius: 4px; }
+.pm-tbody::-webkit-scrollbar-thumb:hover { background: rgba(76, 171, 246, 0.6); }
+.pm-th {
+    flex: 0 0 var(--w, auto);
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 100%;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #828D97;
+}
+/* Center-align the numeric column headers and their cells (Profiles,
+   Shortlisted, Contacted, Interviews, Selections) plus Created + Actions.
+   Role/Company and Status keep their default left alignment. */
+.pm-th-num,
+.pm-thead .pm-th[style*="--w:100px"],
+.pm-thead .pm-th[style*="--w:156px"] {
+    text-align: center;
+}
+
+.pm-row {
+    min-height: 78px;
+    border-top: 0.5px solid #4CABF6;
+    transition: background 0.15s ease;
+}
+.pm-row:first-child { border-top: none; }
+.pm-row:hover { background: #FAFCFF; }
+.pm-row-empty {
+    justify-content: center;
+    padding: 36px 14px;
+    color: #9B9C9E;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 13px;
+}
+
+.pm-cell {
+    flex: 0 0 var(--w, auto);
+    /* Lock width strictly to --w even if content's intrinsic min-width is larger.
+       Without this, a wide pill (e.g. "Interviewing") can push the cell wider
+       than its flex-basis and shift every subsequent column on that row. */
+    min-width: 0;
+    max-width: var(--w, none);
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 13px;
+    color: #24282B;
+}
+.pm-th {
+    min-width: 0;
+    max-width: var(--w, none);
+}
+
+/* Role / Company cell */
+.pm-cell-role { line-height: 1.35; }
+/* Role name + info icon sit on one flex line */
+.pm-role-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.pm-role-name {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: #24282B;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+}
+.pm-role-name:hover { color: #4CABF6; }
+.pm-role-sub {
+    margin-top: 4px;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 14px;
+    letter-spacing: 0.05em;
+    color: #828D97;
+}
+
+/* Info (i) icon next to the role name — opens the JD popup. */
+.pm-info-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    padding: 2px;
+    color: #9B9C9E;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: color 0.12s ease, background 0.12s ease;
+}
+.pm-info-btn:hover {
+    color: #4CABF6;
+    background: rgba(76, 171, 246, 0.12);
+}
+.pm-info-btn:focus-visible {
+    outline: 2px solid rgba(76, 171, 246, 0.5);
+    outline-offset: 1px;
+}
+
+/* Job-Description modal — HIRE XA themed.
+   Soft off-white card on a tinted backdrop; Poppins for the heading,
+   Lexend Deca for the body. Scrollbar is hidden but content still scrolls. */
+.pm-jd-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(36, 40, 43, 0.42);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 24px;
+}
+.pm-jd-overlay.hidden { display: none; }
+.pm-jd-card {
+    position: relative;
+    background: #F8F9FB;
+    /* HIRE XA card chrome — faint hairline + soft diffused shadow + subtle
+       yellow underline at the top so it reads as part of the same family. */
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.035),
+        0 14px 44px rgba(36, 40, 43, 0.18),
+        0 4px 12px rgba(36, 40, 43, 0.08);
+    border-radius: 16px;
+    border-top: 3px solid #FFDF67;
+    width: 100%;
+    max-width: 680px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: pm-jd-pop 0.2s ease-out;
+}
+@keyframes pm-jd-pop {
+    from { opacity: 0; transform: scale(0.96) translateY(4px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.pm-jd-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: transparent;
+    color: #5B6168;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.pm-jd-close:hover { background: rgba(76, 171, 246, 0.12); color: #4CABF6; }
+.pm-jd-head {
+    padding: 24px 28px 14px;
+    border-bottom: 0.5px solid rgba(36, 40, 43, 0.10);
+}
+.pm-jd-title {
+    margin: 0 36px 4px 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    color: #24282B;
+    letter-spacing: 0.01em;
+}
+.pm-jd-sub {
+    margin: 0;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    color: #5B6168;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.pm-jd-body {
+    padding: 20px 28px 24px;
+    overflow-y: auto;
+    flex: 1;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 22px;
+    color: #24282B;
+    /* Hide scrollbar — Firefox + IE/Edge legacy. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+/* Hide scrollbar in Chrome / Safari / new Edge */
+.pm-jd-body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+.pm-jd-body p { margin: 0 0 12px 0; }
+.pm-jd-body p:last-child { margin-bottom: 0; }
+.pm-jd-loading,
+.pm-jd-empty {
+    color: #9B9C9E;
+    font-size: 13px;
+    font-style: italic;
+}
+
+/* Numeric cells — clickable blue numbers per Figma footnote.
+   Centered to match the centered column header above. */
+.pm-cell-num {
+    font-weight: 500;
+    text-align: center;
+}
+.pm-num {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    color: #4CABF6;
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+}
+.pm-num:hover { background: rgba(76, 171, 246, 0.12); }
+
+.pm-cell-date {
+    font-weight: 300;
+    font-size: 12px;
+    color: #24282B;
+    letter-spacing: 0.06em;
+    text-align: center;
+}
+
+/* Status pills */
+.pm-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+    min-width: 82px;
+    padding: 0 12px;
+    border-radius: 11px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 14px;
+    letter-spacing: 0.08em;
+    color: #24282B;
+}
+.pm-status-interviewing { background: #FFD33C; }
+.pm-status-searching    { background: #C6E6FF; }
+.pm-status-disabled     { background: #CFCFCF; }
+.pm-status-completed    { background: #D7FFE3; color: #1F6E32; }
+
+/* Actions cell — toggle + outcome dropdown.
+   `display: flex` (not inline-flex) so the cell respects its full --w width
+   on every row regardless of content. Centered to match the centered
+   "Actions" column header above. */
+.pm-cell-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+
+/* iOS-style toggle */
+.pm-toggle {
+    width: 34px;
+    height: 18px;
+    border-radius: 10px;
+    border: 0.5px solid rgba(36, 40, 43, 0.45);
+    background: #F8F9FB;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+.pm-toggle-dot {
+    position: absolute;
+    top: 2px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    box-shadow: 0 0 0.7px rgba(0, 0, 0, 0.41);
+    transition: left 0.18s ease, background 0.18s ease;
+}
+/* ON (open/enabled): dot on the RIGHT + green. OFF (paused): dot LEFT + grey. */
+.pm-toggle.on  .pm-toggle-dot { left: 18px; background: #00BC29; }
+.pm-toggle.off .pm-toggle-dot { left: 2px;  background: #6C6C6C; }
+.pm-toggle:hover { border-color: #24282B; }
+.pm-toggle[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.pm-toggle[disabled]:hover { border-color: rgba(36, 40, 43, 0.45); }
+
+/* Outcome dropdown */
+.pm-outcome-cell {
+    position: relative;
+    flex-shrink: 0;
+}
+.pm-outcome-trigger {
+    display: inline-flex;
+    align-items: center;
+    /* Locked width so "Open"/"Hired" don't change the trigger size and shift
+     * the (right-aligned) Actions column content across rows. */
+    min-width: 56px;
+    justify-content: space-between;
+    height: 18px;
+    padding: 0 8px;
+    border-radius: 9px;
+    border: 0.5px solid rgba(36, 40, 43, 0.5);
+    background: #F8F9FB;
+    /* Sit ABOVE the (fixed, z-200) menu so the menu tucks UNDER the pill and
+       reads as emerging from beneath it. Its opaque bg occludes the overlap. */
+    position: relative;
+    z-index: 250;
+    cursor: pointer;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: #24282B;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+.pm-outcome-trigger.hired  { color: #00BC29; }
+.pm-outcome-trigger.paused { color: #C28800; }   /* amber for Paused state */
+.pm-outcome-trigger:hover { border-color: #4CABF6; }
+.pm-outcome-trigger svg { color: inherit; }
+
+/* Visually attaches under the trigger pill (matches Figma Frame 53 structure).
+   Top corners squared so it reads as a continuation of the trigger; bottom
+   corners rounded. Fixed position so it escapes .pm-tbody overflow clip; JS
+   sets top/left from trigger.getBoundingClientRect() for precise alignment. */
+.pm-outcome-menu {
+    position: fixed;
+    box-sizing: border-box;
+    min-width: 56px;
+    background: #F8F9FB;
+    /* Its OWN fully-rounded pill, sitting flush just below the trigger pill
+       (Image #21) — same 9px radius on all corners as the trigger. */
+    border: 0.5px solid rgba(36, 40, 43, 0.5);
+    border-radius: 9px;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.13);
+    display: none;
+    z-index: 200;
+    overflow: hidden;
+    /* Top padding keeps the first option clear of the pill that overlaps it
+       (~matches the overlap amount set in _positionMenu). */
+    padding: 7px 0 0;
+}
+.pm-outcome-menu.open { display: block; }
+.pm-outcome-opt {
+    display: block;
+    width: 100%;
+    padding: 4px 9px;
+    border: none;
+    background: transparent;
+    text-align: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+/* Divider between options — fades out at the edges, strongest in the middle. */
+.pm-outcome-opt + .pm-outcome-opt {
+    border-top: none;
+    background-image: linear-gradient(
+        to right,
+        rgba(36, 40, 43, 0) 0%,
+        rgba(36, 40, 43, 0.5) 50%,
+        rgba(36, 40, 43, 0) 100%
+    );
+    background-repeat: no-repeat;
+    background-size: 100% 0.5px;
+    background-position: top center;
+}
+/* Keep the hover state from masking the divider line — same light-blue
+   highlight applied uniformly to every option so the hover tracks the cursor
+   without the highlight color changing per row. */
+.pm-outcome-opt + .pm-outcome-opt:hover {
+    background-image:
+        linear-gradient(to right, rgba(36, 40, 43, 0) 0%, rgba(36, 40, 43, 0.5) 50%, rgba(36, 40, 43, 0) 100%),
+        linear-gradient(rgba(76, 171, 246, 0.10), rgba(76, 171, 246, 0.10));
+    background-size: 100% 0.5px, 100% 100%;
+    background-position: top center, center;
+    background-repeat: no-repeat, no-repeat;
+}
+.pm-outcome-opt:hover  { background: rgba(76, 171, 246, 0.10); }
+.pm-outcome-opt.hired  { color: #00BC29; font-weight: 500; }
+.pm-outcome-opt.paused { color: #C28800; font-weight: 500; }   /* Pause action */
+.pm-outcome-opt.open   { color: #696969; }
+
+/* Footnote under the table */
+.pm-footnote {
+    margin: 16px 0 28px 0;
+    max-width: 1300px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    color: #9B9C9E;
+}
+
+/* + New Role primary CTA — matches the wizard's Continue button style
+   (padding 12/28, radius 10, blue glow shadow) so the bottom CTA reads
+   as the same button family across the app. */
+.pm-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    background: #4CABF6;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(76, 171, 246, 0.35), 0 2px 4px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 19px;
+    letter-spacing: 0.04em;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.pm-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(76, 171, 246, 0.4), 0 3px 6px rgba(0, 0, 0, 0.1); }
+/* Pinned to the bottom of .pm-main so the New Role button's vertical
+   position never shifts as table content varies. Capped at 1300px to
+   match .pm-table-card so the button's right edge sits flush under the
+   table's right edge. */
+.pm-cta-row {
+    position: absolute;
+    bottom: 32px;
+    left: 146px;
+    right: 60px;
+    max-width: 1300px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Toast */
+.pl-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: #24282B;
+    color: #FFFFFF;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 13px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    transition: opacity 0.18s ease;
+}
+.pl-toast.hidden { display: none; }
+.pl-toast.success { background: #1F6E32; }
+.pl-toast.error   { background: #B7491F; }
+
+/* Responsive — narrow viewport tightens the 146px inset and drops Created column */
+@media (max-width: 1180px) {
+    .pm-main { padding-left: 90px; padding-right: 32px; }
+    .pm-cta-row { left: 90px; right: 32px; }
+}
+@media (max-width: 980px) {
+    .pm-thead .pm-th[style*="--w:80px"],
+    .pm-row .pm-cell[style*="--w:80px"] { display: none; }
+}
+

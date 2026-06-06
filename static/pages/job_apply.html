@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply - HIRE XA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/job_apply.css?v=2">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <!-- HIRE XA Header -->
+    <header class="ja-header">
+        <div class="ja-brand">
+            <div class="ja-brand-name">HIRE <span class="ai">XA</span></div>
+            <div class="ja-brand-sub">XCEED TALENT ACQUISITION</div>
+        </div>
+    </header>
+
+    <!-- Yellow blob (top-right, bleeds through transparent header) -->
+    <div class="ja-blob" aria-hidden="true"></div>
+
+    <!-- Frosted glass panel (Rectangle 171) -->
+    <div class="ja-panel" aria-hidden="true"></div>
+
+    <main class="ja-main">
+        <!-- Loading -->
+        <div class="ja-state" id="loading-state">
+            <div class="spinner"></div>
+            <p>Loading job details…</p>
+        </div>
+
+        <!-- Error -->
+        <div class="ja-state hidden" id="error-state">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#E63946" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            <h2 id="error-title">Job Not Found</h2>
+            <p id="error-message">This posting may have been removed.</p>
+        </div>
+
+        <!-- Applications Closed -->
+        <div class="ja-state hidden" id="closed-state">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9B9C9E" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <h2>Applications Closed</h2>
+            <p>Sorry, applications for this position are now closed.</p>
+            <p class="closed-sub">The application deadline has passed. If you believe this is an error, please contact the recruiter directly.</p>
+        </div>
+
+        <!-- Success -->
+        <div class="ja-state hidden" id="success-state">
+            <div class="success-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3DC260" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <h2>Application Submitted!</h2>
+            <p>The recruiter will review your profile and get back to you.</p>
+            <div class="success-box" id="success-details"></div>
+        </div>
+
+        <!-- Form -->
+        <div class="ja-wrap hidden" id="form-wrapper">
+            <!-- Card 1: Job header -->
+            <section class="ja-card ja-job-card">
+                <h1 id="job-title"></h1>
+                <div class="ja-meta">
+                    <span id="job-company"></span>
+                    <span class="ja-meta-sep"></span>
+                    <span id="job-location"></span>
+                </div>
+                <div class="ja-deadline" id="ja-deadline-row">
+                    <span class="ja-deadline-label">Deadline:</span>
+                    <span class="ja-deadline-date" id="job-deadline"></span>
+                </div>
+            </section>
+
+            <!-- Card 2: JD Toggle -->
+            <details class="ja-card ja-jd-card" id="jd-details">
+                <summary>
+                    <svg class="ja-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    <span>View Full Job Description</span>
+                </summary>
+                <div class="jd-content" id="jd-content"></div>
+            </details>
+
+            <!-- Card 3: Apply Form -->
+            <section class="ja-card ja-form-card">
+                <h2>Apply for this position</h2>
+                <p class="ja-sub">All fields marked * are required.</p>
+
+                <form class="ja-form" id="apply-form" onsubmit="return JA.submit(event)">
+                    <div class="ja-grid">
+                        <div class="ja-field">
+                            <label for="name">Full Name <span class="req">*</span></label>
+                            <input type="text" id="name" placeholder="Enter" required>
+                        </div>
+                        <div class="ja-field">
+                            <label for="email">Email <span class="req">*</span></label>
+                            <input type="email" id="email" placeholder="Enter" required>
+                        </div>
+                        <div class="ja-field">
+                            <label for="mobile">Mobile <span class="req">*</span></label>
+                            <input type="tel" id="mobile" placeholder="10-digit mobile number" required data-validate="mobile" maxlength="10">
+                        </div>
+                        <div class="ja-field">
+                            <label for="current-location">Current Location</label>
+                            <input type="text" id="current-location" placeholder="Enter">
+                        </div>
+                        <div class="ja-field">
+                            <label>Expected Annual Salary <span class="req">*</span></label>
+                            <div class="ja-sal-row">
+                                <div class="ja-cur-wrap">
+                                    <select id="salary-currency" class="ja-cur-sel">
+                                        <option value="INR">INR</option>
+                                        <option value="USD">USD</option>
+                                    </select>
+                                    <svg class="ja-cur-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                </div>
+                                <input type="text" id="expected-salary" placeholder="Enter" required>
+                            </div>
+                        </div>
+                        <div class="ja-field">
+                            <label for="notice-period">Notice period <span class="req">*</span></label>
+                            <div class="ja-sel-wrap">
+                                <select id="notice-period" required>
+                                    <option value="">Select</option>
+                                    <option value="Immediate">Immediate</option>
+                                    <option value="15 days">15 days</option>
+                                    <option value="30 days">30 days</option>
+                                    <option value="45 days">45 days</option>
+                                    <option value="60 days">60 days</option>
+                                    <option value="90 days">90 days</option>
+                                    <option value="More than 90 days">90+ days</option>
+                                </select>
+                                <svg class="ja-sel-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#24282B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload Resume -->
+                    <div class="ja-field ja-field-wide">
+                        <label>Upload Resume <span class="req">*</span></label>
+                        <div class="ja-upload-zone" id="upload-zone" onclick="document.getElementById('resume-file').click()">
+                            <input type="file" id="resume-file" accept=".pdf,.doc,.docx" hidden onchange="JA.handleResume(this)">
+                            <div class="ja-upload-icon">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            </div>
+                            <span class="ja-upload-text" id="upload-text">Click to choose files (max 5 MB)</span>
+                        </div>
+                        <div class="ja-upload-file hidden" id="upload-file-info">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3DC260" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
+                            <span id="upload-filename"></span>
+                            <button type="button" class="ja-remove" onclick="JA.removeResume()">Remove</button>
+                        </div>
+                    </div>
+
+                    <!-- Relocate -->
+                    <div class="ja-field ja-field-wide">
+                        <label>Willing to relocate to <span id="relocate-loc">the job location</span>? <span class="req">*</span></label>
+                        <div class="ja-radio-row">
+                            <label class="ja-radio">
+                                <input type="radio" name="relocate" value="true" required>
+                                <span class="ja-radio-circle"></span>
+                                <span class="ja-radio-label">Yes</span>
+                            </label>
+                            <label class="ja-radio">
+                                <input type="radio" name="relocate" value="false">
+                                <span class="ja-radio-circle"></span>
+                                <span class="ja-radio-label">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="ja-submit" id="btn-submit">Submit Application</button>
+                    <p class="ja-disclaimer">By submitting you agree to share your details with the hiring team.</p>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <div class="toast hidden" id="toast"></div>
+    <script src="/static/js/validation.js"></script>
+    <script src="/static/js/job_apply.js?v=2"></script>
+</body>
+</html>

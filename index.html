@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HIRE XA — Frontend pages</title>
+  <style>
+    body { margin:0; font-family:'Segoe UI',system-ui,sans-serif; background:#f5f8fc; color:#24282b; }
+    .wrap { max-width:900px; margin:0 auto; padding:40px 24px 60px; }
+    h1 { font-size:26px; margin:0 0 4px; }
+    h1 span { color:#4CABF6; }
+    .sub { color:#5b6168; font-size:14px; margin:0 0 6px; }
+    .note { background:#fffbeb; border:1px solid #fde68a; color:#92400e; font-size:13px;
+            border-radius:10px; padding:12px 16px; margin:18px 0 26px; line-height:1.5; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px; }
+    a.card { display:block; text-decoration:none; color:#24282b; background:#fff;
+             border:1px solid rgba(76,171,246,0.35); border-radius:10px; padding:12px 14px;
+             font-size:14px; font-weight:600; transition:box-shadow .15s, transform .15s; }
+    a.card:hover { box-shadow:1px 2px 8px rgba(76,171,246,0.3); transform:translateY(-1px); }
+    a.card small { display:block; color:#9b9c9e; font-weight:400; font-size:11px; margin-top:3px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>HIRE <span>XA</span> — frontend pages</h1>
+    <p class="sub">Click any screen to open it with full styling.</p>
+    <div class="note">
+      ⚠️ Run this through the preview server, not by double-clicking the HTML files.
+      Start <strong>serve.bat</strong> (or run <code>python -m http.server 8000</code> in this
+      folder), then visit <strong>http://localhost:8000/</strong>. Opening files directly
+      (file://) breaks the styling because pages load CSS/JS from <code>/static/...</code>.
+      API-driven data won't load (no backend) — that's expected; focus on layout &amp; styling.
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <script>
+    // If opened directly (file://), the /static/... links break. Tell the user
+    // to run the server instead of showing dead links.
+    if (location.protocol === 'file:') {
+      document.querySelector('.wrap').innerHTML =
+        '<h1>HIRE <span>XA</span> — frontend</h1>' +
+        '<div class="note" style="font-size:14px;line-height:1.6;">' +
+        '<strong>You opened this file directly, so it can\'t load the pages.</strong><br><br>' +
+        'Close this tab and instead <strong>double-click <code>serve.bat</code></strong> ' +
+        '(in this same folder). It starts a local server and opens the preview at ' +
+        '<strong>http://localhost:8000/</strong> automatically.<br><br>' +
+        'No Python? Run <code>npx serve -l 8000</code> in this folder, then open ' +
+        'http://localhost:8000/ .' +
+        '</div>';
+      throw new Error('Opened via file:// — use the server.');
+    }
+    const pages = [
+      ['login.html','Login / signup'],
+      ['dashboard.html','Dashboard (home)'],
+      ['pipeline_monitor.html','Jobs posted (monitor)'],
+      ['pipeline.html','Pipeline wizard (4 steps)'],
+      ['pipeline_launch.html','Pipeline launch'],
+      ['hiring_dashboard.html','Role detail dashboard'],
+      ['hiring_feedback.html','Hiring feedback'],
+      ['job_posting.html','Job posting editor'],
+      ['job_apply.html','Candidate apply form'],
+      ['upload_resumes.html','Upload resumes'],
+      ['screening_round_room.html','Interview room'],
+      ['screening_round_conversation.html','Quick interview'],
+      ['screening_round_candidates.html','Screening candidates'],
+      ['screening_round_monitor.html','Screening monitor'],
+      ['screening_round_feedback.html','Screening feedback'],
+      ['profile.html','Profile'],
+      ['settings.html','Settings'],
+      ['user_dashboard.html','User dashboard'],
+      ['privacy.html','Privacy policy'],
+      ['terms.html','Terms of service'],
+      ['linkedin_callback.html','LinkedIn callback'],
+    ];
+    document.getElementById('grid').innerHTML = pages.map(([f,label]) =>
+      `<a class="card" href="/static/pages/${f}">${label}<small>${f}</small></a>`
+    ).join('');
+  </script>
+</body>
+</html>

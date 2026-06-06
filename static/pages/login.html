@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire XA - Hire on autopilot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,300;1,400;1,500&family=Fraunces:ital,opsz,wght@1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/auth.css">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <div class="auth-wrapper">
+        <!-- Top header bar -->
+        <header class="auth-header">
+            <div class="auth-brand">
+                <div class="auth-brand-name">HIRE <span class="ai">XA</span></div>
+                <div class="auth-brand-sub">XCEED TALENT ACQUISITION</div>
+            </div>
+        </header>
+
+        <!-- Yellow blob background (decorative) -->
+        <div class="auth-blob" aria-hidden="true"></div>
+
+        <!-- Hero content -->
+        <main class="auth-hero">
+            <!-- Left: marketing copy + CTAs + social -->
+            <div class="hero-left">
+                <div class="hero-kicker">
+                    <span class="kicker-dot"></span>
+                    <span>AI-Driven Talent Acquisition</span>
+                </div>
+                <h1 class="hero-title">Hire on autopilot.</h1>
+                <p class="hero-subtitle">From JD to Hired.</p>
+                <p class="hero-description">Hire XA automates hiring end-to-end, from job creation to candidate evaluation. Recruiters spend time with finalists, not resumes.</p>
+
+                <div id="auth-alert" class="alert"></div>
+
+                <div class="hero-ctas">
+                    <button type="button" class="btn-cta-primary" onclick="window.Auth.openModal('register')">Sign Up</button>
+                    <button type="button" class="btn-cta-secondary" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth', block:'start'})">See how it works</button>
+                </div>
+                <p class="hero-haveaccount">Already have an account? <a href="javascript:void(0)" onclick="window.Auth.openModal('login')">Log in</a></p>
+            </div>
+
+        </main>
+
+        <!-- Floating mockup illustrations (decorative) -->
+        <div class="hero-cards" id="how-it-works" aria-hidden="true">
+            <div class="hero-cards-inner">
+                <!-- Big JD card -->
+                <div class="mock-card mock-card-job">
+                    <div class="mock-job-head">
+                        <span class="mock-job-badge">
+                            <svg viewBox="0 0 20 20" fill="none" stroke="#7DB5E2" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 2.14L12.36 6.92L17.63 7.69L13.81 11.41L14.72 16.66L10 14.18L5.28 16.66L6.19 11.41L2.37 7.69L7.64 6.92L10 2.14Z"/>
+                            </svg>
+                        </span>
+                        <span class="mock-job-badge-label">AI. Drafting JD</span>
+                    </div>
+                    <div class="mock-job-title">Senior Product Designer</div>
+                    <div class="mock-job-meta">REMOTE · FULL-TIME · IC LEVEL 5</div>
+                    <div class="mock-job-body">
+                        <p>We're looking for a senior designer to lead the end-to-end design of our hiring product…</p>
+                        <p>You'll work directly with the founders, ship weekly, and own everything from</p>
+                    </div>
+                    <hr class="mock-job-divider">
+                    <div class="mock-job-tags">
+                        <span class="mock-tag">Figma</span>
+                        <span class="mock-tag">5+ yrs</span>
+                        <span class="mock-tag">B2B SaaS</span>
+                        <span class="mock-tag yellow">+ HR-tech</span>
+                    </div>
+                </div>
+
+                <!-- Candidate card (right, upper) -->
+                <div class="mock-card mock-card-candidate mock-card-candidate-right">
+                    <div class="mock-cand-avatar">MR</div>
+                    <div class="mock-cand-info">
+                        <div class="mock-cand-name">Maya Rao</div>
+                        <div class="mock-cand-role">Senior Designer · Stripe</div>
+                    </div>
+                    <div class="mock-cand-pct">96%</div>
+                    <div class="mock-cand-match"><span class="match-dot"></span>Matched on 12 of 14 criteria</div>
+                </div>
+
+                <!-- Candidate card (centre, lower) -->
+                <div class="mock-card mock-card-candidate mock-card-candidate-left">
+                    <div class="mock-cand-avatar">AT</div>
+                    <div class="mock-cand-info">
+                        <div class="mock-cand-name">Aria Thomas</div>
+                        <div class="mock-cand-role">Senior Analyst · Stripe</div>
+                    </div>
+                    <div class="mock-cand-pct">96%</div>
+                    <div class="mock-cand-match"><span class="match-dot"></span>Matched on 12 of 14 criteria</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="auth-footer">2026 Hire XA. All rights reserved.</footer>
+    </div>
+
+    <!-- Auth Modal (Sign In / Register / Verify / Forgot / Reset) -->
+    <div class="auth-modal" id="auth-modal">
+        <div class="auth-modal-card">
+            <div class="auth-modal-header">
+                <button class="auth-modal-close" onclick="Auth.closeModal()" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Login Panel -->
+            <div class="auth-panel active" id="login-panel">
+                <div class="panel-header">
+                    <h2>Welcome back</h2>
+                    <p>Enter your credentials to access your account</p>
+                </div>
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label" for="login-email">Email</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            <input type="email" id="login-email" class="form-input" placeholder="name@example.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="login-password">Password</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)">
+                                <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg class="eye-closed hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-options">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="remember-me">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">Remember me</span>
+                        </label>
+                        <a href="javascript:void(0)" class="forgot-link" onclick="Auth.showForgotPassword()">Forgot password?</a>
+                    </div>
+                    <div class="auth-inline-msg" id="login-msg" role="alert" aria-live="polite"></div>
+                    <button type="submit" id="login-btn" class="btn btn-primary btn-full">
+                        <span>Sign In</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Set Password Panel (first login for invited team members) -->
+            <div class="auth-panel" id="setpw-panel">
+                <div class="panel-header centered">
+                    <div class="panel-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <h2>Create your password</h2>
+                    <p>Set a password for your new HIRE XA account.</p>
+                </div>
+                <form id="setpw-form" class="auth-form" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="setpw-new">New Password</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            <input type="password" id="setpw-new" class="form-input" placeholder="Min 8 chars, letters &amp; numbers" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="setpw-confirm">Confirm Password</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            <input type="password" id="setpw-confirm" class="form-input" placeholder="Re-enter your new password" required>
+                        </div>
+                    </div>
+                    <button type="submit" id="setpw-btn" class="btn btn-primary btn-full"><span>Create Password &amp; Sign In</span></button>
+                </form>
+            </div>
+
+            <!-- Register Panel -->
+            <div class="auth-panel reg-v2" id="register-panel">
+                <button class="reg-close" onclick="Auth.closeModal()" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+
+                <div class="reg-brand">
+                    <div class="reg-brand-logo">HIRE<span>XA</span></div>
+                    <div class="reg-brand-tagline">XCEED TALENT ACQUISITION</div>
+                </div>
+
+                <h2 class="reg-heading">Create Your HireXA Workspace</h2>
+
+                <form id="register-form" class="reg-form" novalidate>
+                    <input type="text" id="register-name" class="reg-input" placeholder="Your Name" required autocomplete="name" data-validate="name">
+                    <input type="email" id="register-email" class="reg-input" placeholder="Work email address" required autocomplete="email" data-validate="email">
+                    <input type="password" id="register-password" class="reg-input" placeholder="Password (min 8 chars, letters &amp; numbers)" required minlength="8" autocomplete="new-password">
+                    <div class="reg-error" id="register-error"></div>
+                    <button type="submit" id="register-btn" class="reg-continue">Continue</button>
+                </form>
+
+                <div class="reg-haveaccount">
+                    Already have an account?
+                    <a href="javascript:void(0)" onclick="Auth.switchTab('login')">Log in</a>
+                </div>
+
+                <div class="reg-divider"><span>OR</span></div>
+
+                <button type="button" class="reg-social" onclick="Auth.handleGoogleSignIn()">
+                    <svg class="reg-social-icon" viewBox="0 0 48 48" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+                        <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+                        <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+                        <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571.001-.001.002-.001.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+                    </svg>
+                    <span>Continue with Google</span>
+                </button>
+
+                <button type="button" class="reg-social" onclick="Auth.handleMicrosoftSignIn()">
+                    <svg class="reg-social-icon" viewBox="0 0 23 23" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1"  y="1"  width="10" height="10" fill="#F25022"/>
+                        <rect x="12" y="1"  width="10" height="10" fill="#7FBA00"/>
+                        <rect x="1"  y="12" width="10" height="10" fill="#00A4EF"/>
+                        <rect x="12" y="12" width="10" height="10" fill="#FFB900"/>
+                    </svg>
+                    <span>Continue with Microsoft</span>
+                </button>
+
+                <div class="reg-otherprovider">Or by other workspace provider</div>
+            </div>
+
+            <!-- Organisation Setup Panel (step 2 of manual signup) -->
+            <div class="auth-panel reg-v2 org-v2" id="orgsetup-panel">
+                <button class="reg-close" onclick="Auth.closeModal()" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+
+                <div class="reg-brand">
+                    <div class="reg-brand-logo">HIRE<span>XA</span></div>
+                    <div class="reg-brand-tagline">XCEED TALENT ACQUISITION</div>
+                </div>
+
+                <h2 class="reg-heading">Set Up Your Organisation</h2>
+
+                <div class="org-icon" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" width="54" height="54" fill="none" stroke="#24282B" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Left building (shorter) -->
+                        <path d="M16 15H8a2 2 0 0 0-2 2v23a2 2 0 0 0 2 2h8" stroke-width="2"/>
+                        <!-- Right building (shorter) -->
+                        <path d="M32 15h8a2 2 0 0 1 2 2v23a2 2 0 0 1-2 2h-8" stroke-width="2"/>
+                        <!-- Center building (taller) -->
+                        <rect x="16" y="6" width="16" height="36" rx="2" stroke-width="2"/>
+                        <g stroke-width="1.6">
+                            <!-- Center windows (2 cols x 3 rows) -->
+                            <rect x="19" y="11" width="3.2" height="3.2" rx="0.4"/>
+                            <rect x="25.8" y="11" width="3.2" height="3.2" rx="0.4"/>
+                            <rect x="19" y="18" width="3.2" height="3.2" rx="0.4"/>
+                            <rect x="25.8" y="18" width="3.2" height="3.2" rx="0.4"/>
+                            <rect x="19" y="25" width="3.2" height="3.2" rx="0.4"/>
+                            <rect x="25.8" y="25" width="3.2" height="3.2" rx="0.4"/>
+                            <!-- Left building windows (1 col x 3) -->
+                            <rect x="9.4" y="20" width="3.2" height="3.2" rx="0.4"/>
+                            <rect x="9.4" y="27" width="3.2" height="3.2" rx="0.4"/>
+                            <rect x="9.4" y="34" width="3.2" height="3.2" rx="0.4"/>
+                            <!-- Right building windows (1 col x 3) -->
+                            <rect x="35.4" y="20" width="3.2" height="3.2" rx="0.4"/>
+                            <rect x="35.4" y="27" width="3.2" height="3.2" rx="0.4"/>
+                            <rect x="35.4" y="34" width="3.2" height="3.2" rx="0.4"/>
+                        </g>
+                        <!-- Door (center bottom) -->
+                        <path d="M21.5 42v-4a2.5 2.5 0 0 1 5 0v4" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <form id="orgsetup-form" class="reg-form" novalidate>
+                    <input type="text" id="org-name" class="reg-input" placeholder="Organisation Name" required autocomplete="organization" data-validate="company">
+
+                    <div class="reg-multiselect" id="org-values-ms">
+                        <button type="button" class="reg-input reg-select-trigger" id="org-values-trigger" aria-expanded="false" aria-haspopup="listbox">
+                            <span class="reg-select-label" id="org-values-label">Core Values</span>
+                            <svg class="reg-select-chevron" viewBox="0 0 24 24" fill="none" stroke="#656D79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </button>
+                        <div class="reg-cv-panel" id="org-values-panel" hidden>
+                            <div class="reg-cv-panel-head">
+                                <span>Select up to 10 core values</span>
+                                <span class="reg-cv-count" id="org-values-count">0/10</span>
+                            </div>
+                            <div class="reg-cv-grid" id="org-values-grid"><!-- cards injected by auth.js --></div>
+                        </div>
+                    </div>
+
+                    <label class="reg-upload" id="org-logo-label">
+                        <span class="reg-upload-text" id="org-logo-text">Upload Company Logo (Optional)</span>
+                        <span class="reg-upload-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                        </span>
+                        <input type="file" id="org-logo" accept="image/*" hidden>
+                    </label>
+
+                    <div class="reg-error" id="orgsetup-error"></div>
+                    <button type="submit" id="orgsetup-btn" class="reg-continue">Continue</button>
+                </form>
+            </div>
+
+            <!-- Org signup OTP step (same modal) -->
+            <div class="auth-panel reg-v2 org-v2" id="orgotp-panel">
+                <button class="reg-close" onclick="Auth.closeModal()" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+
+                <div class="reg-brand">
+                    <div class="reg-brand-logo">HIRE<span>XA</span></div>
+                    <div class="reg-brand-tagline">XCEED TALENT ACQUISITION</div>
+                </div>
+
+                <h2 class="reg-heading">Verify Your Email</h2>
+                <p class="reg-otp-sub" id="orgotp-sub">Enter the 6-digit code we sent to your email.</p>
+
+                <form id="orgotp-form" class="reg-form" novalidate>
+                    <div class="otp-input-group" id="orgotp-inputs">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                    </div>
+                    <div class="reg-error" id="orgotp-error"></div>
+                    <button type="submit" id="orgotp-btn" class="reg-continue">Verify &amp; Finish</button>
+                </form>
+
+                <div class="reg-haveaccount">
+                    Didn't receive the code?
+                    <a href="javascript:void(0)" onclick="Auth.resendOTP('verification')">Resend</a>
+                </div>
+            </div>
+
+            <!-- Verify OTP Panel -->
+            <div class="auth-panel" id="verify-panel">
+                <button class="back-btn" onclick="Auth.backToRegister()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    <span>Back</span>
+                </button>
+                <div class="panel-header centered">
+                    <div class="panel-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
+                    <h2>Check your email</h2>
+                    <p>We sent a verification code to your email</p>
+                </div>
+                <form id="verify-form" class="auth-form">
+                    <div class="otp-input-group" id="verify-otp-inputs">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                    </div>
+                    <button type="submit" id="verify-btn" class="btn btn-primary btn-full"><span>Verify Email</span></button>
+                </form>
+                <div class="resend-section">
+                    <span>Didn't receive the code?</span>
+                    <a href="javascript:void(0)" onclick="Auth.resendOTP('verification')">Resend</a>
+                </div>
+            </div>
+
+            <!-- Forgot Password Panel -->
+            <div class="auth-panel" id="forgot-panel">
+                <button class="back-btn" onclick="Auth.backToLogin()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    <span>Back to Sign In</span>
+                </button>
+                <div class="panel-header centered">
+                    <div class="panel-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <h2>Forgot password?</h2>
+                    <p>No worries, we'll send you reset instructions</p>
+                </div>
+                <form id="forgot-form" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label" for="forgot-email">Email</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            <input type="email" id="forgot-email" class="form-input" placeholder="name@example.com" required>
+                        </div>
+                    </div>
+                    <div class="reg-error" id="forgot-msg"></div>
+                    <button type="submit" id="forgot-btn" class="btn btn-primary btn-full"><span>Send Reset Code</span></button>
+                </form>
+            </div>
+
+            <!-- Reset Password Panel -->
+            <div class="auth-panel" id="reset-panel">
+                <button class="back-btn" onclick="Auth.backToForgot()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    <span>Back</span>
+                </button>
+                <div class="panel-header centered">
+                    <div class="panel-icon success">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h2>Set new password</h2>
+                    <p>Enter the code and create your new password</p>
+                </div>
+                <form id="reset-form" class="auth-form">
+                    <div class="otp-input-group" id="reset-otp-inputs">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reset-password">New Password</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            <input type="password" id="reset-password" class="form-input" placeholder="Min 8 chars, letters &amp; numbers" required minlength="8">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reset-password-confirm">Confirm Password</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            <input type="password" id="reset-password-confirm" class="form-input" placeholder="Confirm your password" required>
+                        </div>
+                    </div>
+                    <div class="reg-error" id="reset-msg"></div>
+                    <button type="submit" id="reset-btn" class="btn btn-primary btn-full"><span>Reset Password</span></button>
+                </form>
+                <div class="resend-section">
+                    <span>Didn't receive the code?</span>
+                    <a href="javascript:void(0)" onclick="Auth.resendOTP('reset')">Resend</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- First-login "Your Workplace is Ready!" celebration (Figma) -->
+    <div class="ws-ready-overlay" id="ws-ready-overlay" hidden>
+        <div class="ws-ready-card" role="dialog" aria-modal="true" aria-labelledby="ws-ready-title">
+            <h2 class="ws-ready-title" id="ws-ready-title">Your Workplace is <em>Ready!</em></h2>
+            <div class="ws-ready-check" aria-hidden="true">
+                <svg viewBox="0 0 66 66" width="66" height="66" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="ws-ready-circle" cx="33" cy="33" r="32.9" fill="#CEEAFF" stroke="#000000" stroke-width="0.2"/>
+                    <path class="ws-ready-tick" d="M21 34.5 L29.5 43 L46 25" stroke="#4CABF6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <button class="ws-ready-btn" id="ws-ready-btn">Go to Homepage</button>
+        </div>
+    </div>
+
+    <script src="/static/js/validation.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script>
+        // Modal controls
+        (function() {
+            const modal = document.getElementById('auth-modal');
+
+            window.Auth = window.Auth || {};
+
+            window.Auth.openModal = function(tab) {
+                modal.classList.add('show');
+                if (tab) {
+                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+                    document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+                    const panelId = tab === 'register' ? 'register-panel' : 'login-panel';
+                    document.getElementById(panelId).classList.add('active');
+                }
+                document.body.style.overflow = 'hidden';
+            };
+
+            window.Auth.closeModal = function() {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+            };
+
+            // Click outside modal card to close
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) window.Auth.closeModal();
+            });
+
+            // Escape to close
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('show')) window.Auth.closeModal();
+            });
+
+            // Make sure modal is open when forgot-password is invoked
+            const origShowForgot = window.Auth.showForgotPassword;
+            window.Auth.showForgotPassword = function() {
+                if (!modal.classList.contains('show')) window.Auth.openModal('login');
+                // Call with the Auth context so `this.showPanel(...)` resolves.
+                if (typeof origShowForgot === 'function') origShowForgot.call(window.Auth);
+            };
+        })();
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const eyeOpen = btn.querySelector('.eye-open');
+            const eyeClosed = btn.querySelector('.eye-closed');
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOpen.classList.add('hidden');
+                eyeClosed.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                eyeOpen.classList.remove('hidden');
+                eyeClosed.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

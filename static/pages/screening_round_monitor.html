@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluenzo - Interview Monitor</title>
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/static/css/screening_round_monitor.css?v=1">
+    <link rel="stylesheet" href="/static/css/user_dropdown.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="smi-nav">
+        <div class="smi-nav-inner">
+            <a href="/b4kx" class="smi-logo">
+                <img src="/static/assets/logo.png" alt="Fluenzo" class="smi-logo-img">
+                <span>Fluenzo<span class="smi-logo-ai">AI</span></span>
+            </a>
+            <div class="smi-nav-links">
+                <a href="/p8eu" class="smi-nav-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    New Interview
+                </a>
+                <a href="/r2qa" class="smi-nav-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    Find Candidates
+                </a>
+                <a href="/q4uv" class="smi-nav-link active">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    Monitor
+                </a>
+                <a href="/s6oz" class="smi-nav-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Feedback
+                </a>
+                <a href="/b4kx" class="smi-nav-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                    Dashboard
+                </a>
+            </div>
+            <div data-user-dropdown></div>
+        </div>
+    </nav>
+
+    <div class="smi-container">
+        <!-- Stats -->
+        <div class="smi-stats" id="smi-stats">
+            <div class="smi-stat-card">
+                <div class="smi-stat-icon scheduled">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                    <div class="smi-stat-value" id="stat-scheduled">-</div>
+                    <div class="smi-stat-label">Scheduled</div>
+                </div>
+            </div>
+            <div class="smi-stat-card">
+                <div class="smi-stat-icon active">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <div>
+                    <div class="smi-stat-value" id="stat-active">-</div>
+                    <div class="smi-stat-label">Active Now</div>
+                </div>
+            </div>
+            <div class="smi-stat-card">
+                <div class="smi-stat-icon ended">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div>
+                    <div class="smi-stat-value" id="stat-ended-today">-</div>
+                    <div class="smi-stat-label">Completed Today</div>
+                </div>
+            </div>
+            <div class="smi-stat-card">
+                <div class="smi-stat-icon total">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div>
+                    <div class="smi-stat-value" id="stat-total">-</div>
+                    <div class="smi-stat-label">Total Interviews</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="smi-toolbar">
+            <div class="smi-filters" id="smi-filters">
+                <button class="smi-filter-btn active" data-filter="all">All</button>
+                <button class="smi-filter-btn" data-filter="scheduled">Scheduled</button>
+                <button class="smi-filter-btn" data-filter="waiting">Waiting</button>
+                <button class="smi-filter-btn" data-filter="active">Active</button>
+                <button class="smi-filter-btn" data-filter="ended">Ended</button>
+                <button class="smi-filter-btn" data-filter="cancelled">Cancelled</button>
+            </div>
+            <input type="text" class="smi-search" id="smi-search" placeholder="Search candidate or role...">
+        </div>
+
+        <!-- Table -->
+        <div class="smi-table-wrap">
+            <table class="smi-table">
+                <thead>
+                    <tr>
+                        <th>Candidate</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Scheduled</th>
+                        <th>Created</th>
+                        <th>Score</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="smi-table-body">
+                    <tr id="smi-loading-row"><td colspan="7" class="smi-loading-cell"><div class="smi-load-spinner"></div><p>Getting scheduled interviews...</p></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="smi-pagination" id="smi-pagination"></div>
+    </div>
+
+    <script src="/static/js/screening_round_monitor.js?v=1"></script>
+    <script src="/static/js/user_dropdown.js"></script>
+    <script>MonitorDashboard.init();</script>
+</body>
+</html>

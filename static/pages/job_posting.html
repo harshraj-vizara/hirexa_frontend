@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluenzo - Post a Job</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/job_posting.css">
+    <link rel="stylesheet" href="/static/css/user_dropdown.css">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <div class="page">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-inner">
+                <a href="/b4kx" class="back-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                    <span>Dashboard</span>
+                </a>
+                <div class="header-title">
+                    <img src="/static/assets/logo.png" alt="" class="h-logo">
+                    <span>Post a Job</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-sm btn-outline" onclick="JP.viewApplications()" id="btn-apps" style="display:none">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg>
+                        <span id="app-count-badge">0</span> Applications
+                    </button>
+                    <div data-user-dropdown></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- LEFT: Input Form -->
+            <div class="panel panel-form" id="panel-form">
+                <h2>Job Details</h2>
+                <div class="field full">
+                    <label>Job Description <span class="req">*</span></label>
+                    <textarea id="raw-jd" rows="6" placeholder="Paste the complete job description here..."></textarea>
+                </div>
+                <div class="row-2">
+                    <div class="field">
+                        <label>Job Title <span class="req">*</span></label>
+                        <input type="text" id="hiring-role" placeholder="e.g. Senior Backend Engineer">
+                    </div>
+                    <div class="field">
+                        <label>Company Name <span class="req">*</span></label>
+                        <input type="text" id="company-name" placeholder="e.g. TechCorp India">
+                    </div>
+                </div>
+                <div class="row-2">
+                    <div class="field">
+                        <label>Job Location <span class="req">*</span></label>
+                        <input type="text" id="job-location" placeholder="e.g. Bangalore (Hybrid)">
+                    </div>
+                    <div class="field">
+                        <label>Joining Timeline <span class="req">*</span></label>
+                        <select id="joining-duration">
+                            <option value="">Select...</option>
+                            <option value="Immediate">Immediate</option>
+                            <option value="Within 15 days">Within 15 days</option>
+                            <option value="Within 30 days">Within 30 days</option>
+                            <option value="Within 45 days">Within 45 days</option>
+                            <option value="Within 60 days">Within 60 days</option>
+                            <option value="Within 90 days">Within 90 days</option>
+                            <option value="Flexible">Flexible</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Budget Range (Annual CTC) <span class="req">*</span></label>
+                    <div class="budget-row">
+                        <select id="budget-currency" class="cur-sel">
+                            <option value="INR">INR</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option>
+                        </select>
+                        <input type="text" id="budget-min" placeholder="Min">
+                        <span class="to">to</span>
+                        <input type="text" id="budget-max" placeholder="Max">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Application Deadline <span class="req">*</span></label>
+                    <p class="field-hint">How long should the application link stay active?</p>
+                    <div class="deadline-options">
+                        <label class="deadline-chip"><input type="radio" name="deadline" value="7"><span>7 days</span></label>
+                        <label class="deadline-chip"><input type="radio" name="deadline" value="10" checked><span>10 days</span></label>
+                        <label class="deadline-chip"><input type="radio" name="deadline" value="15"><span>15 days</span></label>
+                        <label class="deadline-chip"><input type="radio" name="deadline" value="custom"><span>Custom</span></label>
+                    </div>
+                    <input type="number" id="custom-deadline-days" class="hidden" min="1" max="90" placeholder="Enter days (1-90)">
+                </div>
+                <button class="btn-generate" id="btn-generate" onclick="JP.generate()">
+                    Generate LinkedIn Posting
+                </button>
+            </div>
+
+            <!-- RIGHT: Preview Panel (hidden until generated) -->
+            <div class="panel panel-preview hidden" id="panel-preview">
+                <!-- Loading -->
+                <div class="loading-state" id="preview-loading">
+                    <div class="spinner"></div>
+                    <p>AI is crafting your posting...</p>
+                </div>
+
+                <!-- Preview Content -->
+                <div class="preview-content hidden" id="preview-content">
+                    <!-- Application URL -->
+                    <div class="url-bar">
+                        <span class="url-label">Application Form</span>
+                        <div class="url-row">
+                            <a href="#" target="_blank" id="app-url-link" class="url-link"></a>
+                            <button class="btn-copy" onclick="JP.copyUrl()">Copy</button>
+                        </div>
+                    </div>
+
+                    <!-- Deadline Status Bar -->
+                    <div class="deadline-bar hidden" id="deadline-bar">
+                        <div class="deadline-info">
+                            <div class="deadline-icon" id="deadline-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div class="deadline-text">
+                                <span class="deadline-label" id="deadline-label">Application Deadline</span>
+                                <span class="deadline-value" id="deadline-value"></span>
+                            </div>
+                            <span class="deadline-badge" id="deadline-badge"></span>
+                        </div>
+                        <div class="deadline-actions" id="deadline-actions">
+                            <button class="btn-sm btn-outline" onclick="JP.extendDeadline(7)">+7 days</button>
+                            <button class="btn-sm btn-outline" onclick="JP.extendDeadline(3)">+3 days</button>
+                            <button class="btn-sm btn-danger-outline" onclick="JP.closePosting()">Close Now</button>
+                        </div>
+                    </div>
+
+                    <!-- LinkedIn Post (editable) -->
+                    <div class="section-block">
+                        <div class="section-head">
+                            <h3>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color:#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                                LinkedIn Post
+                            </h3>
+                            <div class="section-actions">
+                                <button class="btn-sm btn-icon" onclick="JP.toggleEdit('linkedin')" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                                <button class="btn-sm btn-icon" onclick="JP.copyLinkedIn()" title="Copy"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                            </div>
+                        </div>
+                        <div class="editable-area" id="linkedin-display"></div>
+                        <textarea class="edit-textarea hidden" id="linkedin-edit" rows="8"></textarea>
+                        <div class="edit-bar hidden" id="linkedin-edit-bar">
+                            <button class="btn-sm btn-primary" onclick="JP.saveEdit('linkedin')">Save</button>
+                            <button class="btn-sm btn-outline" onclick="JP.cancelEdit('linkedin')">Cancel</button>
+                        </div>
+                    </div>
+
+                    <!-- AI Refine -->
+                    <div class="refine-box">
+                        <input type="text" id="refine-input" placeholder="Tell AI what to change... e.g. 'Make it shorter' or 'Add remote work mention'" onkeydown="if(event.key==='Enter')JP.refine()">
+                        <button class="btn-refine" onclick="JP.refine()" id="btn-refine">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Post Actions -->
+                    <div class="post-actions">
+                        <button class="btn-linkedin" id="btn-post-li" onclick="JP.postToLinkedIn()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            Post to LinkedIn
+                        </button>
+                        <button class="btn-linkedin" id="btn-post-company" onclick="JP.postToCompanyPage()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            Post to Company Page
+                        </button>
+                    </div>
+
+                    <!-- Full JD (collapsible) -->
+                    <details class="jd-details">
+                        <summary>View Full Formatted JD</summary>
+                        <div class="jd-body" id="jd-display"></div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applications Drawer -->
+        <div class="drawer-overlay hidden" id="drawer-overlay" onclick="JP.closeDrawer()"></div>
+        <div class="drawer hidden" id="drawer">
+            <div class="drawer-head">
+                <h3>Candidate Applications</h3>
+                <button class="btn-sm btn-icon" onclick="JP.closeDrawer()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div class="drawer-body" id="drawer-body">
+                <p class="empty-msg" id="no-apps">No applications yet. Share the URL with candidates.</p>
+                <div id="apps-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast hidden" id="toast"></div>
+    <script src="/static/js/job_posting.js"></script>
+    <script src="/static/js/user_dropdown.js"></script>
+</body>
+</html>

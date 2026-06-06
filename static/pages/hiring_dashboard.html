@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire XA - Role Detail</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/hiring_dashboard.css">
+    <link rel="stylesheet" href="/static/css/user_dropdown.css">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Shared HIRE XA chrome -->
+        <header class="dash-header">
+            <div class="dash-brand">
+                <div class="dash-brand-name">HIRE <span class="ai">XA</span></div>
+                <div class="dash-brand-sub">XCEED TALENT ACQUISITION</div>
+            </div>
+            <div data-user-dropdown></div>
+        </header>
+
+        <!-- Yellow blob background -->
+        <div class="dash-blob" aria-hidden="true"></div>
+
+        <!-- Frosted glass panel (Rectangle 171) -->
+        <div class="dash-panel" aria-hidden="true"></div>
+
+        <!-- Sidebar -->
+        <aside class="dash-sidebar">
+            <a class="side-item" href="/d2mw" title="Back">
+                <span class="side-icon icon-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9886E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                </span>
+                <span class="side-label">Back</span>
+            </a>
+            <a class="side-item" href="/b4kx">
+                <span class="side-icon icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/>
+                    </svg>
+                </span>
+                <span class="side-label">Home</span>
+            </a>
+            <a class="side-item active" href="/d2mw">
+                <span class="side-icon icon-green">
+                    <svg viewBox="0 0 24 24" fill="#8EC49E">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <span class="side-label">Jobs</span>
+            </a>
+            <a class="side-item" href="/p8eu">
+                <span class="side-icon icon-pink">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#DE9CA7" stroke-width="1.8" stroke-linejoin="round">
+                        <polygon points="6,4 20,12 6,20"/>
+                    </svg>
+                </span>
+                <span class="side-label">Quick</span>
+            </a>
+        </aside>
+
+        <main class="hd-main">
+            <!-- Title block: role / status pill / created + deadline meta -->
+            <div class="hd-title-row">
+                <h1 class="hd-title" id="hd-role">Loading…</h1>
+                <span class="hd-status-pill" id="hd-status-pill">Working on it</span>
+                <div class="hd-meta-group">
+                    <span class="hd-meta-item">Created: <span id="hd-created">-</span></span>
+                    <span class="hd-meta-item">Deadline: <span id="hd-deadline">-</span></span>
+                </div>
+            </div>
+            <p class="hd-sub" id="hd-company-loc">-</p>
+            <p class="hd-sub hd-ctc hidden" id="hd-ctc"></p>
+            <p class="hd-sub hd-posted-by hidden" id="hd-posted-by"></p>
+
+            <!-- Filter pills + search -->
+            <div class="hd-toolbar">
+                <div class="hd-pills" id="hd-pills">
+                    <!-- Rendered by JS -->
+                </div>
+                <div class="hd-search">
+                    <input type="text" id="hd-search-input" placeholder="Search role or company..">
+                    <span class="hd-search-icon" aria-hidden="true">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="hd-empty hidden" id="hd-empty">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9B9C9E" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <h4>No candidates yet</h4>
+                <p>The pipeline hasn't sourced any matching profiles yet. Add a referral or wait for the AI search.</p>
+            </div>
+
+            <!-- Table card hugs its content (width: fit-content) so it shrinks
+                 to match the active filter's column set — no white space inside
+                 the card border on Shortlisted (7 cols) or Contacted (8 cols). -->
+            <section class="hd-table-card" id="hd-table-card">
+                <div class="hd-thead" id="hd-thead"></div>
+                <div class="hd-tbody" id="hd-tbody"></div>
+            </section>
+
+            <!-- + Add Candidate — pinned to .hd-main bottom (fixed vertical
+                 anchor). Width is set inline by JS to match the active filter's
+                 table card width, with flex-end pushing the button to the row's
+                 right edge — so the button sits flush under the table's right
+                 corner whichever filter is active. -->
+            <div class="hd-cta-row" id="hd-cta-row">
+                <button class="hd-cta" onclick="HD.addCandidate()">+ Add Candidate</button>
+            </div>
+
+            <!-- Toast -->
+            <div class="pl-toast hidden" id="hd-toast"></div>
+        </main>
+    </div>
+
+    <script src="/static/js/hiring_dashboard.js"></script>
+    <script src="/static/js/user_dropdown.js"></script>
+</body>
+</html>

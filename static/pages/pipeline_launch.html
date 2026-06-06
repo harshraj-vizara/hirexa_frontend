@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire XA - Finding your top candidates</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/pipeline.css">
+    <link rel="stylesheet" href="/static/css/user_dropdown.css">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Shared chrome: HIRE XA header (same as dashboard / pipeline pages) -->
+        <header class="dash-header">
+            <div class="dash-brand">
+                <div class="dash-brand-name">HIRE <span class="ai">XA</span></div>
+                <div class="dash-brand-sub">XCEED TALENT ACQUISITION</div>
+            </div>
+            <div data-user-dropdown></div>
+        </header>
+
+        <!-- Yellow blob background -->
+        <div class="dash-blob" aria-hidden="true"></div>
+
+        <!-- Frosted glass panel (Rectangle 171) -->
+        <div class="dash-panel" aria-hidden="true"></div>
+
+        <!-- Sidebar (icon-nav) - Back goes home like other pages -->
+        <aside class="dash-sidebar">
+            <a class="side-item" href="/b4kx" title="Back">
+                <span class="side-icon icon-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9886E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                </span>
+                <span class="side-label">Back</span>
+            </a>
+            <a class="side-item" href="/b4kx">
+                <span class="side-icon icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/>
+                    </svg>
+                </span>
+                <span class="side-label">Home</span>
+            </a>
+            <a class="side-item" href="/d2mw">
+                <span class="side-icon icon-green">
+                    <svg viewBox="0 0 24 24" fill="#8EC49E">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <span class="side-label">Jobs</span>
+            </a>
+            <a class="side-item" href="/p8eu">
+                <span class="side-icon icon-pink">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#DE9CA7" stroke-width="1.8" stroke-linejoin="round">
+                        <polygon points="6,4 20,12 6,20"/>
+                    </svg>
+                </span>
+                <span class="side-label">Quick</span>
+            </a>
+        </aside>
+
+        <main class="pl-main">
+            <!-- Same 4-step stepper as the wizard, with step 4 active. Each step links
+                 back to the wizard URL with the right hash so the user can edit. -->
+            <nav class="pl-stepper">
+                <a class="pl-nav-item completed" id="lp-step-1" href="#">
+                    <span class="pl-step-num">1</span>
+                    <div class="pl-step-text">
+                        <strong>Job Details</strong>
+                        <span>Roles &amp; requirements</span>
+                    </div>
+                </a>
+                <span class="pl-step-line"></span>
+                <a class="pl-nav-item completed" id="lp-step-2" href="#">
+                    <span class="pl-step-num">2</span>
+                    <div class="pl-step-text">
+                        <strong>LinkedIn Post</strong>
+                        <span>Format &amp; publish</span>
+                    </div>
+                </a>
+                <span class="pl-step-line"></span>
+                <a class="pl-nav-item completed" id="lp-step-3" href="#">
+                    <span class="pl-step-num">3</span>
+                    <div class="pl-step-text">
+                        <strong>Pick Interviewers</strong>
+                        <span>AI interviewers</span>
+                    </div>
+                </a>
+                <span class="pl-step-line"></span>
+                <a class="pl-nav-item active" id="lp-step-4" href="#">
+                    <span class="pl-step-num">4</span>
+                    <div class="pl-step-text">
+                        <strong>Find Candidates</strong>
+                        <span>AI search &amp; source</span>
+                    </div>
+                </a>
+            </nav>
+
+            <!-- "AI is sourcing now" pill - shows current pipeline phase as a friendly chip. -->
+            <div class="lp-status-row">
+                <span class="lp-status-chip" id="lp-status-chip">
+                    <span class="lp-status-dot"></span>
+                    <span id="lp-status-text">AI is sourcing now</span>
+                </span>
+            </div>
+
+            <!-- Hero title -->
+            <h1 class="lp-hero-title">
+                <span class="lp-hero-bold">Finding your</span>
+                <span class="lp-hero-italic">top candidates.</span>
+            </h1>
+            <p class="lp-hero-sub">We'll have your shortlist ready shortly</p>
+
+            <!-- Live activity card -->
+            <section class="lp-activity-card" id="lp-activity-card">
+                <div class="lp-activity-header">
+                    <div class="lp-role-tag" id="lp-role-tag">SENIOR AI/ML ENGINEER</div>
+                    <span class="lp-role-rule"></span>
+                </div>
+                <div class="lp-activity-meta">
+                    <h3 class="lp-activity-title">Live activity</h3>
+                    <span class="lp-activity-updated" id="lp-updated">Updated just now</span>
+                </div>
+                <div class="lp-activity-list" id="lp-activity-list">
+                    <!-- 3 rows rendered by JS -->
+                </div>
+            </section>
+
+            <!-- Bottom action row: Go to main dashboard at the card's right edge -->
+            <div class="lp-bottom-actions">
+                <button class="lp-btn lp-btn-primary" onclick="LP.goToDashboard()">
+                    Go to main dashboard
+                </button>
+            </div>
+
+            <!-- Toast -->
+            <div class="pl-toast hidden" id="lp-toast"></div>
+        </main>
+    </div>
+
+    <script>
+    /* Pipeline Launch - standalone "we're on it" page after Step 4 Hire Now.
+       Reads ?id=<pipeline_id>, polls /api/pipeline/status, renders the live
+       activity timeline. All copy + counts come from the actual pipeline. */
+    const LP = {
+        pipelineId: null,
+        roleName: '',
+        currentStep: '',
+        counts: {},
+        startedAt: null,            // pipeline.created_at parsed
+        lastUpdate: Date.now(),     // wall clock of most recent successful poll
+        notifyOptIn: false,
+        timer: null,
+
+        /* Step config - title + subtitle template + which counts it cares about.
+           Order matches the backend STEPS array in PipelineSettings. */
+        STEPS: [
+            { key: 'searching',
+              title:    'Sourcing top candidates from LinkedIn, Apollo & GitHub',
+              subtitle: c => `${c.total || 0} profile${(c.total||0)===1?'':'s'} found so far` },
+            { key: 'collecting',
+              title:    'Cross-referencing profiles for contact info',
+              subtitle: c => `${c.total || 0} candidates · ${(c.with_email||0) + (c.with_phone||0)} had reachable contact` },
+            { key: 'screening_resumes',
+              title:    'Reading resumes & extracting summaries',
+              subtitle: c => `${c.screened || 0} of ${c.total || 0} resumes parsed` },
+            { key: 'shortlisting',
+              title:    'Scoring profiles against JD requirements',
+              subtitle: c => `${c.screened || 0} profiles scored · weighted by skill priority` },
+            { key: 'outreach',
+              title:    'Drafting personalized outreach for top candidates',
+              subtitle: c => `${c.contacted || 0} / ${c.shortlisted || 0} messages drafted` },
+            { key: 'scheduling',
+              title:    'Scheduling AI interviews with shortlisted candidates',
+              subtitle: c => `${c.interviews_scheduled || 0} / ${c.shortlisted || 0} interviews scheduled` },
+            { key: 'interviewing',
+              title:    'Running AI interviews',
+              subtitle: c => `${c.interviews_completed || 0} / ${c.interviews_scheduled || 0} completed` },
+            { key: 'completed',
+              title:    'Pipeline complete - full report ready',
+              subtitle: c => `${c.shortlisted || 0} shortlisted · ${c.interviews_completed || 0} interviewed` },
+        ],
+
+        init() {
+            // Auth gate - same pattern as dashboard.html
+            const u = localStorage.getItem('fluenzoUser');
+            if (!u) { window.location.href = '/'; return; }
+            const user = JSON.parse(u);
+            const nameEl = document.getElementById('pl-user-name');
+            const emailEl = document.getElementById('pl-user-email');
+            if (nameEl) nameEl.textContent = (user.name || user.email || 'User').split('@')[0];
+            if (emailEl) emailEl.textContent = user.email || '';
+
+            const p = new URLSearchParams(window.location.search);
+            this.pipelineId = p.get('id');
+            if (!this.pipelineId) {
+                this.toast('No pipeline id in URL - redirecting to your jobs', 'error');
+                setTimeout(() => window.location.href = '/d2mw', 1500);
+                return;
+            }
+
+            // Wire stepper links to send user back to the wizard at the right step
+            const wizard = `/c8qr?pipeline=${encodeURIComponent(this.pipelineId)}`;
+            for (let s = 1; s <= 4; s++) {
+                const el = document.getElementById('lp-step-' + s);
+                if (el) el.href = `${wizard}#step${s}`;
+            }
+
+            // Close user dropdown on outside click
+            document.addEventListener('click', (e) => {
+                const dd = document.getElementById('pl-user-dropdown');
+                if (dd && !e.target.closest('.dash-user')) dd.classList.remove('open');
+            });
+
+            this.refresh();
+            this.timer = setInterval(() => this.refresh(), 5000);
+            // Tick "Updated Xs ago" every second so it feels alive between polls
+            setInterval(() => this._renderUpdated(), 1000);
+        },
+
+        async refresh() {
+            try {
+                const r = await fetch(`/api/pipeline/status/${encodeURIComponent(this.pipelineId)}`);
+                const d = await r.json();
+                if (!d.success || !d.pipeline) throw new Error('not found');
+                const p = d.pipeline;
+
+                this.roleName    = (p.hiring_role || 'New role').toString();
+                this.currentStep = (p.current_step || 'searching');
+                this.counts      = p.counts || {};
+                if (p.created_at && !this.startedAt) this.startedAt = new Date(p.created_at);
+                this.lastUpdate = Date.now();
+
+                this._renderRole();
+                this._renderStatusChip();
+                this._renderActivity();
+                this._renderUpdated();
+
+                // Stop polling once the pipeline reaches a terminal state
+                if (p.status === 'completed' || p.status === 'failed') {
+                    if (this.timer) { clearInterval(this.timer); this.timer = null; }
+                    if (p.status === 'completed') {
+                        this.toast('Pipeline complete - your shortlist is ready in the dashboard', 'success');
+                    }
+                }
+            } catch (e) {
+                // Soft-fail: keep last render, show stale indicator via _renderUpdated
+                console.warn('[Launch] status fetch failed', e);
+            }
+        },
+
+        _renderRole() {
+            const el = document.getElementById('lp-role-tag');
+            if (el) el.textContent = (this.roleName || 'NEW ROLE').toUpperCase();
+        },
+
+        _renderStatusChip() {
+            const txt = document.getElementById('lp-status-text');
+            const map = {
+                'created':           'Pipeline ready - starting up',
+                'searching':         'AI is sourcing now',
+                'collecting':        'Enriching contact info',
+                'screening_resumes': 'Reading resumes',
+                'shortlisting':      'Scoring against your JD',
+                'outreach':          'Drafting outreach',
+                'scheduling':        'Scheduling interviews',
+                'interviewing':      'Running interviews',
+                'completed':         'Pipeline complete',
+                'paused':            'Pipeline paused',
+                'failed':            'Pipeline failed',
+            };
+            if (txt) txt.textContent = map[this.currentStep] || 'Working on it…';
+        },
+
+        // Build the 3 timeline rows: current step (top, "now") + 2 most recent completed.
+        _renderActivity() {
+            const list = document.getElementById('lp-activity-list');
+            if (!list) return;
+
+            const idx = this.STEPS.findIndex(s => s.key === this.currentStep);
+            const safeIdx = idx < 0 ? 0 : idx;
+
+            // Build current + previous-2 rows. Filter out 'created' (no activity yet).
+            const rows = [];
+            // Current ("now")
+            const cur = this.STEPS[safeIdx];
+            if (cur) rows.push({ step: cur, status: 'now', ago: 'now' });
+
+            // Previous completed (most recent at top of list, after current)
+            for (let k = 1; k <= 2; k++) {
+                const prev = this.STEPS[safeIdx - k];
+                if (prev) {
+                    const minsBack = (k === 1) ? 2 : 5;  // best-effort approximation
+                    rows.push({ step: prev, status: 'done', ago: minsBack + 'm ago' });
+                }
+            }
+
+            // Pad with "starting…" placeholders if we have fewer than 3 visible rows
+            while (rows.length < 3) {
+                rows.push({ step: null, status: 'pending', ago: '' });
+            }
+
+            list.innerHTML = rows.map(r => {
+                if (!r.step) {
+                    return `<div class="lp-act-row pending">
+                        <div class="lp-act-text">
+                            <div class="lp-act-title">Starting…</div>
+                            <div class="lp-act-sub">Waiting for the previous step to finish</div>
+                        </div>
+                        <span class="lp-act-icon pending"></span>
+                        <span class="lp-act-time"></span>
+                    </div>`;
+                }
+                const sub = r.step.subtitle ? r.step.subtitle(this.counts) : '';
+                const iconHtml = (r.status === 'now')
+                    ? `<span class="lp-act-icon now"><span class="lp-act-pulse"></span></span>`
+                    : `<span class="lp-act-icon done"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`;
+                return `<div class="lp-act-row ${r.status}">
+                    <div class="lp-act-text">
+                        <div class="lp-act-title">${this._esc(r.step.title)}</div>
+                        <div class="lp-act-sub">${this._esc(sub)}</div>
+                    </div>
+                    ${iconHtml}
+                    <span class="lp-act-time">${r.ago}</span>
+                </div>`;
+            }).join('');
+        },
+
+        _renderUpdated() {
+            const el = document.getElementById('lp-updated');
+            if (!el) return;
+            const sec = Math.max(1, Math.round((Date.now() - this.lastUpdate) / 1000));
+            el.textContent = sec < 5  ? 'Updated just now'
+                           : sec < 60 ? `Updated ${sec}s ago`
+                           : `Updated ${Math.round(sec/60)}m ago`;
+        },
+
+        notifyWhenReady() {
+            this.notifyOptIn = !this.notifyOptIn;
+            const btn = document.getElementById('lp-notify-btn');
+            if (btn) {
+                btn.textContent = this.notifyOptIn ? 'You’ll be notified ✓' : 'Notify when ready';
+                btn.classList.toggle('opted-in', this.notifyOptIn);
+            }
+            this.toast(
+                this.notifyOptIn
+                    ? 'We’ll email you the moment your shortlist is ready.'
+                    : 'Email notifications turned off for this pipeline.',
+                'info'
+            );
+        },
+
+        async goToDashboard() {
+            // Fire interview invites (email + WhatsApp) to all referred candidates
+            // in this pipeline before we navigate. This is the recruiter's explicit
+            // "done setting up, send them out" confirmation point.
+            try {
+                if (this.pipelineId) {
+                    const r = await fetch(`/api/pipeline/${encodeURIComponent(this.pipelineId)}/send-referral-invites`, {
+                        method: 'POST',
+                    });
+                    const d = await r.json().catch(() => ({}));
+                    const queued = (d && d.queued) || 0;
+                    if (queued > 0) {
+                        this.toast(`Sending interview invites to ${queued} referral${queued === 1 ? '' : 's'}…`, 'info');
+                    }
+                }
+            } catch (e) {
+                console.error('[LP] referral invite dispatch failed:', e);
+                // Non-fatal - still let them navigate
+            }
+
+            // Small delay so the toast is visible before the page transition
+            setTimeout(() => {
+                window.location.href = '/d2mw';
+            }, 700);
+        },
+
+        logout(e) {
+            e && e.preventDefault();
+            localStorage.removeItem('fluenzoUser');
+            localStorage.removeItem('currentSession');
+            window.location.href = '/';
+        },
+
+        toast(msg, type = 'info') {
+            const t = document.getElementById('lp-toast');
+            if (!t) return;
+            t.textContent = msg;
+            t.className = `pl-toast ${type}`;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 4000);
+        },
+
+        _esc(s) {
+            if (s == null) return '';
+            const d = document.createElement('div');
+            d.textContent = String(s);
+            return d.innerHTML;
+        },
+    };
+
+    document.addEventListener('DOMContentLoaded', () => LP.init());
+    window.LP = LP;
+    </script>
+    <script src="/static/js/user_dropdown.js"></script>
+</body>
+</html>

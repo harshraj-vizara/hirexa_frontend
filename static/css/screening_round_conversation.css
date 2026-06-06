@@ -1,0 +1,569 @@
+/* =========================================================
+   Hire XA — Quick Interview (single-page, Figma pixel match)
+   ========================================================= */
+
+html, body { min-height: 100vh; }
+
+.qi-main {
+    position: relative;
+    padding: 24px 60px 40px 146px;
+    /* Fixed-height internal scroll container: the FORM scrolls within this box
+       when content (all interviewer cards, or high browser zoom) exceeds the
+       viewport — instead of clipping the interviewers grid into an unreadable
+       strip. The chrome (blob/panel) sits behind and stays put. */
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 3;
+}
+.qi-title-block { flex: none; }
+.qi-row { flex: none; }
+.qi-actions { flex: none; }
+
+.hidden { display: none !important; }
+
+/* ---------- Title block ---------- */
+.qi-title-block { margin: 22px 0 26px; max-width: 1000px; }
+.qi-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 1.21;
+    color: #24282B;
+    letter-spacing: -0.005em;
+}
+.qi-title-italic {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 34px;
+    color: #5B6168;
+    margin-left: 8px;
+    letter-spacing: -0.04em;
+}
+.qi-sub {
+    margin-top: 10px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    color: #9B9C9E;
+    line-height: 1.4;
+    max-width: 720px;
+}
+
+/* ---------- Two-column row ---------- */
+.qi-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1240px;
+}
+
+/* ---------- Generic card ---------- */
+.qi-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(36, 40, 43, 0.06);
+    border-radius: 14px;
+    padding: 36px 24px 42px;
+    box-shadow: 0 1px 4.2px rgba(0, 0, 0, 0.12);
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.qi-card-label {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: #24282B;
+}
+
+/* ---------- Candidate card: dropzone ---------- */
+.qi-dropzone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 168px;
+    background: #FFFFFF;
+    border: 1px dashed rgba(36, 40, 43, 0.22);
+    border-radius: 10px;
+    box-shadow: 0 1px 4.2px rgba(0, 0, 0, 0.10);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+.qi-dropzone:hover,
+.qi-dropzone:focus-within,
+.qi-dropzone.is-drag {
+    border-color: #4CABF6;
+    background: #FAFCFF;
+}
+.qi-dropzone.has-file {
+    border-style: solid;
+    border-color: #4CABF6;
+    background: #F4FAFF;
+}
+.qi-dz-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #E2F2FF;
+    border: 0.5px solid #4CABF6;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+.qi-dz-title {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    color: #24282B;
+    letter-spacing: 0.08em;
+}
+.qi-dz-sub {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    color: #9B9C9E;
+    letter-spacing: 0.06em;
+    text-align: center;
+    max-width: 280px;
+    line-height: 1.4;
+}
+.qi-dz-btn {
+    margin-top: 8px;
+    padding: 8px 22px;
+    background: #EEF7FE;
+    color: #4CABF6;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    border-radius: 4px;
+    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.16);
+    transition: background 0.15s ease;
+}
+.qi-dropzone:hover .qi-dz-btn { background: #DDEEFC; }
+.qi-dz-filename {
+    margin-top: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: #3A8149;
+    letter-spacing: 0.04em;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ---------- Name + Email + Phone grid (3 cols on wide cards, 2 then 1 on narrow) ---------- */
+.qi-input-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+@media (max-width: 1280px) {
+    .qi-input-grid { grid-template-columns: 1fr 1fr; }
+    .qi-input-grid .qi-field:nth-child(3) { grid-column: 1 / -1; }
+}
+.qi-field { display: flex; flex-direction: column; gap: 8px; }
+.qi-field-full { flex: none; }
+.qi-role-wrap { position: relative; width: 100%; }
+.qi-field-label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: #24282B;
+}
+.qi-field-label-strong {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #24282B;
+}
+.qi-input {
+    height: 38px;
+    padding: 0 12px;
+    background: #FFFFFF;
+    border: 1px solid rgba(36, 40, 43, 0.18);
+    border-radius: 6px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    color: #24282B;
+    letter-spacing: 0.06em;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.qi-input::placeholder { color: #9B9C9E; }
+.qi-input:focus {
+    outline: 0;
+    border-color: #4CABF6;
+    box-shadow: 0 0 0 3px rgba(76, 171, 246, 0.15);
+}
+
+/* ---------- Role select ---------- */
+.qi-role-trigger {
+    position: relative;
+    width: 100%;
+    height: 46px;
+    padding: 0 16px;
+    background: #FFFFFF;
+    border: 1px solid rgba(36, 40, 43, 0.18);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    color: #9B9C9E;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.qi-role-trigger.has-value { color: #24282B; font-weight: 500; }
+.qi-role-trigger:hover,
+.qi-role-trigger.open {
+    background: #FFFFFF;
+    border-color: #4CABF6;
+    box-shadow: 0 0 0 3px rgba(76, 171, 246, 0.12);
+}
+.qi-role-chev { transition: transform 0.2s ease; flex-shrink: 0; }
+.qi-role-trigger.open .qi-role-chev { transform: rotate(180deg); }
+
+.qi-role-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    border: 0.5px solid #D6D6D6;
+    border-radius: 8px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+    z-index: 20;
+    overflow: hidden;
+    max-height: 280px;
+    display: flex;
+    flex-direction: column;
+}
+.qi-role-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 0.5px solid #E5E5E5;
+}
+.qi-role-search {
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    color: #24282B;
+    letter-spacing: 0.04em;
+}
+.qi-role-search::placeholder { color: #9B9C9E; }
+.qi-role-options {
+    overflow-y: auto;
+    flex: 1;
+    padding: 4px 0;
+}
+.qi-role-option {
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+.qi-role-option:hover,
+.qi-role-option.is-active { background: #F1F8FF; }
+.qi-role-option-title {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: #24282B;
+    letter-spacing: 0.04em;
+}
+.qi-role-option-meta {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    color: #9B9C9E;
+    letter-spacing: 0.04em;
+}
+.qi-role-empty {
+    padding: 18px 14px;
+    text-align: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 12px;
+    color: #9B9C9E;
+}
+
+
+.qi-role-hint {
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #EEF7FE;
+    border-radius: 6px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    color: #4CABF6;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+}
+
+/* ---------- Interviewers strip ---------- */
+.qi-interviewers {
+    margin-top: 28px;
+    padding: 36px 22px 40px;
+    background: #FFFFFF;
+    border: 1px solid rgba(36, 40, 43, 0.06);
+    border-radius: 6px;
+    box-shadow: 0 1px 4.2px rgba(0, 0, 0, 0.12);
+    max-width: 1240px;
+    /* Size to its content (the grid wraps to as many rows as needed); the
+       parent .qi-main provides the scroll when everything doesn't fit. */
+    display: flex;
+    flex-direction: column;
+    flex: none;
+}
+.qi-int-head { flex: none; }
+.qi-int-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+.qi-int-toggle {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    color: #4CABF6;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+}
+.qi-int-toggle:hover { background: #EEF7FE; }
+
+.qi-int-grid {
+    display: grid;
+    /* Responsive wrap grid — cards keep a comfortable min width at every zoom
+       level and wrap onto as many rows as needed (no horizontal scroll, no
+       squished cards). The parent .qi-main scrolls if the rows overflow. */
+    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+    gap: 14px;
+    flex: none;
+    align-content: start;
+}
+.qi-int-grid::-webkit-scrollbar { width: 6px; }
+.qi-int-grid::-webkit-scrollbar-thumb {
+    background: rgba(76, 171, 246, 0.35);
+    border-radius: 3px;
+}
+.qi-int-grid::-webkit-scrollbar-track { background: transparent; }
+.qi-int-placeholder {
+    padding: 20px 0;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    color: #9B9C9E;
+    letter-spacing: 0.04em;
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+/* Figma Frame 30 — 134×72 card. Avatar top-left, name + tag below avatar centred. */
+.qi-int-card {
+    position: relative;
+    background: #FFFFFF;
+    /* Unselected: thin near-black hairline border (per user — was blue 0.2px,
+       now switched to black for sharper contrast). Selected state below
+       keeps the blue border + blue glow shadow. */
+    border: 0.5px solid rgba(36, 40, 43, 0.55);
+    border-radius: 4px;
+    padding: 8px 10px 12px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    min-height: 80px;
+    display: grid;
+    grid-template-rows: 32px auto;
+    row-gap: 6px;
+}
+/* Avoid translateY on hover — the grid's overflow clipping would shave off
+   the top border. Use a subtle border-darken + soft shadow instead. */
+.qi-int-card:hover {
+    border-color: rgba(36, 40, 43, 0.85);
+    box-shadow: 0 2px 6px rgba(36, 40, 43, 0.12);
+}
+.qi-int-card.is-selected:hover {
+    /* On a selected card, keep the blue border + glow — just deepen the glow
+       a touch so hover still gives feedback. */
+    border-color: #4CABF6;
+    box-shadow: 1px 1px 6px #4CABF6;
+}
+.qi-int-card.is-selected {
+    border: 1px solid #4CABF6;
+    box-shadow: 1px 1px 4px #4CABF6;
+}
+
+/* Top row: avatar at left. Tick is now position:absolute at the bottom-right
+   of the card, so even though it lives inside .qi-int-top in markup it's
+   out of this flex flow. */
+.qi-int-top {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.qi-int-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+}
+
+/* Bottom block: name + tag, centred under the card */
+.qi-int-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+    min-width: 0;
+    padding: 0 4px;
+}
+.qi-int-name {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: #24282B;
+    letter-spacing: 0.06em;
+    line-height: 1.25;
+    max-width: 100%;
+    /* Full name shown — wraps to a second line rather than truncating. */
+    overflow-wrap: anywhere;
+}
+.qi-int-tag {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    color: #9B9C9E;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    max-width: 100%;
+    /* Full role shown — wraps to up to two lines (e.g. "Accountability
+       Analyst", "Communication Coach") instead of being cut off. */
+    overflow-wrap: anywhere;
+}
+/* Tick element hidden per Figma — selection is shown by the card's border +
+   glow shadow only. The .qi-int-tick span is still rendered by the JS so we
+   simply remove it from the visual flow here (don't touch the JS). */
+.qi-int-tick { display: none; }
+
+/* Gradient palette for avatars */
+.qi-grad-coral  { background: linear-gradient(141.93deg, #DE9CA7 58.77%, #FFD7DD 98.19%); color: #FFE6E6; }
+.qi-grad-yellow { background: linear-gradient(141.93deg, #EAB000 58.77%, #FFF3CE 98.19%); color: #FFEEAD; }
+.qi-grad-purple { background: linear-gradient(141.93deg, #9886E9 58.77%, #CEC3FF 98.19%); color: #F4F2FF; }
+.qi-grad-blue   { background: linear-gradient(141.93deg, #7DB5E2 58.77%, #D8EEFF 98.19%); color: #CEEAFF; }
+.qi-grad-green  { background: linear-gradient(141.93deg, #8EC49E 58.77%, #D7FFE3 98.19%); color: #E2FFD7; }
+
+/* ---------- Bottom actions ---------- */
+/* Action row is wider than the cards/interviewers containers (1240px) so
+   Send invite's right edge sits well past those containers' right border —
+   shifted further right per user (~260px overhang). */
+.qi-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1475px;
+    margin-top: 28px;
+}
+.qi-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    border: 0;
+    border-radius: 10px;
+    font-size: 14px;
+    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.19);
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
+}
+.qi-btn:hover { transform: translateY(-1px); box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.22); }
+.qi-btn:active { transform: translateY(0); }
+.qi-btn-ghost { background: #EEF7FE; color: #4CABF6; }
+.qi-btn-ghost:hover { background: #DDEEFC; }
+.qi-btn-primary {
+    background: #4CABF6;
+    color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(76, 171, 246, 0.35), 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+.qi-btn-primary:hover { background: #3F9DE5; }
+.qi-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- Toast ---------- */
+.qi-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 18px;
+    background: #24282B;
+    color: #FFFFFF;
+    border-radius: 6px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 13px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+    max-width: 360px;
+}
+.qi-toast.error { background: #C03A4E; }
+.qi-toast.success { background: #3A8149; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+    .qi-main { padding: 24px 28px 60px 100px; }
+    .qi-row { grid-template-columns: 1fr; }
+    .qi-interviewers { max-width: 100%; }
+}
+@media (max-width: 720px) {
+    .qi-input-grid { grid-template-columns: 1fr; }
+    .qi-actions { flex-direction: column-reverse; gap: 12px; align-items: stretch; }
+    .qi-btn { width: 100%; }
+}
+

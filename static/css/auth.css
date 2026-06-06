@@ -1,0 +1,1421 @@
+/* =========================================================
+   Hire XA — Auth / Landing
+   White page, top header, soft yellow sweep with subtle
+   blue under-glow curving from upper-left to bottom-right.
+   ========================================================= */
+
+:root {
+    --hxa-yellow: #FFDF67;
+    --hxa-blue: #4CABF6;
+    --hxa-blue-hover: #2B9CF0;
+    --hxa-text: #24282B;
+    --hxa-text-muted: #5B6168;
+    --hxa-text-faint: #9B9C9E;
+    --hxa-border: #E5E7EB;
+    --hxa-card-border: rgba(60, 60, 60, 0.14);
+    --hxa-card-shadow: 0 6px 24px rgba(60, 60, 60, 0.08);
+    --hxa-bg: #FFFFFF;
+    --hxa-input-bg: #F6F7F9;
+    --hxa-tag-blue-bg: #DDF0FF;
+    --hxa-tag-blue-text: #4CABF6;
+    --hxa-tag-yellow-bg: #FCEBAA;
+    --hxa-tag-yellow-text: #B79213;
+    --hxa-pct-bg: #E8F8EE;
+    --hxa-pct-text: #1B7A3E;
+    --hxa-icon-bg: #CEEAFF;
+    --hxa-avatar-yellow: #FFD33C;
+    --danger: #EF4444;
+    --success: #10B981;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+    /* min-height (not a hard 100vh lock) + vertical scroll lets the hero grow
+       and scroll on short viewports — e.g. a 1080p laptop at Windows' default
+       150% scaling renders ~720px tall — instead of clipping the lower cards.
+       overflow-x:hidden keeps the decorative blob/cards from causing sideways
+       scroll. */
+    min-height: 100vh;
+    font-family: 'Lexend Deca', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: var(--hxa-bg);
+    color: var(--hxa-text);
+    overflow-x: hidden;
+}
+
+/* ---------- Page wrapper ---------- */
+.auth-wrapper {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    background: var(--hxa-bg);
+    overflow-x: hidden;
+}
+
+/* ---------- Top header bar ---------- */
+.auth-header {
+    position: relative;
+    z-index: 5;
+    height: 80px;
+    padding: 17px 55px;
+    background: var(--hxa-bg);
+    border-bottom: 0;
+    display: flex;
+    align-items: center;
+}
+.auth-brand { display: inline-flex; flex-direction: column; gap: 2px; line-height: 1; }
+.auth-brand-name {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 44px;
+    text-align: left;
+    letter-spacing: 0.01em;
+    color: #24282B;
+}
+.auth-brand-name .ai { color: var(--hxa-blue); margin-left: 6px; }
+.auth-brand-sub {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: left;
+    letter-spacing: 0.1em;
+    color: #24282B;
+    text-transform: uppercase;
+}
+
+/* ---------- Yellow sweep (below header) ----------
+   Single smooth Bézier curve: starts upper-left, dips
+   organically through the centre, exits at bottom-right.
+   Yellow fills the area ABOVE the curve. Soft blue under-glow.
+*/
+.auth-blob {
+    position: absolute;
+    left: 0;
+    top: 80px;
+    width: 100%;
+    height: calc(100vh - 80px);
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("/static/assets/hero-blob.png");
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-size: 100% 100%;
+    filter: drop-shadow(0 8px 8px rgba(91, 173, 245, 0.5));
+}
+
+/* ---------- Hero layout ----------
+   Fills the space under the 80px header and centers the copy vertically. On a
+   tall screen this reproduces the Figma mid-left placement; on a short screen
+   the block grows past min-height and the page scrolls (no clipping). Replaces
+   the old `padding-top: 30vh`, which made the vertical position lurch with
+   viewport height — the core "fits on some screens, scrolls on others" bug. */
+.auth-hero {
+    position: relative;
+    z-index: 2;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 56px 56px 64px 66px;
+}
+
+/* ---------- Left content ---------- */
+.hero-left {
+    max-width: 500px;
+}
+
+.hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 18px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-bottom: 2px;
+}
+.hero-kicker .kicker-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--hxa-blue);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 110%;
+    letter-spacing: -0.03em;
+    color: #24282B;
+    margin: 0 0 0;
+}
+.hero-subtitle {
+    font-family: 'Fraunces', 'Georgia', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 40px;
+    line-height: 110%;
+    letter-spacing: -0.07em;
+    color: #5B6168;
+    margin: 0 0 20px;
+}
+
+.hero-description {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+    width: 457px;
+    max-width: 100%;
+    margin-bottom: 39px;
+}
+
+/* CTA buttons */
+.hero-ctas {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 26px;
+}
+.btn-cta-primary,
+.btn-cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 126px;
+    height: 36px;
+    padding: 0;
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.btn-cta-primary {
+    background: #4CABF6;
+    color: #FFFFFF;
+    border: 0;
+    box-shadow: 0px 0px 1.8px rgba(0, 0, 0, 0.25);
+}
+.btn-cta-primary:hover {
+    background: var(--hxa-blue-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(91, 177, 245, 0.32);
+}
+.btn-cta-secondary {
+    background: #FFFFFF;
+    color: #24282B;
+    border: 0.2px solid #606060;
+    box-shadow: 0px 0px 1.8px rgba(0, 0, 0, 0.35);
+}
+.btn-cta-secondary:hover {
+    background: #FAFAFB;
+    transform: translateY(-1px);
+}
+
+/* Continue with social */
+.hero-social { margin-top: 0; }
+.hero-social-label {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: #9B9C9E;
+    margin-bottom: 3px;
+    white-space: nowrap;
+}
+.hero-social-icons { display: flex; gap: 12px; }
+.btn-social-circle {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.12s ease;
+}
+.btn-social-circle:hover { transform: translateY(-1px); }
+.btn-social-circle svg { width: 28px; height: 28px; display: block; }
+.btn-social-circle.linkedin {
+    background: transparent;
+    border-radius: 0;
+}
+.btn-social-circle.linkedin svg { width: 28px; height: 28px; }
+
+/* ---------- Floating mockup cards ----------
+   Positioned within a 1280px centered inner box so coordinates
+   line up with the Figma source. Asymmetric placement.
+*/
+.hero-cards {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 3;
+}
+.hero-cards-inner {
+    position: relative;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.mock-card {
+    position: absolute;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 0;
+    box-shadow: -1px 1px 5.8px rgba(60, 60, 60, 0.13);
+    border-radius: 14px;
+}
+
+/* Big JD card — Figma Frame 62: 460×307 at left=738, top=317 (page) */
+.mock-card-job {
+    width: 460px;
+    height: 307px;
+    padding: 22px;
+    top: 237px;
+    right: 82px;
+}
+.mock-job-head {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    height: 28px;
+}
+.mock-job-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #CEEAFF;
+    border: 0.2px solid #4CABF6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.mock-job-badge svg { width: 18.67px; height: 18.67px; }
+.mock-job-badge-label {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+}
+.mock-job-title {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: rgba(0, 0, 0, 0.9);
+    margin: 17px 0 0;
+}
+.mock-job-meta {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+    margin: 0 0 17px;
+}
+.mock-job-body p {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 16px;
+    color: #24282B;
+    margin: 0;
+}
+.mock-job-body p + p { margin-top: 21px; }
+.mock-job-divider {
+    border: none;
+    border-top: 0.5px solid rgba(96, 96, 96, 0.22);
+    margin: 28px 0 16px;
+}
+.mock-job-tags { display: flex; gap: 8px; flex-wrap: nowrap; }
+.mock-tag {
+    height: 14px;
+    padding: 0 9px;
+    background: #DDF0FF;
+    color: #4CABF6;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 8px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    display: inline-flex;
+    align-items: center;
+}
+.mock-tag.yellow { background: #FCEBAA; color: #B79213; }
+
+/* Candidate cards — Figma Frame 63/64: 260×88 */
+.mock-card-candidate {
+    width: 260px;
+    height: 88px;
+    padding: 0;
+}
+.mock-card-candidate-right {
+    top: 510px;
+    right: 37px;
+}
+.mock-card-candidate-left {
+    top: 581px;
+    right: 433px;
+}
+.mock-cand-avatar {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #FFD33C;
+    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.1em;
+}
+.mock-card-candidate-left .mock-cand-avatar { background: #9886E9; }
+.mock-cand-info {
+    position: absolute;
+    left: 47px;
+    top: 16px;
+}
+.mock-cand-name {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 20px;
+    color: rgba(0, 0, 0, 0.9);
+}
+.mock-cand-role {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.01em;
+    color: #5B6168;
+    margin-top: 1px;
+}
+.mock-cand-pct {
+    position: absolute;
+    top: 22px;
+    right: 9px;
+    width: 28px;
+    height: 14px;
+    padding: 0;
+    background: #E8F8EE;
+    border: 0.2px solid #C9C9C9;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 8px;
+    line-height: 14px;
+    color: #1B7A3E;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.mock-cand-match {
+    position: absolute;
+    top: 71px;
+    left: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 8px;
+    line-height: 10px;
+    color: #5B6168;
+}
+.mock-cand-match .match-dot {
+    position: relative;
+    width: 5px;
+    height: 5px;
+    border: 0.2px solid #4CABF6;
+    border-radius: 50%;
+    background: transparent;
+    flex-shrink: 0;
+}
+.mock-cand-match .match-dot::before,
+.mock-cand-match .match-dot::after {
+    content: "";
+    position: absolute;
+    border: 0.2px solid #4CABF6;
+    border-radius: 50%;
+}
+.mock-cand-match .match-dot::before {
+    width: 2.5px;
+    height: 2.5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.mock-cand-match .match-dot::after {
+    width: 1.25px;
+    height: 1.25px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #4CABF6;
+}
+
+/* ---------- Footer ---------- */
+.auth-footer {
+    position: absolute;
+    left: 66px;
+    bottom: 22px;
+    z-index: 4;
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: #9B9C9E;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+    /* Below the design width the floating mockups would crowd the copy, so they
+       drop out and the hero copy gets the full width, still vertically centered. */
+    .hero-cards { display: none; }
+    .hero-left { max-width: 100%; }
+}
+@media (max-width: 700px) {
+    .auth-header { padding: 10px 22px; height: auto; }
+    .auth-brand-name { font-size: 24px; }
+    .auth-brand-sub { font-size: 9px; }
+    .auth-blob { top: 60px; }
+    .auth-hero { padding: 70px 22px 36px; }
+    .hero-title { font-size: 28px; }
+    .hero-subtitle { font-size: 30px; }
+    .hero-ctas { flex-wrap: wrap; }
+    .auth-footer { padding: 0 22px 20px; text-align: center; }
+}
+
+/* =========================================================
+   Modal (sign-in / register / verify / forgot / reset)
+   ========================================================= */
+.auth-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(36, 40, 43, 0.5);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.auth-modal.show { display: flex; animation: fadeIn 0.2s ease; }
+.auth-modal-card {
+    background: #fff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 420px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+    max-height: 90vh;
+    overflow-y: auto;
+    font-family: 'Lexend Deca', 'Inter', sans-serif;
+}
+/* Header row: tabs (or a panel's empty space) on the left, close button on the
+   right, both vertically centered. Replaces the old absolute close button that
+   floated above the tab strip and overlapped its right edge. */
+.auth-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.auth-modal-close {
+    position: static;
+    flex-shrink: 0;
+    background: transparent;
+    border: 0;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--hxa-text-faint);
+    cursor: pointer;
+    border-radius: 6px;
+}
+.auth-modal-close:hover { background: #F3F3F3; color: var(--hxa-text); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.auth-tabs {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    gap: 4px;
+    background: #F3F4F6;
+    border-radius: 8px;
+    padding: 4px;
+}
+.auth-tab {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    padding: 9px 14px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--hxa-text-faint);
+    cursor: pointer;
+    border-radius: 6px;
+    letter-spacing: 0.04em;
+    transition: background 0.15s, color 0.15s;
+}
+.auth-tab.active { background: #fff; color: var(--hxa-text); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.tab-indicator { display: none; }
+
+.auth-panel { display: none; }
+.auth-panel.active { display: block; animation: fadeIn 0.2s ease; }
+
+.panel-header { margin-bottom: 18px; }
+.panel-header.centered { text-align: center; }
+.panel-header h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--hxa-text);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+}
+.panel-header p { font-size: 12px; color: var(--hxa-text-faint); line-height: 1.55; }
+.panel-icon {
+    width: 42px; height: 42px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    background: var(--hxa-icon-bg);
+    color: var(--hxa-blue);
+}
+.panel-icon svg { width: 18px; height: 18px; }
+.panel-icon.success { background: rgba(16,185,129,0.12); color: var(--success); }
+
+.auth-form { display: flex; flex-direction: column; gap: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--hxa-text);
+    text-transform: uppercase;
+}
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--hxa-input-bg);
+    border: 1px solid #E1E3E6;
+    border-radius: 6px;
+}
+.input-wrapper:focus-within {
+    border-color: var(--hxa-blue);
+    box-shadow: 0 0 0 3px rgba(91, 177, 245, 0.16);
+}
+.input-icon {
+    width: 14px; height: 14px;
+    margin-left: 12px;
+    color: var(--hxa-text-faint);
+    flex-shrink: 0;
+}
+.form-input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--hxa-text);
+    min-width: 0;
+}
+.form-input::placeholder { color: var(--hxa-text-faint); }
+.password-toggle {
+    background: transparent;
+    border: 0;
+    padding: 0 12px;
+    cursor: pointer;
+    color: var(--hxa-text-faint);
+    display: flex;
+    align-items: center;
+}
+.password-toggle svg { width: 14px; height: 14px; }
+.hidden { display: none !important; }
+
+.form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top: 2px;
+}
+.checkbox-wrapper {
+    display: flex; align-items: center; gap: 7px;
+    cursor: pointer;
+    color: var(--hxa-text-faint);
+    user-select: none;
+}
+.checkbox-wrapper input { display: none; }
+.checkmark {
+    width: 14px; height: 14px;
+    border: 1.5px solid #C7C9CC;
+    border-radius: 3px;
+    display: inline-block;
+    position: relative;
+}
+.checkbox-wrapper input:checked + .checkmark {
+    background: var(--hxa-blue);
+    border-color: var(--hxa-blue);
+}
+.checkbox-wrapper input:checked + .checkmark::after {
+    content: "";
+    position: absolute;
+    left: 3px; top: 0px;
+    width: 4px; height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+.forgot-link {
+    color: var(--hxa-blue);
+    text-decoration: none;
+    font-weight: 500;
+}
+.forgot-link:hover { text-decoration: underline; }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border: 0;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.btn-primary { background: var(--hxa-blue); color: #fff; }
+.btn-primary:hover { background: var(--hxa-blue-hover); }
+.btn-full { width: 100%; }
+.btn svg { width: 14px; height: 14px; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.social-login-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #fff;
+    color: var(--hxa-text);
+    border: 1px solid #D4D6D9;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.btn-social:hover { background: #F9FAFB; border-color: #B8BBBF; }
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0;
+    color: var(--hxa-text-faint);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--hxa-border);
+}
+
+.otp-input-group {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin: 6px 0 14px;
+}
+.otp-input-single {
+    width: 38px; height: 46px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--hxa-text);
+    background: var(--hxa-input-bg);
+    border: 1px solid #E1E3E6;
+    border-radius: 6px;
+    outline: 0;
+}
+.otp-input-single:focus {
+    border-color: var(--hxa-blue);
+    box-shadow: 0 0 0 3px rgba(91, 177, 245, 0.18);
+}
+
+/* =========================================================
+   Register modal v2 — Figma "Create Your HireXA Workspace"
+   ========================================================= */
+/* When the v2 register panel is active, expand the card to 612px and hide the
+   default modal header (the tabs strip + the close button) — this panel
+   carries its own brand header and close. Login + other panels are untouched. */
+.auth-modal-card:has(.reg-v2.active) {
+    max-width: 612px;
+    height: 690px;
+    padding: 0;
+    border: 1px solid #DEE1E5;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    border-radius: 14px;
+    overflow-y: auto;
+    /* Hide scrollbar (still scrollable) */
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* old Edge/IE */
+}
+.auth-modal-card:has(.reg-v2.active)::-webkit-scrollbar { width: 0; height: 0; display: none; }  /* Chrome/Safari */
+.auth-modal-card:has(.reg-v2.active) .auth-modal-header { display: none; }
+
+.reg-v2 {
+    position: relative;
+    padding: 28px 86px 24px;
+    font-family: 'Lexend Deca', sans-serif;
+}
+
+.reg-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    color: #24282B;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+.reg-close:hover { background: #F3F3F3; }
+
+.reg-brand {
+    text-align: center;
+    margin-bottom: 16px;
+}
+.reg-brand-logo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 44px;
+    letter-spacing: 0.01em;
+    color: #24282B;
+}
+.reg-brand-logo span {
+    color: #4CABF6;
+    margin-left: 10px;
+}
+.reg-brand-tagline {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.1em;
+    color: #24282B;
+    margin-top: -4px;
+}
+
+.reg-heading {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 36px;
+    color: #24282B;
+    text-align: center;
+    margin: 0 0 18px;
+}
+
+.reg-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.reg-input {
+    width: 100%;
+    height: 52px;
+    box-sizing: border-box;
+    padding: 0 16px;
+    background: #FFFFFF;
+    border: 1px solid #DEE1E5;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    color: #24282B;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.reg-input::placeholder { color: #97A1AF; }
+.reg-input:focus {
+    border-color: #4CABF6;
+    box-shadow: 0 0 0 3px rgba(76, 171, 246, 0.18);
+}
+
+.reg-continue {
+    width: 100%;
+    height: 52px;
+    background: #4CABF6;
+    border: 0;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.1em;
+    color: #F9F9FF;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+    margin-top: 4px;
+}
+.reg-continue:hover { background: #3FA1F2; box-shadow: 0 4px 12px rgba(76, 171, 246, 0.28); }
+.reg-continue:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.reg-haveaccount {
+    text-align: center;
+    margin-top: 12px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 21px;
+    letter-spacing: 0.1em;
+    color: #656D79;
+}
+.reg-haveaccount a {
+    font-weight: 400;
+    color: #635DFF;
+    text-decoration: none;
+    margin-left: 6px;
+    letter-spacing: 0;
+}
+.reg-haveaccount a:hover { text-decoration: underline; }
+
+.reg-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 10px 0 12px;
+    color: #656D79;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 12px;
+    text-transform: uppercase;
+}
+.reg-divider::before,
+.reg-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #DEE1E5;
+}
+
+.reg-social {
+    width: 100%;
+    height: 52px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 1px solid #DEE1E5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 20px;
+    color: #3B4047;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.reg-social:hover { background: #FAFBFC; border-color: #C8CDD3; }
+.reg-social-icon { flex-shrink: 0; }
+
+.reg-otherprovider {
+    text-align: center;
+    margin-top: 6px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    color: #656D79;
+}
+
+/* Inline validation error (register + org setup) */
+.reg-error {
+    display: none;
+    margin-top: -10px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: 0;
+    color: #E5484D;
+}
+.reg-error.show { display: block; }
+.reg-input.has-error { border-color: #E5484D; }
+.reg-input.has-error:focus { box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.18); }
+
+/* ===== Organisation setup (step 2) ===== */
+.org-icon {
+    display: flex;
+    justify-content: center;
+    margin: -8px 0 24px;
+}
+
+/* Core Values multi-select (card picker) */
+.reg-multiselect { position: relative; }
+.reg-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    gap: 12px;
+    cursor: pointer;
+}
+.reg-select-label {
+    color: #97A1AF; /* placeholder colour until something is chosen */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.reg-select-label.has-value { color: #24282B; }
+.reg-select-chevron {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.15s;
+}
+.reg-select-trigger[aria-expanded="true"] .reg-select-chevron { transform: rotate(180deg); }
+
+.reg-cv-panel {
+    margin-top: 8px;
+    border: 1px solid #DEE1E5;
+    border-radius: 8px;
+    background: #FFFFFF;
+    padding: 12px;
+}
+.reg-cv-panel[hidden] { display: none; }
+.reg-cv-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: #656D79;
+}
+.reg-cv-count { font-weight: 500; color: #4CABF6; }
+.reg-cv-count.at-limit { color: #E5484D; }
+
+.reg-cv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+    gap: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 2px;
+    /* Hide scrollbar (still scrollable) */
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* old Edge/IE */
+}
+.reg-cv-grid::-webkit-scrollbar { width: 0; height: 0; display: none; }  /* Chrome/Safari */
+
+.reg-cv-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 72px;
+    padding: 8px 6px;
+    background: #FFFFFF;
+    border: 1px solid #DEE1E5;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.12s, box-shadow 0.12s;
+}
+.reg-cv-card:hover { border-color: #B6DEFB; }
+.reg-cv-card.selected {
+    border: 1px solid #4CABF6;
+    box-shadow: 1px 1px 4px #4CABF6;
+}
+.reg-cv-card.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+.reg-cv-avatar {
+    width: 31px;
+    height: 31px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: #FFFFFF;
+    flex-shrink: 0;
+}
+.reg-cv-name {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: 0.04em;
+    color: #24282B;
+}
+.reg-cv-role {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 8px;
+    line-height: 10px;
+    letter-spacing: 0;
+    color: #9B9C9E;
+}
+
+/* OTP step subheading */
+.reg-otp-sub {
+    margin: -8px 0 20px;
+    text-align: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 18px;
+    color: #656D79;
+}
+
+/* Logo upload */
+.reg-upload {
+    width: 100%;
+    height: 52px;
+    box-sizing: border-box;
+    padding: 0 16px;
+    background: #FFFFFF;
+    border: 1px solid #DEE1E5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.reg-upload:hover { border-color: #C8CDD3; }
+.reg-upload-text {
+    flex: 1;
+    min-width: 0;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.1em;
+    color: #97A1AF;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 1px 0;
+}
+.reg-upload.has-file .reg-upload-text { letter-spacing: 0.02em; }
+.reg-upload.has-file .reg-upload-text { color: #24282B; }
+.reg-upload-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(76, 171, 246, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 640px) {
+    .reg-v2 { padding: 32px 24px 24px; }
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 0;
+    color: var(--hxa-text-faint);
+    font-size: 11px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    padding: 0;
+}
+.back-btn:hover { color: var(--hxa-text); }
+.back-btn svg { width: 14px; height: 14px; }
+
+.resend-section {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--hxa-text-faint);
+}
+.resend-section a {
+    color: var(--hxa-blue);
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 4px;
+}
+
+/* ---------- Alert ---------- */
+.alert {
+    display: none;
+    padding: 11px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-bottom: 16px;
+}
+.alert.show { display: block; }
+.alert-error,
+.alert.error { background: #FEF2F2; border: 1px solid #FECACA; color: #B91C1C; }
+.alert-success,
+.alert.success { background: #F0FDF4; border: 1px solid #BBF7D0; color: #15803D; }
+
+/* Inline auth message shown INSIDE the login modal (not the hero page banner),
+   so feedback like "Invalid email or password" appears in the same container
+   the user is typing into. */
+.auth-inline-msg {
+    display: none;
+    margin: 4px 0 14px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 18px;
+}
+.auth-inline-msg.show { display: block; }
+.auth-inline-msg.error { background: #FEF2F2; border: 1px solid #FECACA; color: #B91C1C; }
+.auth-inline-msg.success { background: #F0FDF4; border: 1px solid #BBF7D0; color: #15803D; }
+
+/* ---------- Spinner (used by auth.js loading state) ---------- */
+.spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===================================================================
+   "Your Workplace is Ready!" first-login celebration (login page)
+   Mirrors the dashboard.css popup so it renders identically here.
+   =================================================================== */
+.ws-ready-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(36, 40, 43, 0.45);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+.ws-ready-overlay[hidden] { display: none; }
+.ws-ready-overlay.show { opacity: 1; }
+
+.ws-ready-card {
+    box-sizing: border-box;
+    width: 612px;
+    max-width: 100%;
+    height: 307px;
+    background: #FFFFFF;
+    border: 0.2px solid #606060;
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+    padding: 44px 86px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    transform: translateY(12px) scale(0.97);
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ws-ready-overlay.show .ws-ready-card { transform: translateY(0) scale(1); }
+
+.ws-ready-title {
+    margin: 0;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 35px;
+    line-height: 121%;
+    color: #24282B;
+}
+.ws-ready-title em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: -0.07em;
+    color: #5B6168;
+}
+
+.ws-ready-check {
+    width: 66px;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ws-ready-check svg { overflow: visible; }
+
+.ws-ready-circle {
+    transform-origin: 33px 33px;
+    transform: scale(0);
+}
+.ws-ready-overlay.show .ws-ready-circle {
+    animation: wsCirclePop 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+}
+
+.ws-ready-tick {
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+}
+.ws-ready-overlay.show .ws-ready-tick {
+    animation: wsTickDraw 0.5s ease-out 0.42s forwards;
+}
+
+@keyframes wsCirclePop {
+    0%   { transform: scale(0); }
+    70%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+@keyframes wsTickDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.ws-ready-btn {
+    width: 100%;
+    height: 52px;
+    background: #4CABF6;
+    border: 0;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.1em;
+    color: #F9F9FF;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+.ws-ready-btn:hover { background: #3FA1F2; box-shadow: 0 4px 12px rgba(76, 171, 246, 0.28); }
+
+@media (max-width: 640px) {
+    .ws-ready-card { height: auto; min-height: 307px; padding: 40px 28px; gap: 22px; }
+    .ws-ready-title { font-size: 27px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ws-ready-overlay, .ws-ready-card { transition: none; }
+    .ws-ready-circle { transform: scale(1); animation: none; }
+    .ws-ready-tick { stroke-dashoffset: 0; animation: none; }
+}
+
+/* "Already have an account? Log in" under the hero CTAs */
+.hero-haveaccount {
+    margin: 16px 0 0;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #5B6168;
+}
+.hero-haveaccount a {
+    color: #6C5CE7;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+}
+.hero-haveaccount a:hover { text-decoration: underline; }

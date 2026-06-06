@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hire XA - Screening Interview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/screening_round_room.css?v=12">
+    <link rel="stylesheet" href="/static/css/screening_round_proctor.css">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+
+    <!-- Screen 1: Pre-Join (HIRE XA brand) -->
+    <div class="sr-prejoin" id="sr-prejoin">
+        <!-- HIRE XA header chrome (logo + thin yellow line + corner blob) -->
+        <header class="sr-pj-chrome">
+            <div class="sr-pj-brand">
+                <div class="sr-pj-brand-name">HIRE <span class="ai">XA</span></div>
+                <div class="sr-pj-brand-sub">XCEED TALENT ACQUISITION</div>
+            </div>
+        </header>
+        <div class="sr-pj-blob" aria-hidden="true"></div>
+
+        <!-- Frosted glass panel (Rectangle 171) -->
+        <div class="sr-pj-panel" aria-hidden="true"></div>
+
+        <div class="sr-pj-stack">
+            <!-- Card 1: role identity -->
+            <section class="sr-pj-card sr-pj-role-card">
+                <h1 class="sr-pj-title">Screening Interview</h1>
+                <p class="sr-pj-role" id="sr-prejoin-role-text"></p>
+                <p class="sr-pj-company-loc" id="sr-prejoin-company-loc"></p>
+                <!-- Difficulty pill stays in the DOM for recruiter view; hidden for candidates. -->
+                <span class="sr-pj-badge hidden" id="sr-prejoin-difficulty"></span>
+                <!-- Duration sits alongside the role in the JS for recruiters; hidden by default for candidates. -->
+                <span class="sr-pj-duration hidden" id="sr-prejoin-duration">
+                    <span id="sr-prejoin-duration-text"></span>
+                </span>
+            </section>
+
+            <!-- Card 2: candidate form -->
+            <section class="sr-pj-card sr-pj-form-card">
+                <!-- Candidate flow -->
+                <div class="sr-prejoin-form" id="sr-prejoin-candidate">
+                    <div class="sr-pj-field">
+                        <label class="sr-pj-label" for="sr-candidate-name">
+                            Full Name <span class="sr-pj-req">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="sr-candidate-name"
+                            class="sr-pj-input"
+                            placeholder="Enter"
+                            autocomplete="name"
+                        >
+                    </div>
+
+                    <!-- Camera preview (dark stage with dashed border) -->
+                    <div class="sr-camera-preview" id="sr-camera-preview">
+                        <video id="sr-camera-video" autoplay muted playsinline></video>
+                        <div class="sr-camera-placeholder" id="sr-camera-placeholder">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9B9C9E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="23 7 16 12 23 17 23 7"/>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                            </svg>
+                            <span>Camera Off</span>
+                        </div>
+                    </div>
+
+                    <!-- Media controls (Enable Camera / Share Screen) -->
+                    <div class="sr-media-controls">
+                        <button class="sr-media-btn" id="sr-prejoin-camera-btn" type="button">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="23 7 16 12 23 17 23 7"/>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                            </svg>
+                            <span>Enable Camera</span>
+                        </button>
+                        <button class="sr-media-btn" id="sr-prejoin-screen-btn" type="button">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                <line x1="8" y1="21" x2="16" y2="21"/>
+                                <line x1="12" y1="17" x2="12" y2="21"/>
+                            </svg>
+                            <span>Share Screen</span>
+                        </button>
+                    </div>
+
+                    <!-- Mobile / iPad notice (kept for screen-share-unsupported devices) -->
+                    <div class="sr-mobile-notice hidden" id="sr-mobile-notice">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        <div>
+                            <span class="sr-notice-title">Screen sharing is not available on this device</span>
+                            <span class="sr-notice-desc">For the best experience, join from a desktop or laptop. You can still join with camera only.</span>
+                        </div>
+                    </div>
+
+                    <!-- Readiness checklist (panel with dashed border) -->
+                    <div class="sr-readiness" id="sr-readiness">
+                        <div class="sr-ready-item" id="sr-ready-name">
+                            <span class="sr-ready-dot"></span>
+                            <span>Enter your name</span>
+                        </div>
+                        <div class="sr-ready-item" id="sr-ready-camera">
+                            <span class="sr-ready-dot"></span>
+                            <span>Camera enabled</span>
+                        </div>
+                        <div class="sr-ready-item" id="sr-ready-screen">
+                            <span class="sr-ready-dot"></span>
+                            <span>Screen shared</span>
+                        </div>
+                    </div>
+
+                    <!-- Join button (HIRE XA blue) -->
+                    <button class="sr-pj-btn" id="sr-join-candidate-btn" disabled>
+                        Join Interview
+                    </button>
+                </div>
+
+                <!-- Recruiter flow (hidden until role is detected) -->
+                <div class="sr-prejoin-form hidden" id="sr-prejoin-recruiter">
+                    <button class="sr-pj-btn" id="sr-join-recruiter-btn">
+                        Join as Recruiter
+                    </button>
+                </div>
+            </section>
+
+            <p class="sr-pj-footer">Powered by Hire XA</p>
+        </div>
+    </div>
+
+    <!-- Screen 2: Interview Room -->
+    <div class="sr-room hidden" id="sr-room">
+
+        <!-- Top Bar -->
+        <header class="sr-room-topbar">
+            <div class="sr-topbar-left">
+                <span class="sr-room-name" id="sr-room-name">Screening Interview</span>
+            </div>
+            <div class="sr-topbar-center">
+                <div class="sr-timer" id="sr-timer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span id="sr-timer-display">00:00</span>
+                </div>
+            </div>
+            <div class="sr-topbar-right">
+                <div class="sr-participant-count" id="sr-participant-count">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <span id="sr-participant-count-text">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Video Area — Google Meet layout -->
+        <main class="sr-room-content">
+            <!-- Main screen share view -->
+            <div class="sr-main-view" id="sr-main-view">
+                <video id="sr-screen-video-main" autoplay playsinline></video>
+                <div class="sr-main-placeholder" id="sr-main-placeholder">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                    <span>No screen shared</span>
+                </div>
+            </div>
+            <!-- Side panel with participant tiles -->
+            <div class="sr-side-panel" id="sr-side-panel">
+                <!-- Tiles rendered by JS -->
+            </div>
+
+            <!-- Chat / Interview Panel -->
+            <div class="sr-chat-panel" id="sr-chat-panel">
+                <div class="sr-chat-header">
+                    <span class="sr-chat-title">Interview</span>
+                    <div class="sr-chat-status" id="sr-chat-status">
+                        <div class="sr-status-dot"></div>
+                        <span id="sr-status-text">Waiting to start...</span>
+                    </div>
+                </div>
+
+                <!-- Messages area -->
+                <div class="sr-chat-messages" id="sr-chat-messages">
+                    <!-- Messages rendered by JS -->
+                </div>
+
+                <!-- Input area (candidate types or speaks responses here) -->
+                <div class="sr-chat-input-area" id="sr-chat-input-area">
+                    <div class="sr-stt-indicator hidden" id="sr-stt-indicator">
+                        <div class="sr-stt-pulse"></div>
+                        <span>Listening...</span>
+                    </div>
+                    <div class="sr-chat-input-wrapper">
+                        <textarea
+                            id="sr-chat-input"
+                            class="sr-chat-input"
+                            placeholder="Speak naturally. Your answer submits automatically after 8s of silence."
+                            rows="1"
+                        ></textarea>
+                        <!-- Send button kept in the DOM but visually hidden;
+                             auto-submit fires after 8 s of silence. The
+                             button's click handler still works as a manual
+                             fallback for accessibility / dev tools. -->
+                        <button class="sr-chat-send-btn" id="sr-chat-send-btn" title="Send response" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- "You're muted" prompt — shown when the candidate speaks while muted -->
+        <div class="sr-muted-prompt hidden" id="sr-muted-prompt" role="alert" aria-live="assertive">
+            <span class="sr-muted-prompt-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                    <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/>
+                    <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .76-.13 1.49-.35 2.17"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                </svg>
+            </span>
+            <div class="sr-muted-prompt-text">
+                <strong>Your microphone is muted</strong>
+                <span>Looks like you're trying to speak. Unmute to be heard.</span>
+            </div>
+            <button class="sr-muted-prompt-btn" id="sr-muted-prompt-unmute" type="button">Unmute</button>
+            <button class="sr-muted-prompt-close" id="sr-muted-prompt-close" type="button" aria-label="Dismiss">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <!-- Bottom Control Bar -->
+        <footer class="sr-room-controls">
+            <div class="sr-controls-bar">
+                <button class="sr-control-btn" id="sr-btn-mic" title="Mute">
+                    <svg class="sr-icon-mic-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                    <svg class="sr-icon-mic-off hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="1" y1="1" x2="23" y2="23"/>
+                        <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/>
+                        <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .76-.13 1.49-.35 2.17"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                </button>
+
+                <button class="sr-control-btn" id="sr-btn-camera" title="Toggle Camera">
+                    <svg class="sr-icon-camera-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="23 7 16 12 23 17 23 7"/>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                    </svg>
+                    <svg class="sr-icon-camera-off hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="1" y1="1" x2="23" y2="23"/>
+                        <path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34m-7.72-2.06a4 4 0 1 1-5.56-5.56"/>
+                    </svg>
+                </button>
+
+                <button class="sr-control-btn" id="sr-btn-screenshare" title="Share Screen">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                </button>
+
+                <button class="sr-control-btn" id="sr-btn-chat" title="Chat">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </button>
+
+                <button class="sr-control-btn sr-control-btn-leave" id="sr-btn-leave" title="Leave Meeting">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    <span class="sr-leave-text">Leave</span>
+                </button>
+
+                <button class="sr-control-btn sr-control-btn-end" id="sr-btn-end" title="End Interview">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 2.59 3.4z"/>
+                    </svg>
+                    <span class="sr-end-text">End Interview</span>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Interview Submission Overlay (candidate only) -->
+    <div class="sr-submit-overlay hidden" id="sr-submit-overlay">
+        <div class="sr-submit-card">
+            <!-- Stage 1: Submitting -->
+            <div class="sr-submit-stage" id="sr-submit-stage-submitting">
+                <div class="sr-submit-spinner">
+                    <!-- Spinner rendered via CSS ::before/::after (dual ring) -->
+                </div>
+                <h2 class="sr-submit-title">Submitting your interview</h2>
+                <p class="sr-submit-subtitle">Hang tight while we securely save your responses.</p>
+
+                <!-- Do-not-close warning (prominent, animated) -->
+                <div class="sr-submit-warning" role="alert" aria-live="assertive">
+                    <span class="sr-submit-warning-icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </span>
+                    <span class="sr-submit-warning-text">Please don't close or refresh this tab. If you leave before this finishes, your interview won't be saved.</span>
+                </div>
+
+                <div class="sr-submit-steps">
+                    <div class="sr-submit-step" id="sr-step-finalize">
+                        <span class="sr-submit-step-icon sr-step-active"></span>
+                        <span class="sr-submit-step-text">Finalizing interview session</span>
+                    </div>
+                    <div class="sr-submit-step" id="sr-step-recording">
+                        <span class="sr-submit-step-icon sr-step-pending"></span>
+                        <span class="sr-submit-step-text">Uploading screen recording</span>
+                    </div>
+                    <div class="sr-submit-step" id="sr-step-proctor">
+                        <span class="sr-submit-step-icon sr-step-pending"></span>
+                        <span class="sr-submit-step-text">Sending session data</span>
+                    </div>
+                </div>
+                <div class="sr-submit-timer" id="sr-submit-timer">0:00</div>
+                <p class="sr-submit-brand">Powered by Hire XA</p>
+            </div>
+
+            <!-- Stage 2: Thank You -->
+            <div class="sr-submit-stage hidden" id="sr-submit-stage-done">
+                <div class="sr-submit-check">
+                    <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+                        <circle cx="36" cy="36" r="34" fill="#ecfdf5"/>
+                        <circle cx="36" cy="36" r="34" stroke="#10b981" stroke-width="2" fill="none"/>
+                        <polyline points="22 37 32 47 50 28" stroke="#10b981" stroke-width="3.5" fill="none"
+                                  stroke-linecap="round" stroke-linejoin="round" class="sr-submit-checkmark"/>
+                    </svg>
+                </div>
+                <h2 class="sr-submit-title">Thank You!</h2>
+                <p class="sr-submit-subtitle">Your interview has been submitted successfully.<br>The recruiter will review your responses shortly.</p>
+                <p class="sr-submit-redirect" id="sr-submit-redirect-text">Redirecting in <span id="sr-submit-countdown">5</span>s...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rejoin Overlay -->
+    <div class="sr-rejoin-overlay hidden" id="sr-rejoin-overlay">
+        <div class="sr-rejoin-card">
+            <div class="sr-rejoin-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+            </div>
+            <h2 class="sr-rejoin-title">You left the meeting</h2>
+            <p class="sr-rejoin-subtitle">The interview is still in progress. You can rejoin anytime.</p>
+            <div class="sr-rejoin-actions">
+                <button class="sr-rejoin-btn" id="sr-rejoin-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                        <polyline points="10 17 15 12 10 7"/>
+                        <line x1="15" y1="12" x2="3" y2="12"/>
+                    </svg>
+                    Rejoin Meeting
+                </button>
+                <button class="sr-rejoin-btn-secondary" id="sr-exit-btn" onclick="window.location.href='/b4kx'">
+                    Return to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MediaPipe Face Mesh CDN (pinned version for stability) -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/face_mesh.js" crossorigin="anonymous"></script>
+
+    <script src="/static/js/screening_round_proctor.js"></script>
+    <script src="/static/js/screening_round_recorder.js?v=3"></script>
+    <!-- Sarvam STT (Saaras v3 streaming) — loaded before screening_round_room.js
+         so initSpeechRecognition can pick window.SarvamSpeechRecognition over
+         the browser's Web Speech API. The module capability-checks itself, so
+         loading it on browsers that can't use it is harmless. -->
+    <script src="/static/js/sarvam_stt.js?v=4"></script>
+    <script src="/static/js/screening_round_room.js?v=18"></script>
+</body>
+</html>

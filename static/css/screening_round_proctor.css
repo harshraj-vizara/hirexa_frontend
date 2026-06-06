@@ -1,0 +1,64 @@
+/* ==================== Proctor Canvas Overlay ==================== */
+
+.sr-proctor-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+    /* Mirror to match the scaleX(-1) on the video element */
+    transform: scaleX(-1);
+    border-radius: 8px;
+}
+
+/* ==================== Proctor Status Indicator ==================== */
+
+.sr-proctor-status {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.sr-proctor-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: sr-proctor-pulse 2s ease-in-out infinite;
+}
+
+.sr-proctor-status-ok {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.sr-proctor-status-ok .sr-proctor-status-dot {
+    background: #10b981;
+    box-shadow: 0 0 4px #10b981;
+}
+
+.sr-proctor-status-warn {
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.sr-proctor-status-warn .sr-proctor-status-dot {
+    background: #f59e0b;
+    box-shadow: 0 0 4px #f59e0b;
+}
+
+@keyframes sr-proctor-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}

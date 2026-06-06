@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire XA - Jobs posted</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/pipeline_monitor.css">
+    <link rel="stylesheet" href="/static/css/user_dropdown.css">
+    <link rel="icon" href="/static/assets/hirexa-favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Shared HIRE XA chrome -->
+        <header class="dash-header">
+            <div class="dash-brand">
+                <div class="dash-brand-name">HIRE <span class="ai">XA</span></div>
+                <div class="dash-brand-sub">XCEED TALENT ACQUISITION</div>
+            </div>
+            <div data-user-dropdown></div>
+        </header>
+
+        <!-- Yellow blob background -->
+        <div class="dash-blob" aria-hidden="true"></div>
+
+        <!-- Frosted glass panel (Rectangle 171) -->
+        <div class="dash-panel" aria-hidden="true"></div>
+
+        <!-- Sidebar (icon-nav) -->
+        <aside class="dash-sidebar">
+            <a class="side-item" href="/b4kx" title="Back">
+                <span class="side-icon icon-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9886E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                </span>
+                <span class="side-label">Back</span>
+            </a>
+            <a class="side-item" href="/b4kx">
+                <span class="side-icon icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V9.5z"/>
+                    </svg>
+                </span>
+                <span class="side-label">Home</span>
+            </a>
+            <a class="side-item active" href="/d2mw">
+                <span class="side-icon icon-green">
+                    <svg viewBox="0 0 24 24" fill="#8EC49E">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <span class="side-label">Jobs</span>
+            </a>
+            <a class="side-item" href="/p8eu">
+                <span class="side-icon icon-pink">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#DE9CA7" stroke-width="1.8" stroke-linejoin="round">
+                        <polygon points="6,4 20,12 6,20"/>
+                    </svg>
+                </span>
+                <span class="side-label">Quick</span>
+            </a>
+        </aside>
+
+        <main class="pl-main pm-main">
+            <!-- Title -->
+            <h1 class="pm-title">
+                <span class="pm-title-bold">Jobs</span>
+                <span class="pm-title-italic">posted.</span>
+            </h1>
+            <p class="pm-subtitle" id="pm-summary">Loading your pipelines…</p>
+
+            <!-- Filter pills + search -->
+            <div class="pm-toolbar">
+                <div class="pm-pills" id="pm-pills">
+                    <!-- Rendered by JS once the list loads -->
+                </div>
+                <div class="pm-search">
+                    <input type="text" id="pm-search-input" placeholder="Search role or company.." autocomplete="off">
+                    <span class="pm-search-icon" aria-hidden="true">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4CABF6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="pm-empty hidden" id="pm-empty">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9B9C9E" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <h4>No pipelines yet</h4>
+                <p>Post your first role to start sourcing candidates.</p>
+                <button class="pm-cta" onclick="PM.newRole()">+ New Role</button>
+            </div>
+
+            <!-- Table — column widths sized so the sum + gaps + padding equals
+                 the table card's 1300px max-width: no trailing whitespace after
+                 the Actions column.  260+120+100+110+110+110+110+100+156 = 1176
+                 + 8×12 gaps (96) + 14+14 padding (28) = 1300. -->
+            <section class="pm-table-card" id="pm-table-card">
+                <div class="pm-thead">
+                    <div class="pm-th" style="--w:260px">Role/Company</div>
+                    <div class="pm-th" style="--w:120px">Status</div>
+                    <div class="pm-th pm-th-num" style="--w:100px">Profiles</div>
+                    <div class="pm-th pm-th-num" style="--w:110px">Shortlisted</div>
+                    <div class="pm-th pm-th-num" style="--w:110px">Contacted</div>
+                    <div class="pm-th pm-th-num" style="--w:110px">Interviews</div>
+                    <div class="pm-th pm-th-num" style="--w:110px">Selections</div>
+                    <div class="pm-th" style="--w:100px">Created</div>
+                    <div class="pm-th" style="--w:156px">Actions</div>
+                </div>
+                <div class="pm-tbody" id="pm-tbody">
+                    <!-- Rows rendered by JS -->
+                </div>
+            </section>
+
+            <p class="pm-footnote">Select the numbers to see specific stats of each job profile</p>
+
+            <!-- + New Role — sits in a container that matches the table's
+                 max-width so the button's right edge aligns with the table's
+                 right edge (per Figma), not the viewport's right edge. -->
+            <div class="pm-cta-row">
+                <button class="pm-cta" onclick="PM.newRole()">+ New Role</button>
+            </div>
+
+            <!-- Toast -->
+            <div class="pl-toast hidden" id="pm-toast"></div>
+        </main>
+    </div>
+
+    <!-- Job Description popup - opens when user clicks the (i) icon on a row -->
+    <div class="pm-jd-overlay hidden" id="pm-jd-overlay" onclick="if(event.target===this) PM.closeJobDescription()">
+        <div class="pm-jd-card" role="dialog" aria-labelledby="pm-jd-title">
+            <button class="pm-jd-close" type="button" onclick="PM.closeJobDescription()" aria-label="Close">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="pm-jd-head">
+                <h3 class="pm-jd-title" id="pm-jd-title">Job Description</h3>
+                <p class="pm-jd-sub" id="pm-jd-sub"></p>
+            </div>
+            <div class="pm-jd-body" id="pm-jd-body"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/pipeline_monitor.js"></script>
+    <script src="/static/js/user_dropdown.js"></script>
+</body>
+</html>

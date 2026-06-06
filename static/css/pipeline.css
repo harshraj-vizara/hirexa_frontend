@@ -1,0 +1,3583 @@
+/* =========================================================
+   Fluenzo Pipeline — Figma pixel match
+   ========================================================= */
+
+:root {
+    --fluenzo-yellow: #FFDF67;
+    --fluenzo-blue: #4CABF6;
+    --fluenzo-blue-hover: #2B9CF0;
+    --text-dark: #24282B;
+    --text-muted: #9B9C9E;
+    --text-body: #5C6267;
+    --bg-page: #FFFFFF;
+    --bg-sidebar: #EAF2FC;
+    --bg-input: #F5F6F8;
+    --border-soft: #E5E7EB;
+    --border-input: #D1D5DB;
+    --danger: #EF4444;
+    --success: #10B981;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+html, body {
+    height: 100vh;
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+}
+
+.hidden { display: none !important; }
+
+/* ---------- Top bar ---------- */
+.pl-topbar {
+    position: relative;
+    background: var(--bg-page);
+    padding: 24px 64px 20px;
+}
+.pl-topbar::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2px;
+    background: var(--fluenzo-yellow);
+    z-index: 2;
+}
+.pl-topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+.pl-brand-wordmark {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: #000;
+    cursor: pointer;
+    line-height: 1;
+}
+.pl-brand-wordmark .ai { color: var(--fluenzo-blue); margin-left: 4px; }
+
+.pl-user-dropdown { position: relative; }
+.pl-user-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px 8px 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dark);
+    transition: background 0.15s;
+}
+.pl-user-trigger:hover { background: rgba(76, 171, 246, 0.08); }
+.pl-user-dropdown.open .pl-user-trigger {
+    background: #fff;
+    border-color: var(--border-soft);
+}
+.pl-user-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--fluenzo-blue) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-3.3 0-8 1.67-8 5v1h16v-1c0-3.33-4.7-5-8-5z'/></svg>") center/70% no-repeat;
+    flex-shrink: 0;
+}
+.pl-user-dropdown.open .pl-user-trigger svg { transform: rotate(180deg); }
+.pl-user-trigger svg { transition: transform 0.2s; color: var(--text-muted); }
+
+.pl-user-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    min-width: 220px;
+    padding: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 100;
+}
+.pl-user-dropdown.open .pl-user-menu {
+    opacity: 1; pointer-events: auto; transform: none;
+}
+.pl-user-email {
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text-dark);
+    border-bottom: 1px solid #F3F3F3;
+    margin-bottom: 4px;
+}
+.pl-user-item {
+    display: block;
+    padding: 9px 12px;
+    font-size: 14px;
+    color: var(--text-dark);
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.12s;
+}
+.pl-user-item:hover { background: #F3F3F3; }
+
+/* ---------- App layout ---------- */
+.pl-app {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    min-height: calc(100vh - 80px);
+}
+
+/* ---------- Sidebar ---------- */
+.pl-sidebar {
+    background: var(--bg-sidebar);
+    padding: 56px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.pl-sidebar-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+}
+
+.pl-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+}
+
+.pl-nav-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 8px 0;
+    cursor: pointer;
+    position: relative;
+    transition: opacity 0.2s;
+}
+
+/* Vertical connector line between steps */
+.pl-nav-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 23px;
+    top: 58px;
+    bottom: -16px;
+    width: 1px;
+    background: #C8D4E5;
+}
+
+.pl-nav-number {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #D8E4F2;
+    color: var(--text-muted);
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s;
+    position: relative;
+    z-index: 1;
+}
+.pl-nav-item.active .pl-nav-number {
+    background: var(--fluenzo-yellow);
+    color: var(--text-dark);
+}
+.pl-nav-item.completed .pl-nav-number {
+    background: var(--fluenzo-blue);
+    color: #fff;
+}
+.pl-nav-item.completed .pl-nav-number span { display: none; }
+.pl-nav-check { display: none; }
+.pl-nav-item.completed .pl-nav-check { display: block; }
+
+.pl-nav-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 4px;
+}
+.pl-nav-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+.pl-nav-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+.pl-nav-item:not(.active):not(.completed) .pl-nav-title { color: var(--text-muted); }
+
+/* ---------- Main area ---------- */
+.pl-main {
+    padding: 56px 72px;
+    overflow-y: auto;
+}
+
+.pl-step-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--fluenzo-blue);
+    background: rgba(76, 171, 246, 0.12);
+    border-radius: 20px;
+    margin-bottom: 12px;
+    display: none; /* Figma hides step badge */
+}
+
+.pl-step h1 {
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+}
+.pl-step-desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    max-width: 560px;
+}
+
+/* ---------- Form ---------- */
+.pl-form { display: flex; flex-direction: column; gap: 24px; max-width: 900px; }
+.pl-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+.pl-field { display: flex; flex-direction: column; gap: 8px; position: relative; }
+.pl-field label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+.pl-field .req { color: var(--fluenzo-blue); font-weight: 400; }
+.pl-field-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+.pl-field-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: right;
+    margin-top: 2px;
+}
+
+.pl-field input[type="text"],
+.pl-field input[type="number"],
+.pl-field input[type="email"],
+.pl-field input[type="tel"],
+.pl-field input[type="url"],
+.pl-field select,
+.pl-field textarea {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-input);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text-dark);
+    outline: 0;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.pl-field input::placeholder,
+.pl-field textarea::placeholder {
+    color: var(--text-muted);
+}
+.pl-field input:focus,
+.pl-field select:focus,
+.pl-field textarea:focus {
+    border-color: var(--fluenzo-blue);
+    box-shadow: 0 0 0 3px rgba(76, 171, 246, 0.15);
+}
+.pl-field textarea { resize: none; min-height: 140px; }
+.pl-field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239B9C9E' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 18px;
+    padding-right: 44px;
+}
+
+/* Budget row */
+.pl-budget-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 1fr;
+    gap: 12px;
+    align-items: center;
+}
+.pl-cur { max-width: 90px; }
+.pl-to { display: none; }
+/* Budget validation: flag Min/Max in red while Min exceeds Max. */
+.pl-budget-row input.pl-invalid {
+    border-color: #E2574C;
+    box-shadow: 0 0 0 2px rgba(226, 87, 76, 0.15);
+}
+
+/* Deadline chips */
+.pl-deadline-options { display: flex; gap: 10px; flex-wrap: wrap; }
+.pl-deadline-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 22px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-input);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.pl-deadline-chip:hover { border-color: var(--fluenzo-blue); color: var(--text-dark); }
+.pl-deadline-chip input { display: none; }
+.pl-deadline-chip:has(input:checked) {
+    border-color: var(--fluenzo-yellow);
+    background: #fff;
+    color: var(--text-dark);
+    box-shadow: 0 0 0 2px var(--fluenzo-yellow);
+}
+
+/* Location dropdown */
+.pl-location-wrap { position: relative; }
+.pl-loc-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    background: #fff;
+    border: 1px solid var(--border-input);
+    border-radius: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+    margin-top: 4px;
+    z-index: 50;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+.pl-loc-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-dark);
+}
+.pl-loc-item:hover { background: #F3F6FA; }
+
+/* ---------- Actions ---------- */
+.pl-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 40px;
+    gap: 12px;
+}
+.pl-actions.left { justify-content: flex-start; }
+
+.pl-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 36px;
+    border: 0;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+}
+.pl-btn:active { transform: translateY(1px); }
+.pl-btn-primary { background: var(--fluenzo-blue); color: #fff; }
+.pl-btn-primary:hover { background: var(--fluenzo-blue-hover); }
+.pl-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.pl-btn svg { width: 16px; height: 16px; }
+
+.pl-btn-sm {
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid var(--border-input);
+    background: #fff;
+    color: var(--text-dark);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+}
+.pl-btn-sm:hover { background: #F3F3F3; }
+.pl-btn-ghost { background: transparent; }
+.pl-btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+.pl-btn-copy { background: var(--fluenzo-blue); color: #fff; border-color: var(--fluenzo-blue); }
+.pl-btn-icon {
+    width: 32px; height: 32px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    background: #F3F3F3;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-dark);
+}
+.pl-btn-icon:hover { background: #E5E7EB; }
+
+/* ---------- Cards (steps 2/3/4 content) ---------- */
+.pl-card {
+    background: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+.pl-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+.pl-card-head h3 {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 16px; font-weight: 700; color: var(--text-dark);
+}
+.pl-card-actions { display: flex; gap: 8px; }
+.pl-card-body { font-size: 14px; line-height: 1.6; color: var(--text-body); }
+
+/* Info bar */
+.pl-info-bar {
+    background: #F5F6F8;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    color: var(--text-body);
+}
+
+/* URL bar */
+.pl-url-bar {
+    background: #F5F6F8;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+}
+.pl-url-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.pl-url-row { display: flex; align-items: center; gap: 10px; }
+.pl-url-link {
+    flex: 1;
+    color: var(--fluenzo-blue);
+    font-size: 14px;
+    word-break: break-all;
+    text-decoration: none;
+}
+.pl-url-link:hover { text-decoration: underline; }
+
+/* Deadline bar */
+.pl-deadline-bar {
+    background: rgba(255, 223, 103, 0.18);
+    border: 1px solid rgba(255, 223, 103, 0.6);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.pl-deadline-info { display: flex; align-items: center; gap: 12px; flex: 1; }
+.pl-deadline-icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--fluenzo-yellow);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-dark);
+}
+.pl-deadline-text { display: flex; flex-direction: column; gap: 2px; }
+.pl-deadline-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.pl-deadline-value { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+.pl-deadline-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #fff;
+    color: var(--text-dark);
+}
+.pl-deadline-actions { display: flex; gap: 8px; }
+
+/* Loader */
+.pl-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    gap: 16px;
+}
+.pl-spinner {
+    width: 40px; height: 40px;
+    border: 3px solid #E5E7EB;
+    border-top-color: var(--fluenzo-blue);
+    border-radius: 50%;
+    animation: plSpin 0.8s linear infinite;
+}
+@keyframes plSpin { to { transform: rotate(360deg); } }
+
+/* Upload zone */
+.pl-upload-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    background: var(--bg-input);
+    border: 1.5px dashed var(--border-input);
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    transition: border-color 0.15s, color 0.15s;
+}
+.pl-upload-zone:hover { border-color: var(--fluenzo-blue); color: var(--text-dark); }
+.pl-upload-done {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #166534;
+}
+.pl-btn-remove {
+    background: transparent;
+    border: 0;
+    color: var(--danger);
+    font-size: 13px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+/* Modal (overlay + dialog) */
+.pl-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(36, 40, 43, 0.5);
+    z-index: 200;
+}
+.pl-modal-overlay.hidden { display: none !important; }
+.pl-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 12px;
+    width: calc(100% - 40px);
+    max-width: 540px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 201;
+    animation: plModalIn 0.2s ease;
+}
+.pl-modal.hidden { display: none !important; }
+@keyframes plModalIn {
+    from { opacity: 0; transform: translate(-50%, -46%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+.pl-modal-head {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.pl-modal-head h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+.pl-modal-close {
+    width: 28px; height: 28px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    background: #F3F3F3;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-dark);
+}
+.pl-modal-close:hover { background: #E5E7EB; }
+.pl-modal-body {
+    padding: 18px 22px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.pl-modal-note {
+    font-size: 13px;
+    color: var(--text-body);
+    margin: 0;
+    padding: 10px 12px;
+    background: rgba(76, 171, 246, 0.08);
+    border-radius: 8px;
+}
+.pl-modal-foot {
+    padding: 16px 22px;
+    border-top: 1px solid var(--border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+/* Match the rest of the design system: the referral modal's Cancel / Add
+   Referral buttons use the same flat, soft-rectangle style as the wizard's
+   Continue button (radius 10, 12x padding) — not the default .pl-btn full pill
+   or the tiny .pl-btn-sm. Both buttons share the same height. */
+.pl-modal-foot .pl-btn.pl-btn-primary {
+    border-radius: 10px;
+    padding: 12px 26px;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(76, 171, 246, 0.30), 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+.pl-modal-foot .pl-btn.pl-btn-primary svg { width: 15px; height: 15px; }
+.pl-modal-foot .pl-btn-sm.pl-btn-ghost {
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    background: #FFFFFF;
+    border: 1px solid var(--border-input);
+    color: var(--text-dark);
+}
+.pl-modal-foot .pl-btn-sm.pl-btn-ghost:hover { background: #F3F3F3; }
+
+/* Toast */
+.pl-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--text-dark);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    z-index: 300;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    animation: plToastIn 0.25s ease;
+}
+@keyframes plToastIn { from { transform: translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* Old sidebar-only styles kept as no-ops to prevent breakage */
+.pl-sidebar-top, .pl-back-btn, .pl-brand, .pl-brand-logo, .pl-brand-text,
+.pl-brand-name, .pl-brand-label, .pl-sidebar-bottom, .pl-sidebar-link { display: none; }
+
+/* ---------- Step 2: LinkedIn Post (Figma) ---------- */
+.pl-step-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    margin-bottom: 32px;
+}
+.pl-step-head-left { flex: 1; }
+.pl-step-head-left h1 { margin-bottom: 10px; }
+.pl-step-head-left .pl-step-desc { margin-bottom: 0; }
+.pl-step-head-right {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: right;
+    max-width: 320px;
+    line-height: 1.5;
+    padding-top: 8px;
+}
+
+/* Big rounded post card (looks like a textarea) */
+.pl-post-card {
+    background: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 16px 20px 12px;
+    margin-bottom: 18px;
+    max-width: 900px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.pl-post-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.pl-post-card-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.pl-post-card-actions { display: flex; gap: 6px; }
+.pl-post-icon-btn {
+    width: 32px; height: 32px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    background: var(--fluenzo-blue);
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.pl-post-icon-btn:hover { background: var(--fluenzo-blue-hover); }
+
+.pl-post-body {
+    min-height: 280px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-body);
+    padding: 4px 0;
+}
+.pl-post-body #li-display { white-space: pre-wrap; word-wrap: break-word; }
+.pl-edit-area {
+    width: 100%;
+    min-height: 260px;
+    padding: 12px;
+    border: 1px solid var(--border-input);
+    border-radius: 8px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-dark);
+    outline: 0;
+    resize: vertical;
+}
+.pl-edit-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+/* Refine row inside post card */
+.pl-refine {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #F3F3F3;
+}
+.pl-refine input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--border-input);
+    border-radius: 999px;
+    background: var(--bg-input);
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-dark);
+    outline: 0;
+}
+.pl-refine input:focus {
+    border-color: var(--fluenzo-blue);
+    background: #fff;
+}
+.pl-btn-refine {
+    width: 36px; height: 36px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    background: rgba(76, 171, 246, 0.15);
+    color: var(--fluenzo-blue);
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.15s;
+    flex-shrink: 0;
+}
+.pl-btn-refine:hover { background: var(--fluenzo-blue); color: #fff; }
+
+/* LinkedIn actions row */
+.pl-li-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 24px;
+    max-width: 900px;
+}
+.pl-btn-li-connect {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    background: #E5E9EF;
+    color: var(--text-dark);
+    border: 0;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.pl-btn-li-connect:hover { background: #D6DCE6; }
+.pl-li-icon {
+    width: 22px; height: 22px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    background: #0A66C2;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+.pl-btn-li-manual {
+    background: transparent;
+    border: 0;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 0;
+}
+.pl-btn-li-manual:hover { color: var(--text-dark); }
+
+/* Info cards (Internal Referrals, Application URL) */
+.pl-info-card {
+    background: #E9F1FB;
+    border: 1px solid rgba(76, 171, 246, 0.18);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 16px;
+    max-width: 900px;
+}
+.pl-info-card-label {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+.pl-info-card-desc {
+    font-size: 13px;
+    color: var(--text-body);
+    margin-bottom: 12px;
+}
+.pl-info-card-actions { display: flex; gap: 8px; margin-bottom: 10px; }
+.pl-info-card-url-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.pl-info-card-url {
+    flex: 1;
+    color: var(--fluenzo-blue);
+    font-size: 14px;
+    text-decoration: underline;
+    word-break: break-all;
+}
+.pl-info-card-copy {
+    width: 32px; height: 32px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    background: transparent;
+    color: var(--text-dark);
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+.pl-info-card-copy:hover { background: rgba(76, 171, 246, 0.15); }
+
+/* Referral section inside info-card */
+.pl-btn-referral {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: #fff;
+    color: var(--text-dark);
+    border: 1px solid var(--border-input);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.pl-btn-referral:hover { border-color: var(--fluenzo-blue); color: var(--fluenzo-blue); }
+.pl-referral-list { display: flex; flex-direction: column; gap: 6px; }
+.pl-referral-empty {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+.pl-referral-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+/* Full JD collapsible */
+.pl-jd-details {
+    background: #F5F6F8;
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 12px 16px;
+    max-width: 900px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+.pl-jd-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 14px;
+}
+.pl-jd-body {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-soft);
+    white-space: pre-wrap;
+    font-size: 13px;
+    color: var(--text-body);
+    line-height: 1.6;
+}
+
+/* Split actions (Back left, Continue right) */
+.pl-actions-split {
+    justify-content: space-between;
+    max-width: 900px;
+}
+.pl-btn-back {
+    background: #fff;
+    color: var(--fluenzo-blue);
+    border: 1px solid var(--fluenzo-blue);
+    padding: 12px 34px;
+}
+.pl-btn-back:hover {
+    background: rgba(76, 171, 246, 0.08);
+}
+
+/* ---------- Step 3: Find Candidates ---------- */
+.pl-search-active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 80px 20px 60px;
+    max-width: 560px;
+    margin: 0 auto;
+}
+.pl-search-anim {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: rgba(76, 171, 246, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fluenzo-blue);
+    margin-bottom: 24px;
+}
+.pl-search-anim svg { width: 32px; height: 32px; z-index: 2; }
+.pl-search-pulse {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(76, 171, 246, 0.2);
+    animation: plPulse 1.6s ease-out infinite;
+}
+@keyframes plPulse {
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+.pl-search-active h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+.pl-search-active p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 22px;
+}
+.pl-search-progress {
+    width: 100%;
+    max-width: 360px;
+    height: 6px;
+    background: #E8ECF1;
+    border-radius: 999px;
+    overflow: hidden;
+}
+.pl-search-progress-bar {
+    height: 100%;
+    width: 30%;
+    background: var(--fluenzo-blue);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+    animation: plIndeterminate 1.8s ease-in-out infinite;
+}
+@keyframes plIndeterminate {
+    0% { margin-left: -30%; }
+    100% { margin-left: 100%; }
+}
+
+/* Stats cards */
+.pl-search-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+    max-width: 900px;
+}
+.pl-search-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    background: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+}
+.pl-search-stat-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.pl-search-stat-icon.found { background: #DDE9F7; color: var(--fluenzo-blue); }
+.pl-search-stat-icon.screened { background: #FCEFB0; color: #E5B93A; }
+.pl-search-stat-icon.shortlisted { background: #DDF0D8; color: #6FB155; }
+.pl-search-stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.pl-search-stat-num {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+.pl-search-stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Candidate section */
+.pl-cand-section { margin-bottom: 28px; max-width: 900px; }
+.pl-cand-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+.pl-cand-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+.pl-count {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-left: 6px;
+}
+.pl-cand-view-toggle {
+    display: flex;
+    gap: 2px;
+    background: #F3F3F3;
+    border-radius: 8px;
+    padding: 3px;
+}
+.pl-view-btn {
+    width: 32px; height: 32px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: background 0.12s, color 0.12s;
+}
+.pl-view-btn.active { background: #fff; color: var(--fluenzo-blue); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+
+.pl-cand-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+.pl-cand-grid.list-view { grid-template-columns: 1fr; }
+.pl-cand-card {
+    background: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    position: relative;
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.pl-cand-card:hover {
+    border-color: var(--fluenzo-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(76, 171, 246, 0.10);
+}
+.pl-cand-card.no-contact { opacity: 0.7; }
+
+/* Avatar */
+.pl-cand-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+}
+.av-1 { background: linear-gradient(135deg, #6366f1, #818cf8); }
+.av-2 { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
+.av-3 { background: linear-gradient(135deg, #10b981, #34d399); }
+.av-4 { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+.av-5 { background: linear-gradient(135deg, #ef4444, #f87171); }
+.av-6 { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+
+/* Info block */
+.pl-cand-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.pl-cand-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pl-cand-title {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Contact items */
+.pl-cand-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 2px;
+}
+.pl-cand-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pl-cand-contact-item svg { flex-shrink: 0; color: #94a3b8; }
+.pl-cand-contact-item.email svg { color: #0ea5e9; }
+.pl-cand-contact-item.phone svg { color: #10b981; }
+.pl-cand-no-contact {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #d97706;
+    font-style: italic;
+}
+.pl-cand-no-contact svg { color: #d97706; flex-shrink: 0; }
+
+/* Meta (location + LinkedIn) */
+.pl-cand-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 2px;
+}
+.pl-cand-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #94a3b8;
+}
+.pl-cand-meta-item svg { flex-shrink: 0; }
+.pl-cand-linkedin {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #0077b5;
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.15s;
+}
+.pl-cand-linkedin:hover { opacity: 0.75; }
+.pl-cand-linkedin svg { flex-shrink: 0; }
+
+/* Source badge */
+.pl-cand-source {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #64748b;
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+}
+
+.pl-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+    .pl-app { grid-template-columns: 260px 1fr; }
+    .pl-sidebar { padding: 40px 24px; }
+    .pl-main { padding: 40px; }
+}
+@media (max-width: 820px) {
+    .pl-topbar { padding: 20px 24px 16px; }
+    .pl-brand-wordmark { font-size: 26px; }
+    .pl-app { grid-template-columns: 1fr; }
+    .pl-sidebar { display: none; }
+    .pl-main { padding: 32px 24px; }
+    .pl-row-2 { grid-template-columns: 1fr; }
+    .pl-budget-row { grid-template-columns: 1fr; }
+    .pl-step h1 { font-size: 28px; }
+}
+
+/* =================================================================
+   HIRE XA pipeline redesign — page chrome + Step 1 layout
+   (loaded AFTER all old rules so these win on specificity ties)
+   ================================================================= */
+
+/* Pipeline now also has 3 sidebar icons (Back removed) — uses dashboard.css's
+   default padding-top: 126px, no override needed here. */
+
+/* Pipeline & dashboard share the same blob size now (set in dashboard.css) */
+
+/* Main content area — clears the 66px sidebar, sits below 80px header */
+.dashboard .pl-main {
+    position: relative;
+    z-index: 3;
+    padding: 24px 55px 30px 146px;
+    /* Page chrome (header + sidebar) is locked; the main content area gets
+       its own scroll context so steps that overflow (e.g. Step 3 with 33
+       agent cards) can scroll vertically without losing the chrome. */
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    background: transparent;
+}
+
+/* ---------- Horizontal stepper ---------- */
+.pl-stepper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 28px;
+    margin-left: 0;
+    max-width: 1180px;
+}
+.pl-stepper .pl-nav-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    flex: 0 0 auto;
+}
+.pl-stepper .pl-nav-item::after {
+    display: none !important;
+}
+.pl-step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #CEEAFF;
+    border: 0.5px solid rgba(0, 0, 0, 0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 19px;
+    color: #9B9C9E;
+    flex-shrink: 0;
+    letter-spacing: 0.1em;
+}
+.pl-stepper .pl-nav-item.active .pl-step-num {
+    background: #FFDF67;
+    color: #24282B;
+}
+.pl-step-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0;
+}
+.pl-step-text strong {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 121%;
+    color: #24282B;
+}
+.pl-step-text span {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 13px;
+    letter-spacing: 0.1em;
+    color: #9B9C9E;
+}
+.pl-step-line {
+    width: auto;
+    height: 0;
+    border-top: 1px solid rgba(155, 156, 158, 0.35);
+    flex: 1 1 50px;
+    min-width: 50px;
+    max-width: 110px;
+    margin: 0 14px;
+}
+
+/* ---------- Step 1 title block ---------- */
+.pl-step .pl-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 2px;
+    margin-left: 50px;
+    line-height: 121.02%;
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: normal;
+}
+.pl-title-bold {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 121.02%;
+    color: #24282B;
+}
+.pl-title-italic {
+    font-family: 'Fraunces', 'Georgia', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 30px;
+    line-height: 121.02%;
+    letter-spacing: -0.07em;
+    color: #5B6168;
+}
+.pl-title-desc {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 18px;
+    color: #9B9C9E;
+    margin-bottom: 22px;
+    margin-left: 50px;
+    max-width: 700px;
+}
+
+/* ---------- Two-column grid: form (900) + preview (460), scaled ~1.39x ---------- */
+.pl-grid {
+    display: grid;
+    grid-template-columns: 900px 460px;
+    gap: 64px;
+    align-items: start;
+    margin-bottom: 30px;
+    margin-left: 50px;
+    max-width: 1450px;
+}
+
+/* ---------- Form card (left) ---------- */
+.pl-form-card {
+    background: #FFFFFF;
+    /* Very faint outer hairline + soft drop shadow. */
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.035),
+                0 2px 10px rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
+    padding: 22px 36px 24px;
+}
+.pl-form-card .pl-field {
+    margin-bottom: 14px;
+    gap: 6px;
+}
+.pl-form-card .pl-field:last-child { margin-bottom: 0; }
+.pl-form-card .pl-row-2 {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 14px;
+}
+.pl-form-card label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 121%;
+    color: #24282B;
+    margin-bottom: 6px;
+}
+.pl-form-card .req {
+    color: #4CABF6;
+    font-weight: 400;
+}
+
+/* Inputs scaled for the larger card */
+.pl-form-card input[type="text"],
+.pl-form-card input[type="number"],
+.pl-form-card input[type="email"],
+.pl-form-card input[type="tel"],
+.pl-form-card select,
+.pl-form-card textarea {
+    width: 100%;
+    background: #FFFFFF;
+    border: 0.5px solid rgba(158, 158, 158, 0.45);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 17px;
+    letter-spacing: 0.05em;
+    color: #24282B;
+    box-shadow: none;
+    min-height: 0;
+}
+.pl-form-card input:focus,
+.pl-form-card select:focus,
+.pl-form-card textarea:focus {
+    border-color: #4CABF6;
+    box-shadow: 0 0 0 2px rgba(76, 171, 246, 0.15);
+}
+.pl-form-card input::placeholder,
+.pl-form-card textarea::placeholder {
+    color: #9B9C9E;
+    letter-spacing: 0.1em;
+}
+.pl-form-card textarea {
+    resize: none;
+    min-height: 86px;
+    line-height: 17px;
+}
+.pl-form-card select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2324282B' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    padding-right: 34px;
+}
+
+/* JD textarea hint + counter footer */
+/* Counter pinned to the bottom-right INSIDE the textarea (Figma); hint sits
+   on its own line below. */
+.pl-jd-wrap { position: relative; }
+.pl-jd-wrap textarea { padding-bottom: 24px; }   /* room for the counter */
+.pl-jd-count {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    pointer-events: none;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: #9B9C9E;
+    background: transparent;
+}
+.pl-jd-hint {
+    display: block;
+    /* .pl-field uses flex-column with gap:6px, which is the visible spacing
+       between the textarea and the hint. Pull the hint up to close the gap. */
+    margin-top: -4px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: #9B9C9E;
+}
+
+/* Budget row: INR (76px) | Min | Max */
+.pl-form-card .pl-budget-row {
+    grid-template-columns: 76px 1fr 1fr;
+    gap: 12px;
+    align-items: center;
+}
+.pl-form-card .pl-cur {
+    width: 76px;
+    max-width: 76px;
+    padding-right: 28px;
+    background-position: right 8px center;
+    background-size: 12px;
+}
+
+/* Application Deadline chips */
+.pl-deadline-options {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+.pl-chip {
+    position: relative;
+    width: 76px;
+    height: 32px;
+    background: #FFFFFF;
+    border: 0.5px solid rgba(158, 158, 158, 0.45);
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    box-shadow: none;
+}
+.pl-chip input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+}
+.pl-chip span {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    color: #24282B;
+}
+.pl-chip:hover {
+    border-color: #4CABF6;
+}
+.pl-chip:has(input[type="radio"]:checked) {
+    background: #CEEAFF;
+    border-color: #FFD33C;
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.25),
+                0px 1px 1.4px rgba(255, 211, 60, 0.38);
+}
+
+/* Custom chip — when Custom radio is selected, the chip morphs in place into a
+   tiny number input (1-90). No separate field appears below. */
+.pl-chip-custom .pl-chip-input {
+    display: none;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    text-align: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: #24282B;
+    outline: none;
+    padding: 0 6px;
+    /* Hide native number spinner buttons */
+    -moz-appearance: textfield;
+}
+.pl-chip-custom .pl-chip-input::-webkit-outer-spin-button,
+.pl-chip-custom .pl-chip-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.pl-chip-custom .pl-chip-input::placeholder {
+    color: #9B9C9E;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+}
+.pl-chip-custom:has(input[type="radio"]:checked) .pl-chip-label { display: none; }
+.pl-chip-custom:has(input[type="radio"]:checked) .pl-chip-input {
+    display: block;
+    /* Reserve room on the right for the spinner arrows. */
+    padding-right: 16px;
+}
+
+/* Up/down spinner arrows — visible only when Custom is checked. Sit on the
+   right side of the chip, stacked vertically. Wired to PL.bumpDeadline(±1). */
+.pl-chip-spin {
+    display: none;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+    gap: 1px;
+    pointer-events: auto;
+}
+.pl-chip-custom:has(input[type="radio"]:checked) .pl-chip-spin { display: flex; }
+.pl-chip-spin-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 11px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: #5B6168;
+    border-radius: 2px;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+.pl-chip-spin-btn:hover { background: rgba(76, 171, 246, 0.10); color: #4CABF6; }
+.pl-chip-spin-btn:active { background: rgba(76, 171, 246, 0.18); }
+.pl-deadline-hint {
+    display: block;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: #9B9C9E;
+    /* Same trick as .pl-jd-hint — pull up to close the .pl-field 6px flex gap. */
+    margin-top: -4px;
+}
+
+/* ---------- Live Preview (right column) ---------- */
+.pl-preview-col {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative; /* anchor for the absolutely-positioned label below */
+}
+.pl-preview-label {
+    /* Float the label just above the preview card so the card's top edge
+       aligns with the form-card's top edge (the title/desc sit above the
+       grid on the left side — there's nothing on the right, so this label
+       floats into that whitespace instead of pushing the card down). */
+    position: absolute;
+    bottom: 100%;
+    left: 4px;
+    margin-bottom: 6px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+    text-align: left;
+}
+.pl-preview-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px 26px 26px;
+    height: 294px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    /* Very faint outer hairline + soft drop shadow. The 0 0 0 0 blue ring is
+       kept so the pl-breath animation can pulse on top of it. */
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.035),
+                0 2px 10px rgba(0, 0, 0, 0.06),
+                0 0 0 0 rgba(76, 171, 246, 0);
+    animation: pl-breath 4.5s ease-in-out infinite;
+}
+/* Soft breathing glow — feels like the card is "thinking" without being noisy */
+@keyframes pl-breath {
+    0%, 100% {
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.035),
+                    0 2px 10px rgba(0, 0, 0, 0.06),
+                    0 0 0 0 rgba(76, 171, 246, 0);
+    }
+    50% {
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.035),
+                    0 2px 10px rgba(0, 0, 0, 0.06),
+                    0 0 26px 0 rgba(76, 171, 246, 0.18);
+    }
+}
+/* Faint dot-grid texture in the background — adds techy depth */
+.pl-preview-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(76, 171, 246, 0.10) 0.8px, transparent 1.4px);
+    background-size: 16px 16px;
+    pointer-events: none;
+    opacity: 0.45;
+    z-index: 0;
+    mask-image: linear-gradient(135deg, transparent 40%, #000 100%);
+    -webkit-mask-image: linear-gradient(135deg, transparent 40%, #000 100%);
+}
+.pl-preview-card > * { position: relative; z-index: 1; }
+/* AI sparkle particles drifting upward through the card.
+   Each sparkle is a 4-point star SVG that fades in, rotates slowly,
+   gains slight horizontal drift, and fades out near the top. Staggered
+   delays + varied durations so the field never repeats visibly. */
+.pl-preview-card .pl-sparkles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+.pl-preview-card .pl-sparkles i {
+    position: absolute;
+    bottom: -16px;
+    width: 9px;
+    height: 9px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234CABF6'><path d='M12 1L13.6 9.4 22 11l-8.4 1.6L12 21l-1.6-8.4L2 11l8.4-1.6z'/></svg>");
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0;
+    will-change: transform, opacity;
+}
+.pl-preview-card .pl-sparkles i:nth-child(1)  { left: 8%;  width: 8px;  height: 8px;  animation: pl-sparkle 6.4s linear 0s    infinite; }
+.pl-preview-card .pl-sparkles i:nth-child(2)  { left: 18%; width: 6px;  height: 6px;  animation: pl-sparkle 5.2s linear 1.2s  infinite; }
+.pl-preview-card .pl-sparkles i:nth-child(3)  { left: 30%; width: 7px;  height: 7px;  animation: pl-sparkle 7.0s linear 3.0s  infinite; }
+.pl-preview-card .pl-sparkles i:nth-child(4)  { left: 42%; width: 5px;  height: 5px;  animation: pl-sparkle 5.8s linear 0.7s  infinite; }
+.pl-preview-card .pl-sparkles i:nth-child(5)  { left: 54%; width: 8px;  height: 8px;  animation: pl-sparkle 6.6s linear 2.4s  infinite; }
+.pl-preview-card .pl-sparkles i:nth-child(6)  { left: 66%; width: 6px;  height: 6px;  animation: pl-sparkle 7.4s linear 4.1s  infinite; }
+.pl-preview-card .pl-sparkles i:nth-child(7)  { left: 76%; width: 7px;  height: 7px;  animation: pl-sparkle 5.6s linear 1.8s  infinite; }
+.pl-preview-card .pl-sparkles i:nth-child(8)  { left: 86%; width: 5px;  height: 5px;  animation: pl-sparkle 6.2s linear 3.5s  infinite; }
+.pl-preview-card .pl-sparkles i:nth-child(9)  { left: 92%; width: 8px;  height: 8px;  animation: pl-sparkle 6.8s linear 0.4s  infinite; }
+.pl-preview-card .pl-sparkles i:nth-child(10) { left: 24%; width: 5px;  height: 5px;  animation: pl-sparkle 5.4s linear 4.7s  infinite; }
+@keyframes pl-sparkle {
+    0%   { transform: translate3d(0, 0, 0)     rotate(0deg)   scale(0.4); opacity: 0; }
+    12%  { opacity: 0.8; }
+    50%  { transform: translate3d(8px, -160px, 0) rotate(180deg) scale(1);  opacity: 0.7; }
+    88%  { opacity: 0.5; }
+    100% { transform: translate3d(-4px, -310px, 0) rotate(360deg) scale(0.5); opacity: 0; }
+}
+.pl-preview-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+.pl-preview-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #CEEAFF;
+    border: 0.2px solid #4CABF6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+}
+/* Two offset radar ripples around the icon — continuous "live" pulse */
+.pl-preview-icon::before,
+.pl-preview-icon::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid rgba(76, 171, 246, 0.55);
+    animation: pl-ripple 2.4s ease-out infinite;
+    pointer-events: none;
+}
+.pl-preview-icon::after {
+    animation-delay: 1.2s;
+}
+@keyframes pl-ripple {
+    0%   { transform: scale(0.85); opacity: 0.85; }
+    100% { transform: scale(1.9);  opacity: 0; }
+}
+/* Slow drift of the icon's blue ring while drafting */
+.pl-preview-icon svg {
+    animation: pl-iconSpin 6s linear infinite;
+}
+@keyframes pl-iconSpin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.pl-preview-icon svg {
+    width: 21px;
+    height: 21px;
+}
+.pl-preview-status {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+    animation: pl-statusPulse 2s ease-in-out infinite;
+}
+@keyframes pl-statusPulse {
+    0%, 100% { opacity: 0.55; }
+    50%      { opacity: 1; }
+}
+
+/* Typewriter caret — appears at the end of the actively-typing element */
+.pl-preview-card .pl-typing::after {
+    content: "▍";
+    color: #4CABF6;
+    margin-left: 2px;
+    animation: pl-caret 0.7s steps(1) infinite;
+    font-weight: 400;
+}
+@keyframes pl-caret {
+    0%, 49%   { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+.pl-preview-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 121%;
+    color: #24282B;
+    margin-bottom: 6px;
+}
+.pl-preview-meta {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+    margin-bottom: 14px;
+}
+.pl-preview-body {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 17px;
+    color: #5B6168;
+    flex: 1 1 auto;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.pl-preview-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: auto;
+}
+.pl-tag {
+    background: #24282B;
+    color: #EAB000;
+    border-radius: 10px;
+    padding: 4px 12px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+}
+.pl-preview-label {
+    font-size: 12px;
+}
+
+/* ---------- Bottom action buttons ---------- */
+.pl-actions.pl-actions-split {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1424px;
+    margin-top: 14px;
+    margin-left: 50px;
+    padding: 0;
+}
+/* When only Continue is present (Step 2), push it to the right edge */
+.pl-actions.pl-actions-end {
+    justify-content: flex-end;
+}
+.pl-btn.pl-btn-back-soft {
+    background: #EEF7FE;
+    color: #4CABF6;
+    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.19);
+    border-radius: 10px;
+    padding: 10px 38px 11px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0.1em;
+    border: 0;
+    cursor: pointer;
+    height: 42px;
+    min-width: 0;
+}
+.pl-btn.pl-btn-back-soft:hover {
+    background: #DDEBF8;
+}
+.pl-step .pl-actions-split .pl-btn-primary {
+    background: #4CABF6;
+    color: #fff;
+    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.19);
+    border-radius: 10px;
+    padding: 10px 38px 11px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0.1em;
+    border: 0;
+    cursor: pointer;
+    height: 42px;
+    min-width: 0;
+}
+.pl-step .pl-actions-split .pl-btn-primary:hover {
+    background: #2B9CF0;
+}
+
+/* Reset .pl-step h1 baseline for the new title (was 38/700) */
+.pl-step h1.pl-title {
+    font-size: 30px;
+    font-weight: 500;
+    margin-bottom: 2px;
+    letter-spacing: normal;
+}
+
+/* Step 1 actions row — constrain to the .pl-grid footprint so the lone
+   Continue button lines up with the preview card's right edge (per Figma)
+   instead of floating all the way to the page edge. Pulled up tight under
+   the preview card. */
+#step-1 .pl-actions {
+    max-width: 1424px;
+    margin-left: 50px;
+    margin-right: 0;
+    margin-top: 6px;
+}
+/* Step 2 actions row — align Continue's right edge with the side stack
+   (Application URL + Upload referral resumes) per Figma. Grid columns total
+   820 + 64 gap + 460 = 1344px, so Continue's container matches that width. */
+#step-2 .pl-actions {
+    max-width: 1344px;
+    margin-left: 50px;
+    margin-right: 0;
+    margin-top: 6px;
+}
+/* Step 3 actions row — Continue sits slightly to the right of the grid's
+   right edge for a touch more breathing room (per user). */
+#step-3 .pl-actions {
+    max-width: 1400px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 6px;
+}
+@media (max-width: 1320px) {
+    #step-3 .pl-actions { max-width: 860px; }
+}
+@media (max-width: 820px) {
+    #step-3 .pl-actions { max-width: 440px; }
+}
+
+/* Step 4 actions row — inline (not fixed) so it sits naturally below the
+   scrollable grid, matching the Step 3 pattern. Hire Now shifted further
+   right than Step 3's Continue per user. */
+#step-4 .pl-actions {
+    max-width: 1500px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 6px;
+}
+@media (max-width: 1320px) {
+    #step-4 .pl-actions { max-width: 920px; }
+}
+@media (max-width: 820px) {
+    #step-4 .pl-actions { max-width: 480px; }
+}
+/* Continue / Hire Now button — Figma shows a soft rectangle (not a full pill)
+   with a subtle drop shadow. Override the default .pl-btn pill shape here. */
+#step-1 .pl-actions .pl-btn-primary,
+#step-2 .pl-actions .pl-btn-primary,
+#step-3 .pl-actions .pl-btn-primary,
+#step-4 .pl-actions .pl-btn-primary {
+    border-radius: 10px;
+    padding: 12px 28px;
+    box-shadow: 0 4px 10px rgba(76, 171, 246, 0.35), 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Hide leftover step badge (now using stepper) */
+.pl-step .pl-step-badge { display: none !important; }
+
+/* Steps 2-4 keep their existing layout — just clear the old desc baseline */
+.pl-step:not(#step-1) h1 {
+    font-size: 30px;
+}
+
+/* =================================================================
+   STEP 2 — LinkedIn Post page
+   ================================================================= */
+
+/* Title variant: "Your <italic>LinkedIn post</italic>, drafted." */
+.pl-step #step-2 h1.pl-title,
+.pl-step h1.pl-title-2 {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 121.02%;
+    margin-bottom: 2px;
+    margin-left: 50px;
+    letter-spacing: normal;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+.pl-title-2 .pl-title-tail {
+    display: inline;
+}
+.pl-title-2 .pl-title-italic {
+    font-family: 'Fraunces', 'Georgia', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: #5B6168;
+    letter-spacing: -0.07em;
+    font-size: 30px;
+    line-height: 121.02%;
+}
+.pl-title-2 .pl-title-bold {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #24282B;
+    font-size: 30px;
+    line-height: 121.02%;
+}
+
+/* Two-column grid: post card (647) + side stack (335) */
+.pl-grid-step2 {
+    display: grid;
+    grid-template-columns: 820px 460px;
+    gap: 64px;
+    align-items: start;
+    margin-bottom: 30px;
+    margin-left: 50px;
+    max-width: 1380px;
+}
+
+/* ---------- LEFT: LinkedIn Post card ---------- */
+.pl-li-card {
+    background: #FFFFFF;
+    /* Very faint outer hairline + soft drop shadow (matches form/preview cards). */
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.035),
+                0 2px 10px rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.pl-li-card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 22px;
+    /* Fainter divider — matches Figma's barely-there hairline. */
+    border-bottom: 0.4px solid rgba(96, 96, 96, 0.18);
+}
+.pl-li-mini-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.pl-li-card-label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #24282B;
+}
+.pl-li-pill {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 10px;
+    background: #CEEAFF;
+    border-radius: 10px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: #4CABF6;
+}
+.pl-li-card-actions {
+    margin-left: auto;
+    display: inline-flex;
+    gap: 6px;
+}
+.pl-li-icon-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: transparent;
+    border: 0;
+    color: #5B6168;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+}
+.pl-li-icon-btn:hover {
+    background: #E2F2FF;
+    color: #4CABF6;
+}
+
+.pl-li-card-body {
+    flex: 0 0 auto;
+    padding: 18px 26px;
+    height: 350px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+}
+/* When refine is in flight, dim + blur the underlying post text */
+.pl-li-card-body.refining #li-display,
+.pl-li-card-body.refining #jd-display,
+.pl-li-card-body.refining .pl-edit-area {
+    filter: blur(2px);
+    opacity: 0.45;
+    transition: filter 0.25s ease, opacity 0.25s ease;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* ---------- AI refine loader overlay ---------- */
+.pl-li-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 24px;
+    background: rgba(248, 249, 251, 0.72);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+.pl-li-loader.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Orb: stacked concentric rotating rings + pulsing core */
+.pl-li-loader-orb {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.pl-li-loader-ring {
+    position: absolute;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: transparent;
+}
+/* Outer ring — blue, slow */
+.pl-li-loader-ring-1 {
+    inset: 0;
+    border-width: 2px;
+    border-top-color: #4CABF6;
+    border-right-color: rgba(76, 171, 246, 0.35);
+    animation: pl-orb-spin 1.6s linear infinite;
+}
+/* Middle ring — yellow, opposite direction, faster */
+.pl-li-loader-ring-2 {
+    inset: 11px;
+    border-width: 2px;
+    border-bottom-color: #FFDF67;
+    border-left-color: rgba(255, 223, 103, 0.45);
+    animation: pl-orb-spin 1.1s linear infinite reverse;
+}
+/* Inner ring — soft blue dashed-feel, slowest */
+.pl-li-loader-ring-3 {
+    inset: 22px;
+    border-width: 1.5px;
+    border-top-color: rgba(76, 171, 246, 0.6);
+    border-left-color: rgba(76, 171, 246, 0.2);
+    border-right-color: rgba(76, 171, 246, 0.6);
+    animation: pl-orb-spin 2.4s linear infinite;
+}
+@keyframes pl-orb-spin {
+    to { transform: rotate(360deg); }
+}
+/* Core: pulsing dot in the center */
+.pl-li-loader-core {
+    width: 10px;
+    height: 10px;
+    background: #4CABF6;
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(76, 171, 246, 0.55);
+    animation: pl-orb-pulse 1.2s ease-in-out infinite;
+}
+@keyframes pl-orb-pulse {
+    0%, 100% { transform: scale(0.7); opacity: 0.55; }
+    50%      { transform: scale(1.3); opacity: 1; }
+}
+
+/* Status text + animated dots */
+.pl-li-loader-text {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+}
+.pl-li-loader-dots {
+    display: inline-flex;
+    margin-left: 1px;
+}
+.pl-li-loader-dots span {
+    opacity: 0;
+    animation: pl-loader-dot 1.2s ease-in-out infinite;
+}
+.pl-li-loader-dots span:nth-child(1) { animation-delay: 0s; }
+.pl-li-loader-dots span:nth-child(2) { animation-delay: 0.18s; }
+.pl-li-loader-dots span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes pl-loader-dot {
+    0%, 70%, 100% { opacity: 0; }
+    35%           { opacity: 1; }
+}
+
+/* Shimmering progress bar below the text */
+.pl-li-loader-bar {
+    width: 220px;
+    height: 2px;
+    background: rgba(76, 171, 246, 0.12);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+.pl-li-loader-bar span {
+    position: absolute;
+    top: 0;
+    left: -45%;
+    width: 45%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(76, 171, 246, 0.0) 10%,
+        rgba(76, 171, 246, 0.95) 50%,
+        rgba(76, 171, 246, 0.0) 90%,
+        transparent 100%);
+    animation: pl-loader-bar 1.6s ease-in-out infinite;
+}
+@keyframes pl-loader-bar {
+    0%   { left: -45%; }
+    100% { left: 100%; }
+}
+.pl-li-card-body #li-display,
+.pl-li-card-body #jd-display {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 19px;
+    color: #5B6168;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.pl-li-card-body .pl-edit-area {
+    width: 100%;
+    background: transparent;
+    border: 0.5px solid rgba(158, 158, 158, 0.45);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 19px;
+    color: #24282B;
+    resize: vertical;
+    min-height: 320px;
+    outline: none;
+}
+.pl-li-card-body .pl-edit-area:focus {
+    border-color: #4CABF6;
+    box-shadow: 0 0 0 2px rgba(76, 171, 246, 0.15);
+}
+.pl-li-card-body .pl-edit-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* Refine row at bottom of card */
+.pl-li-refine {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    /* Same faded hairline as the header divider. */
+    border-top: 0.4px solid rgba(96, 96, 96, 0.18);
+}
+.pl-li-refine-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #CEEAFF;
+    border: 0.2px solid #4CABF6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.pl-li-refine-icon svg {
+    width: 14px;
+    height: 14px;
+}
+.pl-li-refine input {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: 0.05em;
+    color: #24282B;
+    outline: 0;
+    min-width: 0;
+}
+.pl-li-refine input::placeholder {
+    color: #9B9C9E;
+    letter-spacing: 0.1em;
+}
+.pl-btn-apply {
+    background: #4CABF6;
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.pl-btn-apply:hover { background: #2B9CF0; }
+
+/* ---------- RIGHT: side stack ---------- */
+.pl-side-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+.pl-side-section {
+    display: flex;
+    flex-direction: column;
+    position: relative; /* anchor for the absolutely-positioned label below */
+}
+.pl-side-label {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 13px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+    margin-bottom: 12px;
+    text-align: left;
+    padding-left: 4px;
+}
+
+/* First section's label floats just above its card so the card itself starts
+   at the same Y as the LinkedIn Post card on the left. */
+.pl-side-stack > .pl-side-section:first-child > .pl-side-label {
+    position: absolute;
+    bottom: 100%;
+    left: 4px;
+    margin-bottom: 6px;
+}
+
+
+/* URL card */
+.pl-url-card {
+    background: #FFFFFF;
+    /* Soft elevated look — faint hairline + diffused drop shadow. */
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.035),
+                0 2px 8px rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.pl-url-input {
+    flex: 1;
+    background: #FFFFFF;
+    border: 0.5px solid rgba(76, 171, 246, 0.55);
+    border-radius: 4px;
+    padding: 8px 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.pl-url-text {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.05em;
+    color: #4CABF6;
+    text-decoration: underline;
+    word-break: break-all;
+}
+.pl-url-copy {
+    width: 32px;
+    height: 32px;
+    background: #E2F2FF;
+    border: 0.5px solid rgba(76, 171, 246, 0.55);
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+.pl-url-copy:hover { background: #CEEAFF; }
+.pl-side-hint {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.05em;
+    color: #9B9C9E;
+    margin-top: 3px;
+    padding: 0 4px;
+}
+
+/* Referral upload zone */
+.pl-referral-zone {
+    background: #FFFFFF;
+    border: 0.7px dashed rgba(155, 156, 158, 0.6);
+    border-radius: 12px;
+    box-shadow: 0px 1px 4.2px rgba(0, 0, 0, 0.10);
+    padding: 18px 16px 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-height: 180px;
+    justify-content: center;
+}
+.pl-referral-zone:hover {
+    border-color: #4CABF6;
+    background: #FBFCFE;
+}
+.pl-ref-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+.pl-ref-title {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.08em;
+    color: #24282B;
+    margin: 0;
+}
+.pl-ref-desc {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 14px;
+    letter-spacing: 0.06em;
+    color: #9B9C9E;
+    margin: 0;
+    max-width: 260px;
+}
+.pl-ref-btn {
+    margin-top: 8px;
+    background: #EEF7FE;
+    color: #4CABF6;
+    border: 0;
+    border-radius: 6px;
+    padding: 8px 22px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.10);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.pl-ref-btn:hover { background: #DDEBF8; }
+
+/* ---------- Bottom row: LinkedIn buttons ---------- */
+.pl-li-row {
+    display: flex;
+    align-items: center;
+    /* Spread the two buttons across the LinkedIn Post card's width — Connect
+       on the left, Open LinkedIn Manually flush with the card's right edge. */
+    justify-content: space-between;
+    gap: 36px;
+    margin-left: 50px;
+    /* .pl-grid-step2 first column is 820px → cap the row width to the post
+       card so the right button aligns with the card's right edge. */
+    max-width: 820px;
+    margin-top: 14px;
+    margin-bottom: 4px;
+}
+.pl-btn-li-soft {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #EEF7FE;
+    color: #4CABF6;
+    border: 0;
+    border-radius: 6px;
+    padding: 9px 24px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 0.1em;
+    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.10);
+    cursor: pointer;
+    height: 38px;
+    min-width: 220px;
+    transition: background 0.15s;
+}
+.pl-btn-li-soft:hover { background: #DDEBF8; }
+
+/* Step 2 specific overrides for the JD details collapsible — keep tucked away */
+/* Collapsible wrapper is now just a transparent shell — the editable JD card
+   inside carries its own background, hairline and shadow (same component as the
+   LinkedIn Post card), so the details element must not double-wrap it. */
+#step-2 .pl-jd-details {
+    margin-top: 16px;
+    margin-left: 50px;
+    /* Match the Step 2 grid footprint (820 + 64 gap + 460 = 1344) so the
+       expanded JD card's right edge lines up with the referrals column above
+       it instead of overhanging by ~80px. */
+    max-width: 1344px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+}
+#step-2 .pl-jd-details summary {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    color: #9B9C9E;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    padding: 6px 0;
+}
+/* Space between the summary toggle and the card once expanded. */
+#step-2 .pl-jd-details[open] summary {
+    margin-bottom: 12px;
+}
+
+/* =================================================================
+   STEP 3 — Pick Interviewers
+   ================================================================= */
+
+/* Step 3 title/desc/actions sit flush with the grid's left edge (no +50 shift) */
+#step-3 .pl-title-2,
+#step-3 .pl-title-desc {
+    margin-left: 0;
+}
+#step-3 .pl-actions.pl-actions-split {
+    margin-left: 0;
+    max-width: 895px;
+}
+
+.pl-pi-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    margin-left: 0;
+    max-width: 895px;
+}
+.pl-pi-summary {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+    white-space: nowrap;
+    padding-right: 4px;
+}
+
+/* Summary row — sits just above the grid, right-aligned to the rightmost
+   card column (matches Figma). Same max-width as .pl-pi-grid so the text
+   lines up with the grid's right edge, not the page edge. */
+.pl-pi-summary-row {
+    display: flex;
+    justify-content: flex-end;
+    margin: 8px 0 6px 0;
+    max-width: 1340px;
+}
+@media (max-width: 1320px) {
+    .pl-pi-summary-row { max-width: 820px; }
+}
+@media (max-width: 820px) {
+    .pl-pi-summary-row { max-width: 420px; }
+}
+.pl-pi-summary-sep {
+    color: #9B9C9E;
+    margin: 0 6px;
+    font-weight: 300;
+}
+.pl-pi-summary #pi-count,
+.pl-pi-summary #pi-time {
+    color: #24282B;
+    font-weight: 600;
+}
+
+.pl-pi-grid {
+    display: grid;
+    /* 3 cards per row on desktop per Figma — bigger cards, less wasted space.
+       Falls back to 2/1 on narrower viewports via the media queries below. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 14px;
+    margin-left: 0;
+    max-width: 1340px;
+    transition: opacity 0.18s ease;
+}
+@media (max-width: 1320px) {
+    .pl-pi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 820px; }
+}
+@media (max-width: 820px) {
+    .pl-pi-grid { grid-template-columns: 1fr; max-width: 420px; }
+}
+
+/* When step 3 is the visible step, turn .pl-main itself into a flex column
+   so the stepper sits at its natural height, #step-3 expands to fill the rest,
+   and the grid inside #step-3 scrolls in place — keeping the Continue/Back
+   buttons anchored to the viewport bottom (per Figma).
+   .hidden { display: none !important; } still wins when the step is inactive. */
+.dashboard .pl-main:has(> #step-3:not(.hidden)) {
+    display: flex;
+    flex-direction: column;
+}
+.dashboard .pl-main:has(> #step-3:not(.hidden)) > #step-3 {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+#step-3 .pl-pi-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px; /* keeps the scrollbar from sitting on the cards */
+}
+/* Slim scrollbar so it reads as a UI accent, not a page chrome element. */
+#step-3 .pl-pi-grid::-webkit-scrollbar { width: 6px; }
+#step-3 .pl-pi-grid::-webkit-scrollbar-thumb {
+    background: rgba(76, 171, 246, 0.35);
+    border-radius: 3px;
+}
+#step-3 .pl-pi-grid::-webkit-scrollbar-track { background: transparent; }
+
+/* Same inner-scroll pattern for Step 4 — title, desc, and pills stay anchored
+   at the top while only the candidate grid scrolls, keeping Hire Now visible
+   at the bottom of the viewport (per Figma). */
+.dashboard .pl-main:has(> #step-4:not(.hidden)) {
+    display: flex;
+    flex-direction: column;
+}
+.dashboard .pl-main:has(> #step-4:not(.hidden)) > #step-4 {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+#step-4 .pl-fc-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    /* When the grid is taller than its content (few cards) the rows would
+       otherwise distribute the leftover vertical space, creating phantom gaps.
+       Pack rows to the top and size implicit rows to content only. */
+    align-content: start;
+    grid-auto-rows: min-content;
+}
+#step-4 .pl-fc-grid::-webkit-scrollbar { width: 6px; }
+#step-4 .pl-fc-grid::-webkit-scrollbar-thumb {
+    background: rgba(76, 171, 246, 0.35);
+    border-radius: 3px;
+}
+#step-4 .pl-fc-grid::-webkit-scrollbar-track { background: transparent; }
+
+/* Loader overlay — replaces the grid while /suggest-interviewers is in flight. */
+.pl-pi-loader {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    margin: 0 0 18px 0;
+    max-width: 895px;
+    background: #FFFFFF;
+    border: 1px solid rgba(76, 171, 246, 0.35);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(76, 171, 246, 0.08);
+}
+.pl-pi-loader.hidden { display: none; }
+.pl-pi-loader-spinner {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2.5px solid rgba(76, 171, 246, 0.18);
+    border-top-color: #4CABF6;
+    animation: pl-pi-spin 0.9s linear infinite;
+    flex-shrink: 0;
+}
+.pl-pi-loader-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    color: #24282B;
+}
+@keyframes pl-pi-spin {
+    to { transform: rotate(360deg); }
+}
+
+.pl-pi-card {
+    width: 100%;
+    /* Min-height keeps cards visually consistent; longer descriptions push it
+       taller within the same row (grid auto-rows handle this). */
+    min-height: 156px;
+    border-radius: 12px;
+    border: 0.8px solid rgba(76, 171, 246, 0.35);
+    background: #FFFFFF;
+    padding: 22px 24px 50px;
+    position: relative;
+    cursor: pointer;
+    transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+    text-align: left;
+    overflow: hidden;
+    font-family: inherit;
+}
+.pl-pi-card:hover {
+    border-color: #4CABF6;
+    transform: translateY(-1px);
+}
+.pl-pi-card.selected {
+    border: 1px solid #4CABF6;
+    box-shadow: 1px 1px 4px rgba(76, 171, 246, 0.55);
+}
+
+/* Card header — avatar + (name + tag) block, flex-aligned so they share the
+   same baseline / centre line regardless of card width. */
+.pl-pi-card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.pl-pi-name-block { min-width: 0; flex: 1; }
+
+/* Avatar (gradient square with letter) — now in flex flow alongside the name
+   block, no more absolute positioning. */
+.pl-pi-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+}
+
+/* Gradient classes per agent type */
+.pl-grad-coral  { background: linear-gradient(141.93deg, #DE9CA7 58.77%, #FFD7DD 98.19%); color: #FFE6E6; }
+.pl-grad-yellow { background: linear-gradient(141.93deg, #EAB000 58.77%, #FFF3CE 98.19%); color: #FFEEAD; }
+.pl-grad-purple { background: linear-gradient(141.93deg, #9886E9 58.77%, #CEC3FF 98.19%); color: #F4F2FF; }
+.pl-grad-blue   { background: linear-gradient(141.93deg, #7DB5E2 58.77%, #D8EEFF 98.19%); color: #CEEAFF; }
+.pl-grad-green  { background: linear-gradient(141.93deg, #8EC49E 58.77%, #D7FFE3 98.19%); color: #E2FFD7; }
+.pl-grad-dark   { background: linear-gradient(141.93deg, #292C2C 10.63%, #2C2E2D 47.67%, #3E3D2F 72.09%, #675D33 98.19%); color: #EAB000; }
+
+/* Name + tag block (inside .pl-pi-name-block, sibling of avatar in flex). */
+.pl-pi-name {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.1em;
+    color: #24282B;
+}
+.pl-pi-tag {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 9px;
+    line-height: 11px;
+    letter-spacing: 0.05em;
+    color: #9B9C9E;
+    margin-top: 2px;
+}
+
+/* Faint divider between header and body */
+.pl-pi-divider-line {
+    height: 0;
+    border-top: 0.4px solid rgba(96, 96, 96, 0.45);
+    margin: 12px 0 8px;
+}
+
+/* Description */
+.pl-pi-desc {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 9px;
+    line-height: 12px;
+    color: #5B6168;
+    margin: 0;
+    padding-right: 22px; /* reserve space for tick circle */
+}
+
+/* Footer row: minutes + tick circle */
+.pl-pi-foot {
+    position: absolute;
+    bottom: 16px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+}
+.pl-pi-mins {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 9px;
+    line-height: 11px;
+    color: #9B9C9E;
+}
+.pl-pi-tick {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 0.7px solid #9B9C9E;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+.pl-pi-card.selected .pl-pi-tick {
+    background: #4CABF6;
+    border-color: #4CABF6;
+}
+.pl-pi-tick svg {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+.pl-pi-card.selected .pl-pi-tick svg {
+    opacity: 1;
+}
+
+/* Step 2 deadline status bar (kept for runtime, restyled lightly when shown) */
+#step-2 .pl-deadline-bar {
+    margin-left: 50px;
+    margin-bottom: 18px;
+    max-width: 1424px;
+    background: #F8F9FB;
+    border-radius: 10px;
+    box-shadow: 0px 1px 4.2px rgba(0, 0, 0, 0.10);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+#step-2 .pl-deadline-bar.hidden { display: none; }
+#step-2 .pl-deadline-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#step-2 .pl-deadline-icon {
+    color: #4CABF6;
+    display: inline-flex;
+}
+#step-2 .pl-deadline-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+#step-2 .pl-deadline-label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: #24282B;
+}
+#step-2 .pl-deadline-value {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    color: #5B6168;
+    letter-spacing: 0.05em;
+}
+#step-2 .pl-deadline-actions {
+    display: inline-flex;
+    gap: 6px;
+}
+
+/* ==========================================================================
+   STEP 4 — FIND CANDIDATES (HIRE XA Figma redesign)
+   "N candidates matched." → filter pills → 3-col grid of 267×117 cards.
+   .pl-fc-* namespace is fresh (old .pl-cand-* / .pl-search-* selectors are
+   left in place for any legacy refs but the new markup doesn't use them).
+   ========================================================================== */
+
+/* Page title — overrides .pl-title-2 alignment to match Figma's left edge.
+   #step-4 scope wins over `.pl-step h1.pl-title-2` (which sets margin-left: 50px). */
+#step-4 .pl-fc-title,
+#step-4 .pl-title-desc {
+    margin-left: 0;
+}
+.pl-fc-title {
+    font-size: 30px;
+    line-height: 36px;
+    font-family: 'Poppins', 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    color: #24282B;
+}
+.pl-fc-title .pl-title-bold {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #24282B;
+}
+.pl-fc-title .pl-title-italic {
+    font-family: 'Fraunces', 'Lexend Deca', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: #5B6168;
+    letter-spacing: -0.07em;
+    margin-left: 8px;
+}
+.pl-fc-desc {
+    margin: 2px 0 18px 0;
+    max-width: 720px;
+    color: #9B9C9E;
+    /* Same scale as Step 1's .pl-title-desc — readable, not tiny. */
+    font-size: 14px;
+    line-height: 18px;
+}
+
+/* Filter pill row */
+.pl-fc-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 22px;
+    max-width: 1340px;
+}
+.pl-fc-pill {
+    height: 28px;
+    padding: 0 16px;
+    border-radius: 14px;
+    border: 0.5px solid transparent;
+    background: #EEF7FE;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: #4CABF6;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.11);
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+    white-space: nowrap;
+}
+.pl-fc-pill:hover { transform: translateY(-1px); }
+.pl-fc-pill.active {
+    background: #FFD33C;
+    border-color: #EAB000;
+    color: #24282B;
+    box-shadow: none;
+}
+
+/* Loader strip (reuses spinner from Step 3) */
+.pl-fc-loader {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    margin: 0 0 18px 0;
+    max-width: 1200px;
+    background: #FFFFFF;
+    border: 1px solid rgba(76, 171, 246, 0.35);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(76, 171, 246, 0.08);
+}
+.pl-fc-loader.hidden { display: none; }
+
+/* Empty state */
+.pl-fc-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding: 48px 24px;
+    max-width: 1200px;
+    color: #5B6168;
+}
+.pl-fc-empty.hidden { display: none; }
+.pl-fc-empty svg { color: #9B9C9E; }
+.pl-fc-empty h4 { margin: 0; font-size: 16px; color: #24282B; }
+.pl-fc-empty p { margin: 0 0 6px 0; font-size: 13px; }
+
+.pl-fc-no-match {
+    grid-column: 1 / -1;
+    padding: 28px;
+    text-align: center;
+    color: #9B9C9E;
+    font-size: 13px;
+}
+
+/* Card grid — 3 across at desktop, drops to 2 / 1 on narrow.
+   Fluid columns (minmax(0, 1fr)) so cards fill the row width per Figma —
+   no more dead space on the right. */
+.pl-fc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 18px;
+    margin-bottom: 14px;
+    max-width: 1340px;
+}
+@media (max-width: 1320px) {
+    .pl-fc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 820px; }
+}
+@media (max-width: 820px) {
+    .pl-fc-grid { grid-template-columns: 1fr; max-width: 420px; }
+}
+
+/* === Candidate card — fills its grid column (no fixed width) === */
+.pl-fc-card {
+    position: relative;
+    width: 100%;
+    min-height: 168px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    background: #FFFFFF;
+    border: 0.8px solid rgba(76, 171, 246, 0.45);
+    border-radius: 12px;
+    transition: box-shadow 0.18s ease, transform 0.15s ease;
+}
+.pl-fc-card:hover {
+    box-shadow: 1px 1px 6px rgba(76, 171, 246, 0.45);
+    transform: translateY(-1px);
+}
+
+/* Serper-sourced cards are the action target: tap to message on LinkedIn. */
+.pl-fc-clickable { cursor: pointer; }
+.pl-fc-clickable:hover {
+    box-shadow: 1px 2px 10px rgba(10, 102, 194, 0.22);
+    border-color: rgba(10, 102, 194, 0.55);
+}
+.pl-fc-otw {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: #E7F4EC;
+    color: #2E7D46;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+.pl-fc-otw::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #34A853;
+}
+
+/* Footer: divider + location + message action, pinned to the card bottom */
+.pl-fc-foot {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+.pl-fc-divider {
+    height: 1px;
+    background: #EAEEF2;
+    margin: 0;
+}
+.pl-fc-cloc {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 14px;
+    color: #9B9C9E;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pl-fc-cloc svg { flex-shrink: 0; }
+.pl-fc-cloc span { overflow: hidden; text-overflow: ellipsis; }
+.pl-fc-msg-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #0A66C2;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+}
+.pl-fc-msg-cta svg { flex-shrink: 0; }
+.pl-fc-msg-cta:hover { text-decoration: underline; }
+
+/* Card header — avatar + (name + role) block in a flex row so they share
+   the same baseline regardless of card width. Same pattern as Step 3. */
+.pl-fc-card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.pl-fc-name-block { min-width: 0; flex: 1; }
+
+/* Avatar — gradient square with 2-letter initial (reuses .pl-grad-* from Step 3) */
+.pl-fc-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+}
+
+/* Name + role */
+.pl-fc-name {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 0.08em;
+    color: #24282B;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pl-fc-role {
+    margin-top: 2px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 9px;
+    line-height: 12px;
+    color: #9B9C9E;
+    max-height: 24px;
+    overflow: hidden;
+}
+
+/* Score row (track + percent) — sits below the avatar block */
+.pl-fc-score {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    top: 78px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.pl-fc-score-track {
+    flex: 1;
+    height: 4px;
+    background: #D9D9D9;
+    border-radius: 2px;
+    overflow: hidden;
+}
+.pl-fc-score-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+}
+.pl-fc-score-pct {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 600;
+    font-size: 9px;
+    min-width: 28px;
+    text-align: right;
+}
+
+/* Email + location rows (icon + text) */
+.pl-fc-row {
+    position: absolute;
+    left: 22px;
+    right: 64px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 13px;
+    color: #24282B;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pl-fc-row svg { flex-shrink: 0; }
+.pl-fc-email   { top: 102px; }
+.pl-fc-loc     { top: 122px; color: #9B9C9E; }
+.pl-fc-email-text { overflow: hidden; text-overflow: ellipsis; }
+
+/* LinkedIn pill at bottom-right */
+.pl-fc-li {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    color: #0A66C2;
+    text-decoration: none;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background 0.15s ease;
+}
+.pl-fc-li:hover { background: rgba(10, 102, 194, 0.08); }
+
+/* (.pl-fc-actions removed from markup — Step 4 now uses the shared
+   #step-4 .pl-actions rule above, identical to Steps 1/2/3.) */
+
+/* ==========================================================================
+   PIPELINE LAUNCH PAGE — /pipeline-launch
+   "Finding your top candidates." status page shown immediately after the
+   recruiter clicks Hire now on Step 4. Reuses dashboard.css for chrome and
+   .pl-stepper / .pl-nav-item from this file for the top stepper.
+   ========================================================================== */
+
+/* "AI is sourcing now" status pill — sits centered above the hero title */
+.lp-status-row {
+    display: flex;
+    justify-content: center;
+    margin: 6px 0 2px 0;
+}
+.lp-status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 22px;
+    padding: 0 14px;
+    background: #EEF7FE;
+    border-radius: 12px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: #4CABF6;
+}
+.lp-status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #CEEAFF;
+    position: relative;
+    display: inline-block;
+}
+.lp-status-dot::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: #4CABF6;
+    animation: lp-pulse 1.6s ease-in-out infinite;
+}
+@keyframes lp-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(0.7); opacity: 0.55; }
+}
+
+/* Hero title — Poppins for "Finding your", Fraunces italic for "top candidates." */
+.lp-hero-title {
+    margin: 8px 0 4px 0;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 36px;
+    color: #24282B;
+}
+.lp-hero-bold { font-family: 'Poppins', sans-serif; font-weight: 500; color: #24282B; }
+.lp-hero-italic {
+    font-family: 'Fraunces', 'Lexend Deca', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: #5B6168;
+    letter-spacing: -0.07em;
+}
+.lp-hero-sub {
+    text-align: center;
+    margin: 4px 0 20px 0;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    color: #9B9C9E;
+}
+
+/* Live activity card — main panel that lists the timeline of pipeline events.
+   Centered, row dividers handled by .lp-act-row. */
+.lp-activity-card {
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+    background: #F8F9FB;
+    border-radius: 14px;
+    box-shadow: 0 1px 4.2px rgba(0, 0, 0, 0.17);
+    padding: 22px 30px 20px;
+}
+.lp-activity-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.lp-role-tag {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    text-transform: uppercase;
+    color: #EAB000;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+}
+.lp-role-rule {
+    flex: 0 0 99px;
+    height: 1px;
+    background: rgba(234, 176, 0, 0.56);
+}
+.lp-activity-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+.lp-activity-title {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #24282B;
+}
+.lp-activity-updated {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    color: #9B9C9E;
+}
+
+/* Timeline rows */
+.lp-activity-list {
+    display: flex;
+    flex-direction: column;
+}
+.lp-act-row {
+    display: grid;
+    grid-template-columns: 1fr 24px 64px;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 0.4px solid rgba(96, 96, 96, 0.20);
+}
+/* border-bottom on every row means: divider after every step, including a
+   trailing one after the last row (per Figma). No border-top needed. */
+.lp-act-text { min-width: 0; }
+.lp-act-title {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    color: #5B6168;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.lp-act-sub {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    color: #9B9C9E;
+    margin-top: 4px;
+}
+.lp-act-icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: end;
+}
+.lp-act-icon.now {
+    background: #CEEAFF;
+    position: relative;
+}
+.lp-act-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4CABF6;
+    animation: lp-pulse 1.6s ease-in-out infinite;
+}
+.lp-act-icon.done { background: transparent; }
+.lp-act-icon.done svg { display: block; }
+.lp-act-icon.pending {
+    background: transparent;
+    border: 1px solid #D9D9D9;
+    width: 12px;
+    height: 12px;
+}
+.lp-act-time {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    color: #9B9C9E;
+    text-align: right;
+}
+.lp-act-row.pending .lp-act-title { color: #9B9C9E; }
+
+/* Bottom action row */
+/* Launch page bottom action — pinned to viewport bottom-right via fixed
+   positioning so it stays at the same Y as the wizard's Continue button
+   without altering .pl-main's flow layout.
+   right math: .pl-main padding-left = 146px, padding-right = 55px, card
+   max-width = 1400px centered → card right edge sits at viewport-right -
+   ((100vw - 146px - 55px - 1400px) / 2 + 55px) = (100vw - 1491px)/2 from
+   viewport right edge. Falls back to 55px on narrow screens. */
+.lp-bottom-actions {
+    position: fixed;
+    bottom: 30px;
+    right: max(55px, calc((100vw - 1491px) / 2));
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 50;
+}
+.lp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(76, 171, 246, 0.35), 0 2px 4px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.1em;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.lp-btn:hover { transform: translateY(-1px); box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.18); }
+.lp-btn-soft {
+    background: #EEF7FE;
+    color: #4CABF6;
+    /* Override the primary's blue glow with a subtle neutral shadow. */
+    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.10);
+}
+.lp-btn-soft.opted-in {
+    background: #CEEAFF;
+    color: #2D6AA1;
+}
+.lp-btn-primary {
+    background: #4CABF6;
+    color: #FFFFFF;
+}
+
+/* Make the launch-page stepper feel locked (it links back to wizard but doesn't
+   pretend to be navigable inside this page). */
+.pl-stepper a.pl-nav-item {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}

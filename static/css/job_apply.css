@@ -1,0 +1,542 @@
+/*
+ * HIRE XA — Candidate Application Form (public)
+ * Figma-faithful: dashed cards on #F8F9FB, yellow blob 17% with blue glow,
+ * Inter wordmark, Poppins headings, Lexend Deca body.
+ */
+:root {
+    --hxa-yellow: #FFDF67;
+    --hxa-blue:   #4CABF6;
+    --hxa-blue-l: #E2F2FF;
+    --hxa-text:   #24282B;
+    --hxa-faint:  #9B9C9E;
+    --hxa-line:   #9E9E9E;
+    --hxa-bg:     #FFFFFF;
+    --hxa-card:   #FFFFFF;   /* cards, inputs, upload zone, radios — white (was #F8F9FB grey) */
+    --hxa-red:    #E63946;
+    --hxa-green:  #3DC260;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+    height: 100vh;
+    overflow: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+body {
+    font-family: 'Lexend Deca', -apple-system, sans-serif;
+    background: var(--hxa-bg);
+    color: var(--hxa-text);
+    line-height: 1.5;
+}
+.hidden { display: none !important; }
+.req { color: var(--hxa-red); font-weight: 600; }
+
+/* ---------- Header ---------- */
+.ja-header {
+    position: sticky; top: 0; z-index: 5;
+    height: 80px;
+    padding: 17px 55px;
+    background: transparent;
+    display: flex; align-items: center;
+}
+.ja-brand { display: inline-flex; flex-direction: column; gap: 2px; line-height: 1; }
+.ja-brand-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 44px;
+    letter-spacing: 0.01em;
+    color: var(--hxa-text);
+}
+.ja-brand-name .ai { color: var(--hxa-blue); margin-left: 6px; }
+.ja-brand-sub {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.1em;
+    color: var(--hxa-text);
+    text-transform: uppercase;
+}
+
+/* ---------- Yellow blob (anchored to top, bleeds through transparent header) ---------- */
+.ja-blob {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 620px;
+    height: 360px;
+    background-image: url('/static/assets/hero-blob.png');
+    background-size: contain;
+    background-position: top right;
+    background-repeat: no-repeat;
+    opacity: 0.55;
+    filter: drop-shadow(0 4px 14px rgba(76, 171, 246, 0.55)) drop-shadow(0 0 22px rgba(76, 171, 246, 0.30));
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ---------- Frosted glass panel (Rectangle 171) — matches dashboard chrome.
+   No sidebar on this page, so both top corners are rounded. ---------- */
+.ja-panel {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(248, 249, 251, 0.12);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.25);
+    -webkit-backdrop-filter: blur(7.8px);
+    backdrop-filter: blur(7.8px);
+    border-radius: 25px 25px 0 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ---------- Main (locked viewport — .ja-wrap scrolls internally when overflowing) ---------- */
+.ja-main {
+    position: relative;
+    z-index: 2;
+    height: calc(100vh - 80px);
+    overflow: hidden;
+    padding: 28px 16px 28px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.ja-main::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.ja-wrap {
+    margin: 0 auto;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 4px;
+}
+.ja-wrap::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+/* ---------- States ---------- */
+.ja-state { text-align: center; padding: 80px 20px; max-width: 720px; margin: 0 auto; }
+.ja-state p { color: var(--hxa-faint); font-size: 13px; margin-top: 8px; letter-spacing: 0.05em; }
+.ja-state h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--hxa-text);
+    margin-top: 14px;
+}
+.spinner {
+    width: 32px; height: 32px;
+    margin: 0 auto;
+    border: 3px solid #EEF7FE;
+    border-top-color: var(--hxa-blue);
+    border-radius: 50%;
+    animation: ja-spin 0.7s linear infinite;
+}
+@keyframes ja-spin { to { transform: rotate(360deg); } }
+.success-icon {
+    width: 64px; height: 64px;
+    margin: 0 auto 14px;
+    background: rgba(61, 194, 96, 0.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+}
+.closed-sub { font-size: 11px; color: var(--hxa-faint); margin-top: 4px; }
+.success-box {
+    display: inline-block;
+    text-align: left;
+    background: var(--hxa-card);
+    border: 1px dashed rgba(155, 156, 158, 0.35);
+    border-radius: 10px;
+    padding: 16px 22px;
+    margin-top: 16px;
+    font-size: 13px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: var(--hxa-text);
+}
+.success-box div { padding: 4px 0; }
+.success-box strong { font-family: 'Poppins', sans-serif; font-weight: 500; color: var(--hxa-text); margin-right: 6px; }
+
+/* ---------- Card wrapper ---------- */
+.ja-wrap {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.ja-card {
+    background: var(--hxa-card);
+    border: 1px dashed rgba(155, 156, 158, 0.35);
+    box-shadow: 0 1px 4.2px rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+}
+
+/* ---------- Card 1: Job header (491×106) ---------- */
+.ja-job-card {
+    padding: 22px 22px 18px;
+    min-height: 106px;
+}
+.ja-job-card h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 1.21;
+    color: var(--hxa-text);
+    margin-bottom: 8px;
+}
+.ja-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 0.1em;
+    color: var(--hxa-faint);
+}
+.ja-meta-sep { width: 4px; }
+.ja-meta #job-location { color: var(--hxa-faint); }
+.ja-deadline {
+    margin-top: 10px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: var(--hxa-faint);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.ja-deadline.hidden { display: none; }
+.ja-deadline-date {
+    color: var(--hxa-red);
+    font-weight: 500;
+}
+
+/* ---------- Card 2: JD toggle (491×45 collapsed) ---------- */
+.ja-jd-card { padding: 0; }
+.ja-jd-card summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 0.1em;
+    color: var(--hxa-text);
+}
+.ja-jd-card summary::-webkit-details-marker { display: none; }
+.ja-chev { flex-shrink: 0; transition: transform 0.2s ease; }
+.ja-jd-card[open] .ja-chev { transform: rotate(90deg); }
+.jd-content {
+    display: block;
+    padding: 16px 22px 22px;
+    border-top: 1px dashed rgba(155, 156, 158, 0.3);
+    margin-top: 4px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--hxa-text);
+    letter-spacing: 0.03em;
+    /* Internal scroll so the form below stays put when JD is opened */
+    max-height: 45vh;
+    min-height: 80px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.jd-content::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.jd-content:empty::before {
+    content: 'Job description unavailable.';
+    color: var(--hxa-faint);
+    font-style: italic;
+}
+.jd-content p { margin-bottom: 8px; }
+.jd-content a { color: var(--hxa-blue); }
+
+/* ---------- Card 3: Apply form ---------- */
+.ja-form-card { padding: 20px 25px 22px; }
+.ja-form-card h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.21;
+    color: var(--hxa-text);
+    margin-bottom: 6px;
+}
+.ja-sub {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: var(--hxa-faint);
+    margin-bottom: 20px;
+}
+.ja-form { display: flex; flex-direction: column; gap: 14px; }
+.ja-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 48px;
+}
+.ja-field { display: flex; flex-direction: column; gap: 6px; }
+.ja-field-wide { grid-column: 1 / -1; }
+.ja-field label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 1.21;
+    color: var(--hxa-text);
+}
+.ja-field input,
+.ja-field select {
+    width: 100%;
+    height: 32px;
+    padding: 0 10px;
+    background: var(--hxa-card);
+    border: 0.5px solid var(--hxa-line);
+    border-radius: 5px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    color: var(--hxa-text);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.ja-field input::placeholder { color: var(--hxa-faint); }
+.ja-field input:focus,
+.ja-field select:focus {
+    border-color: var(--hxa-blue);
+    box-shadow: 0 0 0 3px rgba(76, 171, 246, 0.12);
+}
+
+/* Salary row: INR currency dropdown + amount input */
+.ja-sal-row { display: flex; gap: 8px; }
+.ja-cur-wrap { position: relative; width: 56px; flex-shrink: 0; }
+.ja-cur-wrap select { padding-right: 18px; }
+.ja-cur-chev {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+.ja-sal-row > input { flex: 1; }
+
+/* Notice period select */
+.ja-sel-wrap { position: relative; }
+.ja-sel-wrap select { padding-right: 26px; cursor: pointer; }
+.ja-sel-chev {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+/* Upload Resume */
+.ja-upload-zone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 56px;
+    padding: 8px;
+    background: var(--hxa-card);
+    border: 1px dashed rgba(155, 156, 158, 0.35);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+.ja-upload-zone:hover { border-color: var(--hxa-blue); }
+.ja-upload-icon {
+    width: 24px;
+    height: 24px;
+    background: var(--hxa-blue-l);
+    border: 0.5px solid var(--hxa-blue);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ja-upload-text {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 13px;
+    letter-spacing: 0.1em;
+    color: var(--hxa-text);
+}
+.ja-upload-file {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    background: rgba(61, 194, 96, 0.06);
+    border: 0.5px solid rgba(61, 194, 96, 0.4);
+    border-radius: 10px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 12px;
+    color: var(--hxa-text);
+    font-weight: 400;
+}
+.ja-remove {
+    background: none;
+    border: 0;
+    color: var(--hxa-red);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: auto;
+    letter-spacing: 0.05em;
+}
+
+/* Relocate radios */
+.ja-radio-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 48px;
+}
+.ja-radio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 14px;
+    background: var(--hxa-card);
+    border: 0.5px solid var(--hxa-line);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+.ja-radio:hover { border-color: var(--hxa-blue); }
+.ja-radio input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+.ja-radio-circle {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--hxa-blue);
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+}
+.ja-radio input:checked + .ja-radio-circle::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--hxa-blue);
+    border-radius: 50%;
+}
+.ja-radio input:checked ~ .ja-radio-label { color: var(--hxa-text); font-weight: 500; }
+.ja-radio-label {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    color: var(--hxa-text);
+}
+
+/* Submit */
+.ja-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    height: 38px;
+    padding: 9px 32px 10px;
+    margin-top: 14px;
+    background: var(--hxa-blue);
+    color: #FFFFFF;
+    border: 0;
+    border-radius: 8px;
+    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.19);
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.ja-submit:hover { background: #36A0F4; box-shadow: 2px 4px 8px rgba(76, 171, 246, 0.4); }
+.ja-submit:active { transform: translateY(1px); }
+.ja-submit:disabled { opacity: 0.6; cursor: not-allowed; background: var(--hxa-blue); }
+.btn-spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-top-color: #FFFFFF;
+    border-radius: 50%;
+    animation: ja-spin 0.7s linear infinite;
+    margin-right: 8px;
+}
+.ja-disclaimer {
+    text-align: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    letter-spacing: 0.1em;
+    color: var(--hxa-faint);
+    margin-top: 8px;
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    z-index: 999;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+    transition: opacity 0.25s ease;
+}
+.toast.hidden { opacity: 0; pointer-events: none; }
+.toast.success { background: #0F5132; color: #D1F4DE; }
+.toast.error   { background: #842029; color: #F8D7DA; }
+.toast.info    { background: var(--hxa-text); color: #FFFFFF; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+    .ja-header { padding: 14px 20px; height: 72px; }
+    .ja-brand-name { font-size: 28px; line-height: 36px; }
+    .ja-brand-sub { font-size: 10px; line-height: 13px; }
+    .ja-blob { width: 220px; height: 140px; top: 72px; }
+    .ja-main { padding: 28px 14px 60px; }
+    .ja-grid { grid-template-columns: 1fr; gap: 14px; }
+    .ja-radio-row { grid-template-columns: 1fr; }
+    .ja-form-card { padding: 18px 18px 20px; }
+    .ja-job-card { padding: 18px; }
+    .ja-job-card h1 { font-size: 20px; }
+    .ja-form-card h2 { font-size: 18px; }
+}

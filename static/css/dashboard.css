@@ -1,0 +1,1151 @@
+/* =========================================================
+   Hire XA — Dashboard (Figma pixel match)
+   ========================================================= */
+
+:root {
+    --hxa-yellow: #FFDF67;
+    --hxa-blue: #4CABF6;
+    --hxa-text: #24282B;
+    --hxa-text-muted: #5B6168;
+    --hxa-text-faint: #9B9C9E;
+    --hxa-bg: #FFFFFF;
+    --hxa-card-bg: #EEF7FE;
+    --hxa-sidebar-bg: #EEF7FE;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    min-height: 100vh;
+    font-family: 'Lexend Deca', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--hxa-bg);
+    color: var(--hxa-text);
+    /* Cross-browser rendering normalization. Without these, iOS Safari inflates
+       text on orientation change and macOS Safari renders glyphs ~25% bolder
+       than Windows Chrome, which forced users to zoom out to 75% to compensate. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+body { overflow-x: hidden; }
+
+.dashboard {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* ---------- Header ---------- */
+.dash-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    height: 80px;
+    padding: 17px 55px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.dash-brand { display: inline-flex; flex-direction: column; gap: 2px; line-height: 1; }
+.dash-brand-name {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 44px;
+    letter-spacing: 0.01em;
+    color: #24282B;
+}
+.dash-brand-name .ai { color: var(--hxa-blue); margin-left: 6px; }
+.dash-brand-sub {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.1em;
+    color: #24282B;
+    text-transform: uppercase;
+}
+
+/* User dropdown widget */
+.dash-user { position: relative; }
+.user-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+}
+.user-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #24282B;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.user-avatar svg { width: 20px; height: 20px; }
+.user-name {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+    color: #24282B;
+}
+.user-chevron { flex-shrink: 0; }
+
+/* User dropdown menu — matches Figma "Frame 10" (161×118), rendered at ~1.7x for legibility */
+.user-dropdown-menu {
+    position: absolute;
+    top: 48px;
+    right: 0;
+    width: 230px;
+    height: auto;
+    background: #F8F9FB;
+    border: 0.5px solid rgba(36, 40, 43, 0.18);
+    border-radius: 7px;
+    box-shadow: 0 2px 7.4px rgba(0, 0, 0, 0.10);
+    padding: 9px 11px;
+    z-index: 50;
+    display: none;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+.dash-user.open .user-dropdown-menu { display: flex; flex-direction: column; }
+
+.dd-email {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 121.02%;
+    color: #9B9C9E;
+    text-transform: lowercase;
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dd-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    height: 16px;
+    padding: 0;
+    margin-bottom: 6px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 121.02%;
+    color: #24282B;
+    text-align: left;
+}
+.dd-item:last-child { margin-bottom: 0; }
+.dd-item:hover { color: #4CABF6; }
+.dd-item:hover .dd-icon { stroke: #4CABF6; }
+
+/* Not-yet-available items (Get help / Upgrade plan / Learn more): greyed out,
+   no blue hover, so they don't read as accessible. */
+.dd-item.disabled,
+.dd-item.disabled:hover { color: #B8BBBF; cursor: not-allowed; }
+.dd-item.disabled .dd-icon,
+.dd-item.disabled:hover .dd-icon { stroke: #C5C8CC; }
+
+.dd-icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    display: block;
+}
+
+.dd-divider {
+    height: 0.6px;
+    background: rgba(155, 156, 158, 0.35);
+    width: 100%;
+    margin: 3px 0 10px 0;
+    flex-shrink: 0;
+}
+
+.dd-item.logout { color: #24282B; }
+.dd-item.logout:hover { color: #DC3545; }
+.dd-item.logout:hover .dd-icon { stroke: #DC3545; }
+
+/* Complete setup ! — always blue (Figma); circular-arrow refresh icon */
+.dd-item.dd-complete { color: #4CABF6; }
+.dd-item.dd-complete .dd-icon,
+.dd-item.dd-complete:hover .dd-icon { stroke: #4CABF6; }
+
+/* ---------- Yellow blob (top-right, bleeds through transparent header) ---------- */
+.dash-blob {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 620px;
+    height: 360px;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url('/static/assets/hero-blob.png');
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-size: contain;
+    opacity: 0.55;
+    filter: drop-shadow(0 4px 14px rgba(76, 171, 246, 0.55)) drop-shadow(0 0 22px rgba(76, 171, 246, 0.30));
+}
+
+/* ---------- Rectangle 171 — frosted glass panel over blob + sidebar gutter ---------- */
+.dash-panel {
+    position: absolute;
+    top: 80px;
+    left: 66px;
+    right: 0;
+    bottom: 0;
+    background: rgba(248, 249, 251, 0.12);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.25);
+    -webkit-backdrop-filter: blur(7.8px);
+    backdrop-filter: blur(7.8px);
+    border-radius: 25px 0 0 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* ---------- Sidebar ---------- */
+.dash-sidebar {
+    position: fixed;
+    left: 0;
+    top: 80px;
+    width: 66px;
+    height: calc(100vh - 80px);
+    background: #FFFFFF;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Figma: first icon top:58 — push icons close to header so the sidebar
+       reads as the brand nav, not a centered floating menu. */
+    padding-top: 58px;
+    gap: 33px;
+}
+.side-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+}
+.side-icon {
+    width: 34.81px;
+    height: 34.81px;
+    border-radius: 50%;
+    border: 0.5px solid rgba(0, 0, 0, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.18s ease;
+}
+.side-icon svg { width: 20.72px; height: 20.72px; display: block; }
+
+/* 3D shape — current page's icon reads as a raised dome with an inner top
+   highlight + inner bottom shade + outer drop shadow. Same treatment on hover
+   so every icon previews the active state. */
+.side-item:hover .side-icon,
+.side-item.active .side-icon {
+    transform: scale(1.14) translateY(-1px);
+    box-shadow:
+        inset 0 2px 3px rgba(255, 255, 255, 0.85),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.18),
+        0 6px 14px rgba(0, 0, 0, 0.20),
+        0 2px 5px rgba(0, 0, 0, 0.12);
+    border-color: transparent;
+}
+.side-icon.icon-blue { background: #CEEAFF; }
+.side-icon.icon-purple { background: #C5B9F2; }
+.side-icon.icon-green { background: #E2FFD7; }
+.side-icon.icon-pink { background: #FFE6E6; }
+.side-label {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12.1px;
+    color: #24282B;
+}
+.side-label.active-label { color: var(--hxa-blue); font-weight: 600; }
+
+/* ---------- Main content ---------- */
+.dash-main {
+    position: relative;
+    z-index: 3;
+    padding: 76px 55px 60px 146px;
+    min-height: calc(100vh - 80px);
+}
+
+/* All page main-content wrappers must sit ABOVE .dash-panel (z:2) so the
+   frosted backdrop-filter blurs only the blob behind it, never the content. */
+.hd-main,
+.hf-main,
+.pl-main,
+.pm-main,
+.settings-main,
+.ur-main,
+.qi-main {
+    position: relative;
+    z-index: 3;
+}
+
+/* Kicker — matches Figma "Group 125" (146×15 at left:146, top:156).
+   Dot 4×4 #4CABF6, 5px gap, then "WELCOME, NAME" 12/15 Lexend Deca 300, letter-spacing 0.1em, color #5B6168. */
+.dash-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 18px;
+    margin-bottom: 22px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.1em;
+    color: #5B6168;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+}
+.dash-kicker .kicker-dot {
+    width: 5px;
+    height: 5px;
+    background: #4CABF6;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.dash-kicker .kicker-text {
+    display: inline-block;
+    height: 18px;
+    line-height: 18px;
+}
+.dash-kicker #welcome-name {
+    color: #4CABF6;
+    font-weight: 500;
+}
+
+.dash-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+    line-height: 121.02%;
+}
+.dash-title .title-bold {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 121.02%;
+    color: #24282B;
+}
+.dash-title .title-italic {
+    font-family: 'Fraunces', 'Georgia', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 40px;
+    line-height: 121.02%;
+    letter-spacing: -0.07em;
+    color: #5B6168;
+}
+
+.dash-desc {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 24px;
+    color: #9B9C9E;
+    max-width: 660px;
+    margin-bottom: 60px;
+}
+
+/* ---------- Cards row (Figma absolute positions, scaled ~1.34x) ---------- */
+.dash-cards {
+    position: relative;
+    width: 1230px;
+    height: 380px;
+    max-width: 100%;
+    margin-left: 160px;
+    margin-right: 0;
+}
+.dash-card {
+    position: absolute;
+    width: 305px;
+    height: 350px;
+    background: var(--hxa-card-bg);
+    border-radius: 5px;
+    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.25);
+    padding: 26px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.18s ease, box-shadow 0.2s ease;
+}
+.dash-card:nth-child(1) { left: 0;     top: 0;   z-index: 1; }
+.dash-card:nth-child(2) { left: 290px; top: 26px; z-index: 2; }
+.dash-card:nth-child(3) { left: 580px; top: 0;   z-index: 3; }
+.dash-card:nth-child(4) { left: 870px; top: 26px; z-index: 4; }
+.dash-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 2px 6px 16px rgba(0, 0, 0, 0.18);
+    z-index: 10;
+}
+/* Hover: each card's bg flips to match its icon color */
+.dash-card:nth-child(1):hover { background: #B8E0FF; }
+.dash-card:nth-child(2):hover { background: #FFE6E6; }
+.dash-card:nth-child(3):hover { background: #E2FFD7; }
+.dash-card:nth-child(4):hover { background: #C5B9F2; }
+
+/* Hover: arrow stroke flips from yellow to HIRE XA blue on every card. */
+.dash-card:hover .card-arrow svg path { stroke: #4CABF6; }
+.card-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 0.5px solid rgba(0, 0, 0, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 64px;
+}
+.card-icon svg { width: 30px; height: 30px; display: block; }
+.card-icon.icon-blue { background: #CEEAFF; }
+.card-icon.icon-pink { background: #FFE6E6; }
+.card-icon.icon-green { background: #E2FFD7; }
+.card-icon.icon-yellow { background: #FFEEAD; }
+.card-icon.icon-purple { background: #C5B9F2; }
+
+.card-title {
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 21px;
+    line-height: 121.02%;
+    color: #24282B;
+    margin-bottom: 16px;
+}
+.card-text {
+    font-family: 'Lexend Deca', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 21px;
+    letter-spacing: 0.08em;
+    color: #9B9C9E;
+}
+.card-arrow {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-arrow svg { width: 100%; height: 100%; }
+
+/* ---------- Responsive ----------
+   Breakpoint strategy:
+     • >1500px (Windows 1920×1080 etc.): original absolute-positioned cards
+       — visual identity preserved exactly as designed.
+     • 1080-1500px (MacBook 1440×900, iPad landscape, smaller laptops):
+       cards converted to a 4-col CSS grid that fits the viewport. Removes
+       the need to manually zoom Safari to 75%.
+     • 700-1080px (tablet portrait): 2-col grid.
+     • <700px (phones): 1-col stack (block below).
+   The absolute layout's stagger (.offset-down) is dropped on grids since
+   a free-form stagger doesn't translate cleanly to grid cells.
+
+   Threshold is 1600px (not 1500): the absolute row needs ~1591px to fit
+   (1230 width + 160 left margin + 201 page padding), so a 1080p laptop at
+   125% Windows scaling (1536px CSS) was landing in a dead zone that clipped
+   the 4th card. Grid mode now covers everything up to 1600px. */
+@media (max-width: 1600px) {
+    .dash-main { padding-left: 100px; padding-right: 30px; }
+    .dash-cards {
+        position: relative;
+        width: 100%;
+        height: auto;
+        margin-left: 0;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+    }
+    .dash-card {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 320px;
+        left: 0 !important;
+        top: 0 !important;
+    }
+    .dash-card.offset-down { margin-top: 0; }
+}
+@media (max-width: 1080px) {
+    .dash-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+    .dash-header { padding: 12px 22px; height: auto; flex-wrap: wrap; gap: 12px; }
+    .dash-brand-name { font-size: 24px; line-height: 30px; }
+    .dash-brand-sub { font-size: 9px; }
+    .dash-blob { width: 60%; height: 140px; }
+    .dash-sidebar { display: none; }
+    .dash-main { padding: 36px 22px 60px; }
+    .dash-title { flex-wrap: wrap; gap: 4px; }
+    .dash-title .title-bold,
+    .dash-title .title-italic { font-size: 24px; }
+    .dash-cards { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .dash-card { position: relative !important; left: 0 !important; top: 0 !important; width: 100%; max-width: 320px; height: auto; min-height: 240px; }
+}
+
+/* ===================================================================
+   "Your Workplace is Ready!" celebration popup (post-onboarding)
+   =================================================================== */
+.ws-ready-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(36, 40, 43, 0.45);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+.ws-ready-overlay[hidden] { display: none; }
+.ws-ready-overlay.show { opacity: 1; }
+
+.ws-ready-card {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 612px;
+    min-height: 307px;
+    background: #FFFFFF;
+    border: 0.2px solid #606060;
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+    padding: 56px 86px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 26px;
+    transform: translateY(12px) scale(0.97);
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ws-ready-overlay.show .ws-ready-card { transform: translateY(0) scale(1); }
+
+.ws-ready-title {
+    margin: 0;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 35px;
+    line-height: 121%;
+    color: #24282B;
+}
+.ws-ready-title em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: -0.07em;
+    color: #5B6168;
+}
+
+.ws-ready-check {
+    width: 66px;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ws-ready-check svg { overflow: visible; }
+
+/* Circle pops in */
+.ws-ready-circle {
+    transform-origin: 33px 33px;
+    transform: scale(0);
+}
+.ws-ready-overlay.show .ws-ready-circle {
+    animation: wsCirclePop 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+}
+
+/* Tick draws itself */
+.ws-ready-tick {
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+}
+.ws-ready-overlay.show .ws-ready-tick {
+    animation: wsTickDraw 0.5s ease-out 0.42s forwards;
+}
+
+@keyframes wsCirclePop {
+    0%   { transform: scale(0); }
+    70%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+@keyframes wsTickDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.ws-ready-btn {
+    width: 100%;
+    height: 52px;
+    background: #4CABF6;
+    border: 0;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.1em;
+    color: #F9F9FF;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+.ws-ready-btn:hover { background: #3FA1F2; box-shadow: 0 4px 12px rgba(76, 171, 246, 0.28); }
+
+@media (max-width: 640px) {
+    .ws-ready-card { padding: 40px 28px; gap: 22px; }
+    .ws-ready-title { font-size: 27px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ws-ready-overlay, .ws-ready-card { transition: none; }
+    .ws-ready-circle { transform: scale(1); animation: none; }
+    .ws-ready-tick { stroke-dashoffset: 0; animation: none; }
+}
+
+/* ===================================================================
+   First-login company-setup flow: Disclaimer (612x307) ->
+   Welcome to HireXA setup (612x690). Shown once after onboarding.
+   =================================================================== */
+.cs-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(36, 40, 43, 0.45);
+    opacity: 0;
+    transition: opacity 0.22s ease;
+}
+.cs-overlay.show { display: flex; opacity: 1; }
+
+.cs-card {
+    box-sizing: border-box;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    background: #FFFFFF;
+    transform: translateY(10px) scale(0.985);
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cs-card.active { display: flex; }
+.cs-overlay.show .cs-card.active { transform: translateY(0) scale(1); }
+
+/* ---- Disclaimer card (612 x 307) ---- */
+.cs-disclaimer {
+    width: 612px;
+    max-width: 100%;
+    height: 307px;
+    border: 0.2px solid #606060;
+    -webkit-backdrop-filter: blur(2.9px);
+    backdrop-filter: blur(2.9px);
+    border-radius: 14px;
+    padding: 34px 86px 0;
+}
+.cs-disclaimer h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 36px;
+    color: #24282B;
+    text-align: center;
+}
+.cs-disclaimer p {
+    margin: 15px 0 0;
+    width: 489px;
+    max-width: 100%;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 22px;
+    text-align: center;
+    color: #24282B;
+}
+.cs-disclaimer p a {
+    color: #24282B;
+    text-decoration: underline;
+}
+
+/* ---- Welcome / setup card (612 x 690) ---- */
+.cs-welcome {
+    position: relative;
+    width: 612px;
+    max-width: 100%;
+    height: 690px;
+    border: 1px solid #DEE1E5;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    border-radius: 14px;
+    padding: 56px 40px 0;
+}
+.cs-welcome h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 36px;
+    color: #24282B;
+    text-align: center;
+}
+.cs-welcome .cs-sub {
+    margin: 7px 0 0;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 1px;
+    text-align: center;
+    color: #24282B;
+}
+.cs-welcome-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: #24282B;
+}
+.cs-options {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 40px;
+}
+.cs-option {
+    width: 100%;
+    height: 52px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 1px solid #DEE1E5;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 14px;
+    letter-spacing: 0.1em;
+    color: #24282B;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cs-option:hover { border-color: #4CABF6; box-shadow: 0 2px 8px rgba(76, 171, 246, 0.12); }
+
+/* ---- Shared buttons ---- */
+.cs-primary-btn {
+    width: 100%;
+    height: 52px;
+    min-height: 52px;
+    background: #4CABF6;
+    border: 0;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.1em;
+    color: #F9F9FF;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+.cs-primary-btn:hover { background: #3FA1F2; box-shadow: 0 4px 12px rgba(76, 171, 246, 0.28); }
+.cs-disclaimer .cs-primary-btn { margin-top: 27px; }
+.cs-welcome .cs-primary-btn { margin-top: 23px; }
+
+.cs-later-btn {
+    background: none;
+    border: 0;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.1em;
+    color: #24282B;
+    cursor: pointer;
+    margin-top: 16px;
+}
+.cs-later-btn:hover { color: #4CABF6; }
+
+@media (max-width: 660px) {
+    .cs-disclaimer { height: auto; padding: 32px 28px; }
+    .cs-disclaimer p { width: 100%; }
+    .cs-welcome { height: auto; max-height: 92vh; overflow-y: auto; padding: 48px 24px 28px; }
+}
+
+/* ---- Connect Company Email card ---- */
+.cs-email {
+    position: relative;
+    width: 612px;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid #DEE1E5;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    border-radius: 14px;
+    padding: 52px 40px 36px;
+}
+.cs-email h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 36px;
+    color: #24282B;
+    text-align: center;
+}
+.cs-back {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: #24282B;
+}
+.cs-email-picker,
+.cs-smtp-form,
+.cs-email-connected {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 28px;
+}
+.cs-email-picker[hidden],
+.cs-smtp-form[hidden],
+.cs-email-connected[hidden] { display: none; }
+
+.cs-provider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 52px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 1px solid #DEE1E5;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    color: #24282B;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cs-provider:hover { border-color: #4CABF6; box-shadow: 0 2px 8px rgba(76, 171, 246, 0.12); }
+.cs-prov-icon { flex: none; }
+.cs-email-note {
+    margin: 6px 0 0;
+    text-align: center;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    color: #9B9C9E;
+}
+
+/* SMTP form inputs */
+.cs-input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    background: #FFFFFF;
+    border: 1px solid #DEE1E5;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #24282B;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.cs-input:focus { border-color: #4CABF6; }
+select.cs-input { cursor: pointer; }
+.cs-smtp-row { display: flex; gap: 14px; }
+.cs-smtp-row .cs-input { flex: 1; min-width: 0; }
+.cs-smtp-error {
+    min-height: 16px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 12px;
+    color: #E2574C;
+}
+.cs-smtp-form .cs-primary-btn { margin-top: 4px; }
+
+/* Connected state */
+.cs-conn-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #F4FAFF;
+    border: 1px solid #CEEAFF;
+    border-radius: 10px;
+}
+.cs-conn-dot {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3DBE6A;
+    box-shadow: 0 0 0 4px rgba(61, 190, 106, 0.15);
+}
+.cs-conn-from {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: #24282B;
+}
+.cs-conn-provider {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    color: #5B6168;
+}
+.cs-later-btn.cs-danger { color: #E2574C; }
+.cs-later-btn.cs-danger:hover { color: #C8463C; }
+
+/* Toast */
+.cs-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translate(-50%, 16px);
+    z-index: 1200;
+    max-width: 480px;
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 14px;
+    color: #FFFFFF;
+    background: #24282B;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    text-align: center;
+}
+.cs-toast[hidden] { display: none; }
+.cs-toast.show { opacity: 1; transform: translate(-50%, 0); }
+.cs-toast.success { background: #1F9D57; }
+.cs-toast.error { background: #D6473C; }
+
+/* ---- Connect Company Email: inline dropdown inside Welcome ---- */
+.cs-welcome { overflow-y: auto; }
+.cs-accordion { width: 100%; }
+.cs-acc-head { position: relative; }
+.cs-acc-chevron {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.2s ease;
+}
+.cs-acc-head.open .cs-acc-chevron { transform: translateY(-50%) rotate(180deg); }
+
+.cs-acc-panel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 2px;
+}
+.cs-acc-panel[hidden] { display: none; }
+
+.cs-prov-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 46px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 0;
+    border-bottom: 0.4px solid rgba(96, 96, 96, 0.4);
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    color: #24282B;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.cs-prov-row:hover { background: #F4FAFF; }
+.cs-prov-row:last-child { border-bottom: 0; }
+.cs-prov-icon { flex: none; }
+
+.cs-conn-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: #F4FAFF;
+    border: 1px solid #CEEAFF;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 12px;
+    color: #24282B;
+}
+.cs-conn-note[hidden] { display: none; }
+.cs-conn-text { font-weight: 500; }
+.cs-conn-link {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 12px;
+    color: #4CABF6;
+    padding: 0;
+}
+.cs-conn-link:hover { text-decoration: underline; }
+.cs-conn-link.cs-danger { color: #E2574C; }
+
+/* ---- SMTP Manual Setup card (612 x 690) ---- */
+.cs-smtp-card {
+    position: relative;
+    width: 612px;
+    max-width: 100%;
+    height: 690px;
+    max-height: 92vh;
+    overflow-y: auto;
+    border: 1px solid #DEE1E5;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    border-radius: 14px;
+    padding: 52px 40px 0;
+}
+.cs-smtp-card h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 36px;
+    color: #24282B;
+    text-align: center;
+}
+.cs-smtp2-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 40px;
+}
+.cs-field { position: relative; width: 100%; }
+.cs-field .cs-input { width: 100%; padding-right: 42px; }
+.cs-info {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    color: #9B9C9E;
+    font-size: 15px;
+    line-height: 1;
+    cursor: help;
+    user-select: none;
+}
+.cs-select { color: #24282B; appearance: auto; }
+.cs-select:invalid { color: #97A1AF; }
+.cs-smtp2-btn { width: calc(100% - 92px); align-self: center; margin-top: 8px; }
+
+/* ---- Animated blue tick on "Connect Company Email" when connected ---- */
+.cs-acc-head { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.cs-acc-tick { flex: none; overflow: visible; }
+.cs-acc-tick[hidden] { display: none; }
+/* Base state (when shown) is fully visible; .animate adds the entrance. */
+.cs-acc-tick-circle { transform-origin: 12px 12px; }
+.cs-acc-tick.animate .cs-acc-tick-circle {
+    animation: csTickPop 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cs-acc-tick.animate .cs-acc-tick-path {
+    stroke-dasharray: 22;
+    stroke-dashoffset: 22;
+    animation: csTickDraw 0.4s ease-out 0.16s forwards;
+}
+@keyframes csTickPop {
+    0%   { transform: scale(0); }
+    70%  { transform: scale(1.14); }
+    100% { transform: scale(1); }
+}
+@keyframes csTickDraw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .cs-acc-tick.animate .cs-acc-tick-circle,
+    .cs-acc-tick.animate .cs-acc-tick-path { animation: none; }
+}
+
+/* ---------- Loading spinner ---------- */
+/* Sits on top of the normal page (transparent backdrop, no white-out) and just
+   spins until the page's data has loaded, then fades out. */
+.page-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 6000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.page-loader--done {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.page-loader-spin {
+    width: 46px;
+    height: 46px;
+    border: 3px solid #DCE6F0;
+    border-top-color: #4CABF6;
+    border-radius: 50%;
+    animation: pageLoaderRot 0.8s linear infinite;
+}
+@keyframes pageLoaderRot { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+    .page-loader-spin { animation-duration: 1.6s; }
+}

@@ -1,0 +1,161 @@
+/* =========================================================
+   HIRE XA — Shared user profile dropdown widget
+   Mount on any element with [data-user-dropdown].
+   Self-contained: uses hxa-userdd-* class names to avoid
+   collisions with page-specific nav styles.
+   ========================================================= */
+
+.hxa-userdd {
+    position: relative;
+    display: inline-flex;
+    font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.hxa-userdd-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 6px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    color: #24282B;
+    line-height: 1;
+}
+
+.hxa-userdd-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #24282B;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.hxa-userdd-avatar svg { width: 18px; height: 18px; display: block; }
+
+.hxa-userdd-name {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #24282B;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.hxa-userdd-chev {
+    flex-shrink: 0;
+    display: block;
+    transition: transform 160ms ease;
+}
+.hxa-userdd.open .hxa-userdd-chev { transform: rotate(180deg); }
+
+.hxa-userdd-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 230px;
+    background: #F8F9FB;
+    border: 0.5px solid rgba(36, 40, 43, 0.18);
+    border-radius: 7px;
+    box-shadow: 0 2px 7.4px rgba(0, 0, 0, 0.10);
+    padding: 9px 11px;
+    z-index: 200;
+    display: none;
+    font-family: 'Poppins', 'Inter', sans-serif;
+    box-sizing: border-box;
+}
+.hxa-userdd.open .hxa-userdd-menu {
+    display: flex;
+    flex-direction: column;
+}
+
+.hxa-userdd-email {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 121.02%;
+    color: #9B9C9E;
+    text-transform: lowercase;
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hxa-userdd-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    height: 16px;
+    padding: 0;
+    margin-bottom: 6px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 121.02%;
+    color: #24282B;
+    text-align: left;
+}
+.hxa-userdd-item:last-child { margin-bottom: 0; }
+.hxa-userdd-item:hover { color: #4CABF6; background: transparent; }
+.hxa-userdd-item:hover .hxa-userdd-ic { stroke: #4CABF6; }
+
+/* Not-yet-available items (Get help / Upgrade plan / Learn more): greyed out,
+   no blue hover, so they don't read as accessible. */
+.hxa-userdd-item.disabled,
+.hxa-userdd-item.disabled:hover { color: #B8BBBF; background: transparent; cursor: not-allowed; }
+.hxa-userdd-item.disabled .hxa-userdd-ic,
+.hxa-userdd-item.disabled:hover .hxa-userdd-ic { stroke: #C5C8CC; }
+
+.hxa-userdd-ic {
+    width: 15px;
+    height: 15px;
+    stroke: #24282B;
+    flex-shrink: 0;
+    display: block;
+}
+
+.hxa-userdd-divider {
+    height: 0.6px;
+    background: rgba(155, 156, 158, 0.35);
+    width: 100%;
+    margin: 3px 0 10px 0;
+    flex-shrink: 0;
+}
+
+.hxa-userdd-item.logout { color: #24282B; }
+.hxa-userdd-item.logout:hover { color: #DC3545; background: rgba(220, 53, 69, 0.06); }
+.hxa-userdd-item.logout:hover .hxa-userdd-ic { stroke: #DC3545; }
+
+/* Complete setup ! — always blue, refresh icon stays blue */
+.hxa-userdd-item.complete { color: #4CABF6; }
+.hxa-userdd-item.complete .hxa-userdd-ic,
+.hxa-userdd-item.complete:hover .hxa-userdd-ic { stroke: #4CABF6; }
+
+/* Layout fix: when mounted as a 3rd child in nav-inners that use
+   justify-content: space-between, switch to flex-start and push the
+   existing nav-links to the right so logo stays left and the dropdown
+   sits immediately after the nav-links. */
+.sc-nav-inner,
+.smi-nav-inner,
+.sfb-nav-inner {
+    justify-content: flex-start;
+}
+.sc-nav-inner .sc-nav-links,
+.smi-nav-inner .smi-nav-links,
+.sfb-nav-inner .sfb-nav-links {
+    margin-left: auto;
+}
+.sc-nav-inner > [data-user-dropdown],
+.smi-nav-inner > [data-user-dropdown],
+.sfb-nav-inner > [data-user-dropdown] {
+    margin-left: 14px;
+    align-self: center;
+}
