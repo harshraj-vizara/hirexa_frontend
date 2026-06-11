@@ -35,6 +35,9 @@ SLUG = {
     "p8eu": "screening_round_conversation.html", "q4uv": "screening_round_monitor.html",
     "r2qa": "screening_round_candidates.html", "s6oz": "screening_round_feedback.html",
     "t3wr": "screening_round_room.html", "login": "login.html",
+    # Public, unauthenticated routes the backend serves directly (not slugs).
+    "privacy": "privacy.html", "terms": "terms.html",
+    "auth/linkedin/callback": "linkedin_callback.html",
 }
 
 # Seeds a fake logged-in user so the pages' auth gates pass and render the layout.
@@ -86,6 +89,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if p in ("/", "/index.html"):
             return self._html(os.path.join(ROOT, "index.html"))
         slug = p.strip("/")
+        if slug.startswith("a/"):  # candidate apply form: /a/{posting_id}
+            return self._html(os.path.join(PAGES, "job_apply.html"))
         if slug in SLUG:
             return self._html(os.path.join(PAGES, SLUG[slug]))
         if p.startswith("/static/pages/") and p.endswith(".html"):
