@@ -100,7 +100,13 @@
         </div>
 
         <!-- Footer -->
-        <footer class="auth-footer">2026 Hire XA. All rights reserved.</footer>
+        <footer class="auth-footer">
+            <span>&copy; 2026 Hire XA. All rights reserved.</span>
+            <span class="auth-footer-sep">&middot;</span>
+            <a href="/privacy" target="_blank" rel="noopener" class="auth-footer-link">Privacy Policy</a>
+            <span class="auth-footer-sep">&middot;</span>
+            <a href="/terms" target="_blank" rel="noopener" class="auth-footer-link">Terms of Service</a>
+        </footer>
     </div>
 
     <!-- Auth Modal (Sign In / Register / Verify / Forgot / Reset) -->
@@ -148,12 +154,35 @@
                         </label>
                         <a href="javascript:void(0)" class="forgot-link" onclick="Auth.showForgotPassword()">Forgot password?</a>
                     </div>
-                    <div class="auth-inline-msg" id="login-msg" role="alert" aria-live="polite"></div>
+                    <div class="auth-inline-msg" id="login-msg" data-auth-msg role="alert" aria-live="polite"></div>
                     <button type="submit" id="login-btn" class="btn btn-primary btn-full">
                         <span>Sign In</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </button>
                 </form>
+
+                <div class="auth-oauth-row">
+                    <span class="auth-oauth-label">Continue with</span>
+                    <button type="button" class="oauth-icon-btn" onclick="Auth.handleGoogleSignIn('login')" aria-label="Continue with Google" title="Continue with Google">
+                        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+                            <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+                            <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+                            <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571.001-.001.002-.001.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="oauth-icon-btn" onclick="Auth.handleMicrosoftSignIn('login')" aria-label="Continue with Microsoft" title="Continue with Microsoft">
+                        <svg viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="1"  y="1"  width="10" height="10" fill="#F25022"/>
+                            <rect x="12" y="1"  width="10" height="10" fill="#7FBA00"/>
+                            <rect x="1"  y="12" width="10" height="10" fill="#00A4EF"/>
+                            <rect x="12" y="12" width="10" height="10" fill="#FFB900"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <p class="auth-signup-hint">Don't have an account?<a href="javascript:void(0)" onclick="Auth.openModal('register')">Sign up</a></p>
+                <p class="auth-legal-note">By continuing, you agree to our <a href="/terms" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</p>
             </div>
 
             <!-- Set Password Panel (first login for invited team members) -->
@@ -180,6 +209,7 @@
                             <input type="password" id="setpw-confirm" class="form-input" placeholder="Re-enter your new password" required>
                         </div>
                     </div>
+                    <div class="auth-inline-msg" id="setpw-msg" data-auth-msg role="alert" aria-live="polite"></div>
                     <button type="submit" id="setpw-btn" class="btn btn-primary btn-full"><span>Create Password &amp; Sign In</span></button>
                 </form>
             </div>
@@ -204,7 +234,7 @@
                     <input type="text" id="register-name" class="reg-input" placeholder="Your Name" required autocomplete="name" data-validate="name">
                     <input type="email" id="register-email" class="reg-input" placeholder="Work email address" required autocomplete="email" data-validate="email">
                     <input type="password" id="register-password" class="reg-input" placeholder="Password (min 8 chars, letters &amp; numbers)" required minlength="8" autocomplete="new-password">
-                    <div class="reg-error" id="register-error"></div>
+                    <div class="reg-error" id="register-error" data-auth-msg></div>
                     <button type="submit" id="register-btn" class="reg-continue">Continue</button>
                 </form>
 
@@ -296,8 +326,8 @@
                         </button>
                         <div class="reg-cv-panel" id="org-values-panel" hidden>
                             <div class="reg-cv-panel-head">
-                                <span>Select up to 10 core values</span>
-                                <span class="reg-cv-count" id="org-values-count">0/10</span>
+                                <span>Select up to 5 core values</span>
+                                <span class="reg-cv-count" id="org-values-count">0/5</span>
                             </div>
                             <div class="reg-cv-grid" id="org-values-grid"><!-- cards injected by auth.js --></div>
                         </div>
@@ -315,8 +345,56 @@
                         <input type="file" id="org-logo" accept="image/*" hidden>
                     </label>
 
-                    <div class="reg-error" id="orgsetup-error"></div>
+                    <div class="reg-error" id="orgsetup-error" data-auth-msg></div>
                     <button type="submit" id="orgsetup-btn" class="reg-continue">Continue</button>
+                </form>
+            </div>
+
+            <!-- Create-your-own core-value agent (same modal) -->
+            <div class="auth-panel reg-v2 org-v2" id="orgcv-create-panel">
+                <button class="reg-close" onclick="Auth.closeModal()" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+
+                <div class="reg-brand">
+                    <div class="reg-brand-logo">HIRE<span>XA</span></div>
+                    <div class="reg-brand-tagline">XCEED TALENT ACQUISITION</div>
+                </div>
+
+                <h2 class="reg-heading">Create Core Value Agent</h2>
+
+                <form id="orgcv-create-form" class="reg-form" novalidate>
+                    <input type="text" id="orgcv-value" class="reg-input" placeholder="Core Value Name" autocomplete="off">
+                    <input type="text" id="orgcv-agent" class="reg-input" placeholder="Agent Name" autocomplete="off">
+
+                    <div class="reg-cv-row2">
+                        <div class="reg-select-native-wrap">
+                            <select id="orgcv-gender" class="reg-input reg-select-native">
+                                <option value="female">Female</option>
+                                <option value="male">Male</option>
+                            </select>
+                            <svg class="reg-select-chevron" viewBox="0 0 24 24" fill="none" stroke="#656D79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="reg-select-native-wrap reg-voice-wrap">
+                            <select id="orgcv-voice" class="reg-input reg-select-native"></select>
+                            <svg class="reg-select-chevron" viewBox="0 0 24 24" fill="none" stroke="#656D79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                            <button type="button" id="orgcv-preview" class="reg-voice-preview" title="Play voice sample" aria-label="Play voice sample">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <textarea id="orgcv-desc" class="reg-input reg-textarea" rows="3" placeholder="Describe what this core value means at your company"></textarea>
+
+                    <div class="reg-error" id="orgcv-error" data-auth-msg></div>
+
+                    <div class="reg-cv-actions">
+                        <button type="button" id="orgcv-back" class="reg-ghost-btn">Back</button>
+                        <button type="submit" id="orgcv-save" class="reg-continue">Save Agent</button>
+                    </div>
                 </form>
             </div>
 
@@ -346,7 +424,7 @@
                         <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
                         <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
                     </div>
-                    <div class="reg-error" id="orgotp-error"></div>
+                    <div class="reg-error" id="orgotp-error" data-auth-msg></div>
                     <button type="submit" id="orgotp-btn" class="reg-continue">Verify &amp; Finish</button>
                 </form>
 
@@ -378,6 +456,7 @@
                         <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
                         <input type="text" class="otp-input-single" maxlength="1" pattern="[0-9]" inputmode="numeric">
                     </div>
+                    <div class="auth-inline-msg" id="verify-msg" data-auth-msg role="alert" aria-live="polite"></div>
                     <button type="submit" id="verify-btn" class="btn btn-primary btn-full"><span>Verify Email</span></button>
                 </form>
                 <div class="resend-section">
@@ -407,7 +486,7 @@
                             <input type="email" id="forgot-email" class="form-input" placeholder="name@example.com" required>
                         </div>
                     </div>
-                    <div class="reg-error" id="forgot-msg"></div>
+                    <div class="reg-error" id="forgot-msg" data-auth-msg></div>
                     <button type="submit" id="forgot-btn" class="btn btn-primary btn-full"><span>Send Reset Code</span></button>
                 </form>
             </div>
@@ -448,7 +527,7 @@
                             <input type="password" id="reset-password-confirm" class="form-input" placeholder="Confirm your password" required>
                         </div>
                     </div>
-                    <div class="reg-error" id="reset-msg"></div>
+                    <div class="reg-error" id="reset-msg" data-auth-msg></div>
                     <button type="submit" id="reset-btn" class="btn btn-primary btn-full"><span>Reset Password</span></button>
                 </form>
                 <div class="resend-section">

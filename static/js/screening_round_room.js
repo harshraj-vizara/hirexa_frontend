@@ -35,14 +35,31 @@ const ScreeningRoom = {
     _scheduledSources: [],    // AudioBufferSourceNodes currently scheduled/playing
     _nextStartTime: 0,        // AudioContext-clock time the next chunk should start
     _decoding: false,         // a decode/schedule drain loop is currently running
-    // Prebuffer: hold the first decoded chunks briefly before starting playback so
-    // a slow/late chunk can't cause a mid-speech stop. Once started, the pipeline
-    // (synthesis ~2s/chunk) stays ahead of playback (~4s/chunk) and never starves.
+    // TTS loudness leveling — keep the voice at a steady level WITHOUT the abrupt
+    // chunk-to-chunk jumps the old wide-clamp normalizer caused. Each chunk is
+    // nudged toward _TTS_TARGET_RMS, but: (a) RMS is measured over SPEECH only
+    // (silence excluded) so short/padded chunks aren't over-boosted, (b) the gain
+    // is clamped to a TIGHT band, and (c) it is exponentially smoothed across the
+    // chunks of a burst so consecutive chunks never jump. Then a gentle limiter
+    // (_ttsOut) only catches peaks.
+    _ttsOut: null,
+    _TTS_TARGET_RMS: 0.09,
+    _TTS_MIN_GAIN: 0.8,       // was 0.5 — never duck a chunk hard
+    _TTS_MAX_GAIN: 1.5,       // was 3.0 — never boost a chunk hard
+    _TTS_GAIN_SMOOTH: 0.6,    // EMA weight on the previous chunk's gain (0..1)
+    _TTS_SPEECH_FLOOR: 0.012, // samples quieter than this are treated as silence for RMS
+    _ttsGainEma: null,        // smoothed gain carried across a burst's chunks
+    // Prebuffer: hold the first decoded chunk(s) briefly before starting playback
+    // so a slow/late chunk can't cause a mid-speech stop, but start as SOON as
+    // there is enough audio runway so the opening isn't delayed. Start when either
+    // _PREBUFFER_CHUNKS are ready OR a single first chunk already holds
+    // _PREBUFFER_MIN_SEC of audio, OR the fallback timer fires.
     _pendingBuffers: [],      // decoded AudioBuffers held until playback starts
     _playbackStarted: false,  // has this burst begun playing yet?
     _prebufferTimer: null,    // fallback timer to start even with < lead chunks
     _PREBUFFER_CHUNKS: 2,     // start once this many chunks are buffered...
-    _PREBUFFER_MS: 1000,      // ...or this long after the first chunk, whichever first
+    _PREBUFFER_MIN_SEC: 0.9,  // ...or once one chunk already has this much audio...
+    _PREBUFFER_MS: 450,       // ...or this long after the first chunk, whichever first
 
     // Speech-to-Text
     recognition: null,
@@ -62,7 +79,21 @@ const ScreeningRoom = {
     // long. Reset on every onresult and every keystroke; cleared when the
     // agent starts speaking or the answer is shipped.
     _silenceTimer: null,
-    _AUTO_SUBMIT_SILENCE_MS: 8000,
+    // The submit watchdog is driven by ACTUAL MIC ENERGY (see _onMicAudio), not by
+    // transcript events — so it can never fire while the candidate is audibly
+    // speaking, even when Sarvam's transcript lags. This is the real fix for
+    // "submitted half my answer mid-sentence". The window is the amount of TRUE
+    // silence (no mic energy) after the last sound before the countdown begins.
+    _AUTO_SUBMIT_SILENCE_MS: 7000,
+    // Mic RMS (0..1) above which we treat the candidate as actively speaking.
+    // Tuned for typical headset/laptop mic with noiseSuppression on.
+    _SPEECH_RMS: 0.018,
+    _lastSpeechTs: 0,
+    // After the silence window, show a short visible countdown before actually
+    // submitting, so a candidate who paused mid-thought can resume and cancel it
+    // (any new speech/keystroke re-arms the silence timer and clears this).
+    _graceTimer: null,
+    _AUTO_SUBMIT_GRACE_SECS: 3,
 
     // -------- STT contextual biasing (Chrome 142+ SpeechRecognitionPhrase) --
     // The Web Speech recognizer leans toward these phrases when audio is
@@ -199,7 +230,7 @@ const ScreeningRoom = {
     iceServersFetched: false,
 
     agents: [
-        { id: 'priya',  name: 'Priya Sharma',  role: 'HR Screener',        color: '#059669', avatar: 'P' },
+        { id: 'priya',  name: 'Priya Sharma',  role: 'HR',                 color: '#059669', avatar: 'P' },
         { id: 'rajesh', name: 'Rajesh Mehta',   role: 'Technical Lead',     color: '#2563eb', avatar: 'R' },
         { id: 'ananya', name: 'Ananya Iyer',    role: 'Hiring Manager',     color: '#7c3aed', avatar: 'A' },
         { id: 'vikram', name: 'Vikram Singh',   role: 'Senior Recruiter',   color: '#d97706', avatar: 'V' },
@@ -824,6 +855,15 @@ const ScreeningRoom = {
             case 'waiting-response':
                 this.updateChatStatus('Your turn to respond', 'live');
                 if (this.userRole === 'candidate') {
+                    // Fresh turn — clear any transcript left over from a prior turn
+                    // (e.g. a send that failed while the WS was briefly down) so the
+                    // new answer can never be prefixed with stale text.
+                    this.sttBuffer = '';
+                    this._lastInterim = '';
+                    this._suppressInputEvent = true;
+                    const _ci = document.getElementById('sr-chat-input');
+                    if (_ci) { _ci.value = ''; _ci.style.height = 'auto'; }
+                    this._suppressInputEvent = false;
                     this.focusChatInput();
                     // Reconcile mic + STT — if any TTS is still flushing
                     // locally _applyMicState will keep the mic paused; once
@@ -2685,6 +2725,12 @@ const ScreeningRoom = {
             console.warn('[STT] Phrase biasing setup failed:', e && e.message);
         }
 
+        // Mic-energy stream (Sarvam STT only). Drives the live "listening" cue and
+        // the auto-submit watchdog off real speech, independent of transcript lag.
+        if ('onaudio' in this.recognition) {
+            this.recognition.onaudio = (rms) => this._onMicAudio(rms);
+        }
+
         this.recognition.onstart = () => {
             this._sttActive = true;
             this._sttFailCount = 0;
@@ -3094,6 +3140,32 @@ const ScreeningRoom = {
         return s;
     },
 
+    /** Called ~5x/sec with the live mic RMS from the Sarvam STT client. While the
+     *  candidate is audibly speaking we keep re-arming the silence watchdog, so it
+     *  can NEVER fire mid-answer just because Sarvam's transcript is lagging behind
+     *  the speech. We also show an immediate "listening" cue so the candidate knows
+     *  their voice is being captured even before the text appears. */
+    _onMicAudio(rms) {
+        if (this.userRole !== 'candidate') return;
+        if (this.isPlayingAudio) return;        // agent is talking; mic is muted
+        if (!(rms > this._SPEECH_RMS)) return;  // background noise / silence — ignore
+
+        this._lastSpeechTs = Date.now();
+        // Live capture cue (throttled): reassure the candidate while they speak.
+        const indicator = document.getElementById('sr-stt-indicator');
+        if (indicator && this.isListening && indicator.classList.contains('hidden') === false) {
+            // keep it showing the active listening state
+            if (indicator.dataset.state !== 'hearing') {
+                indicator.dataset.state = 'hearing';
+                indicator.classList.remove('sr-stt-warning');
+                indicator.innerHTML = '<div class="sr-stt-pulse"></div><span>Listening...</span>';
+            }
+        }
+        // Audible speech re-arms the full silence window AND cancels any countdown
+        // that may have started during a brief pause.
+        this._resetSilenceTimer();
+    },
+
     /** (Re)arm the silence watchdog. Fires sendChatMessage once the
      *  candidate has been silent for _AUTO_SUBMIT_SILENCE_MS, provided
      *  there's actually buffered text worth shipping and the agent isn't
@@ -3115,9 +3187,50 @@ const ScreeningRoom = {
             const stillHasText = (this.sttBuffer && this.sttBuffer.trim().length > 0)
                               || ((document.getElementById('sr-chat-input')?.value || '').trim().length > 0);
             if (!stillHasText) return;
-            console.log('[STT] auto-submitting after', this._AUTO_SUBMIT_SILENCE_MS, 'ms of silence');
-            this.sendChatMessage();
+            console.log('[STT] silence window elapsed — starting submit countdown');
+            this._beginAutoSubmitGrace();
         }, this._AUTO_SUBMIT_SILENCE_MS);
+    },
+
+    /** After the silence window, count down visibly before sending. Any new
+     *  speech or keystroke routes through _resetSilenceTimer -> _clearSilenceTimer,
+     *  which cancels this countdown and re-arms the full silence window, so a
+     *  candidate who simply paused mid-answer is never cut off. */
+    _beginAutoSubmitGrace() {
+        if (this.isPlayingAudio) return;
+        if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+        const hasText = (this.sttBuffer && this.sttBuffer.trim().length > 0)
+                     || ((document.getElementById('sr-chat-input')?.value || '').trim().length > 0);
+        if (!hasText) return;
+
+        this._clearAutoSubmitGrace();
+        let remaining = this._AUTO_SUBMIT_GRACE_SECS;
+        const tick = () => {
+            this._graceTimer = null;
+            if (this.isPlayingAudio) { return; }   // agent took over
+            if (remaining <= 0) {
+                this.updateChatStatus('Your turn to respond', 'live');
+                this.sendChatMessage();
+                return;
+            }
+            this.updateChatStatus(
+                'Submitting your answer in ' + remaining + '… keep talking to continue', 'live');
+            remaining -= 1;
+            this._graceTimer = setTimeout(tick, 1000);
+        };
+        tick();
+    },
+
+    _clearAutoSubmitGrace() {
+        if (this._graceTimer) {
+            clearTimeout(this._graceTimer);
+            this._graceTimer = null;
+            // A countdown was visibly running and got cancelled (candidate resumed)
+            // — clear the "Submitting in N…" note.
+            if (this.userRole === 'candidate' && !this.isPlayingAudio) {
+                this.updateChatStatus('Your turn to respond', 'live');
+            }
+        }
     },
 
     _clearSilenceTimer() {
@@ -3125,6 +3238,8 @@ const ScreeningRoom = {
             clearTimeout(this._silenceTimer);
             this._silenceTimer = null;
         }
+        // New speech/typing or a manual send must also kill any visible countdown.
+        this._clearAutoSubmitGrace();
     },
 
     sendChatMessage() {
@@ -3375,7 +3490,50 @@ const ScreeningRoom = {
         if (this.audioCtx.state === 'suspended') {
             this.audioCtx.resume().catch(() => {});
         }
+        // Shared output chain: a gentle compressor/limiter that evens out the
+        // chunk-to-chunk and agent-to-agent loudness swings so the voice holds a
+        // consistent mid level. Rebuilt only if the AudioContext changed.
+        if (!this._ttsOut || this._ttsOut.context !== this.audioCtx) {
+            try {
+                // Gentle PEAK limiter only. With the per-chunk gain now smoothed to
+                // a steady RMS, the average level should pass untouched; the limiter
+                // just catches the occasional loud peak. A low threshold here (-22)
+                // used to compress the NORMAL level and fight the leveling, making
+                // loudness feel inconsistent.
+                const comp = this.audioCtx.createDynamicsCompressor();
+                comp.threshold.value = -10;
+                comp.knee.value = 18;
+                comp.ratio.value = 4;
+                comp.attack.value = 0.003;
+                comp.release.value = 0.25;
+                comp.connect(this.audioCtx.destination);
+                this._ttsOut = comp;
+            } catch (e) {
+                this._ttsOut = null;  // fall back to direct destination
+            }
+        }
         return this.audioCtx;
+    },
+
+    // Mean RMS amplitude of a decoded buffer (sampled for speed) — used to level
+    // each TTS chunk to a consistent loudness.
+    _bufferRms(buf) {
+        try {
+            const floor = this._TTS_SPEECH_FLOOR;
+            let sumSq = 0, n = 0;
+            const channels = Math.min(buf.numberOfChannels, 2);
+            for (let c = 0; c < channels; c++) {
+                const data = buf.getChannelData(c);
+                const step = Math.max(1, Math.floor(data.length / 8000));
+                // Measure loudness over SPEECH only — skip near-silent samples so a
+                // chunk with lots of leading/trailing silence isn't over-amplified.
+                for (let i = 0; i < data.length; i += step) {
+                    const s = data[i];
+                    if (s > floor || s < -floor) { sumSq += s * s; n++; }
+                }
+            }
+            return n ? Math.sqrt(sumSq / n) : 0;
+        } catch (e) { return 0; }
     },
 
     _base64ToUint8(base64) {
@@ -3393,6 +3551,7 @@ const ScreeningRoom = {
         this._pendingBuffers = [];
         if (this._prebufferTimer) { clearTimeout(this._prebufferTimer); this._prebufferTimer = null; }
         this._playbackStarted = false;
+        this._ttsGainEma = null;
         for (const src of this._scheduledSources) {
             try { src.onended = null; src.stop(); } catch (e) {}
         }
@@ -3411,6 +3570,7 @@ const ScreeningRoom = {
             this._nextStartTime = 0;       // fresh schedule clock for this TTS burst
             this._playbackStarted = false; // hold until the prebuffer lead is ready
             this._pendingBuffers = [];
+            this._ttsGainEma = null;       // restart loudness smoothing for this burst
             // First chunk of a new TTS burst: auto-mute the candidate's mic so it
             // never picks up the AI's voice through the speakers, and pause the
             // silence watchdog so the candidate isn't auto-submitted while the
@@ -3441,6 +3601,14 @@ const ScreeningRoom = {
             return;
         }
 
+        // Make sure the context is actually RUNNING before we schedule the first
+        // buffer. If it is still 'suspended' (autoplay policy), resume() is async —
+        // scheduling against a not-yet-running clock made the first word start mid
+        // ramp-up, so it sounded slow and was barely audible. Await the resume.
+        if (ctx.state === 'suspended') {
+            try { await ctx.resume(); } catch (e) {}
+        }
+
         try {
             while (this.audioChunkQueue.length > 0) {
                 const base64 = this.audioChunkQueue.shift();
@@ -3459,9 +3627,12 @@ const ScreeningRoom = {
                     this._scheduleBuffer(ctx, audioBuffer);
                 } else {
                     // Still filling the prebuffer. Hold the decoded chunk and start
-                    // once we have a safety lead (or the fallback timer fires).
+                    // once we have a safety lead (enough chunks OR enough seconds of
+                    // audio), or when the fallback timer fires.
                     this._pendingBuffers.push(audioBuffer);
-                    if (this._pendingBuffers.length >= this._PREBUFFER_CHUNKS) {
+                    const bufferedSec = this._pendingBuffers.reduce((s, b) => s + (b.duration || 0), 0);
+                    if (this._pendingBuffers.length >= this._PREBUFFER_CHUNKS
+                        || bufferedSec >= this._PREBUFFER_MIN_SEC) {
                         this._startPlayback(ctx);
                     } else if (!this._prebufferTimer) {
                         this._prebufferTimer = setTimeout(() => {
@@ -3499,11 +3670,34 @@ const ScreeningRoom = {
     // Schedule one decoded AudioBuffer to play right after the previous one.
     _scheduleBuffer(ctx, audioBuffer) {
         // Start at the later of "now" or the end of the previously scheduled
-        // chunk. The small lead (0.04s) absorbs decode jitter.
-        const startAt = Math.max(ctx.currentTime + 0.04, this._nextStartTime);
+        // chunk. The FIRST chunk of a burst (_nextStartTime still 0) gets a bigger
+        // lead so its opening word isn't clipped while the audio clock settles
+        // right after resume(); later chunks need only a small jitter cushion.
+        const lead = (this._nextStartTime === 0) ? 0.14 : 0.04;
+        const startAt = Math.max(ctx.currentTime + lead, this._nextStartTime);
         const src = ctx.createBufferSource();
         src.buffer = audioBuffer;
-        src.connect(ctx.destination);
+        // Loudness-normalize this chunk toward the target RMS so volume stays
+        // consistent across chunks/agents, then route through the shared
+        // compressor (or straight to destination if it failed to build).
+        const rms = this._bufferRms(audioBuffer);
+        let target = (rms > 0.0005) ? (this._TTS_TARGET_RMS / rms) : 1;
+        target = Math.min(this._TTS_MAX_GAIN, Math.max(this._TTS_MIN_GAIN, target));
+        // Smooth across the burst's chunks so the level eases instead of jumping
+        // from one chunk to the next (the cause of "starts low, then suddenly loud").
+        this._ttsGainEma = (this._ttsGainEma == null)
+            ? target
+            : (this._TTS_GAIN_SMOOTH * this._ttsGainEma + (1 - this._TTS_GAIN_SMOOTH) * target);
+        const gain = this._ttsGainEma;
+        const out = this._ttsOut || ctx.destination;
+        if (Math.abs(gain - 1) > 0.02) {
+            const gainNode = ctx.createGain();
+            gainNode.gain.value = gain;
+            src.connect(gainNode);
+            gainNode.connect(out);
+        } else {
+            src.connect(out);
+        }
         src.onended = () => {
             const idx = this._scheduledSources.indexOf(src);
             if (idx !== -1) this._scheduledSources.splice(idx, 1);

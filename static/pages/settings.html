@@ -167,6 +167,56 @@
         </main>
     </div>
 
+    <!-- Create-your-own core-value agent modal -->
+    <div class="set-cv-modal-overlay" id="set-cv-modal" hidden>
+        <div class="set-cv-modal-card" role="dialog" aria-modal="true" aria-label="Create core value agent">
+            <button type="button" class="set-cvm-close" id="set-cvm-close" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <h2 class="set-cvm-title">Create Core Value Agent</h2>
+            <p class="set-cvm-sub">The AI builds a question bank from your description so this agent interviews like the built-in ones.</p>
+
+            <label class="set-cvm-label">Core Value Name</label>
+            <input type="text" id="set-cvm-value" class="set-text-input" placeholder="e.g. Curiosity" autocomplete="off">
+
+            <label class="set-cvm-label">Agent Name</label>
+            <input type="text" id="set-cvm-agent" class="set-text-input" placeholder="e.g. Riya Kapoor" autocomplete="off">
+
+            <div class="set-cvm-row2">
+                <div>
+                    <label class="set-cvm-label">Agent Gender</label>
+                    <div class="set-cvm-select-wrap">
+                        <select id="set-cvm-gender" class="set-text-input set-cvm-select">
+                            <option value="female">Female</option>
+                            <option value="male">Male</option>
+                        </select>
+                        <svg class="set-cvm-chevron" viewBox="0 0 24 24" fill="none" stroke="#656D79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </div>
+                <div>
+                    <label class="set-cvm-label">Voice</label>
+                    <div class="set-cvm-select-wrap set-cvm-voice-wrap">
+                        <select id="set-cvm-voice" class="set-text-input set-cvm-select"></select>
+                        <svg class="set-cvm-chevron" viewBox="0 0 24 24" fill="none" stroke="#656D79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        <button type="button" id="set-cvm-preview" class="set-cvm-preview" title="Play voice sample" aria-label="Play voice sample">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <label class="set-cvm-label">Description</label>
+            <textarea id="set-cvm-desc" class="set-text-input set-cvm-textarea" rows="3" placeholder="Describe what this core value means at your company"></textarea>
+
+            <div class="set-cvm-status" id="set-cvm-status"></div>
+
+            <div class="set-cvm-actions">
+                <button type="button" class="set-cvm-cancel" id="set-cvm-cancel">Cancel</button>
+                <button type="button" class="set-cvm-save" id="set-cvm-save">Save Agent</button>
+            </div>
+        </div>
+    </div>
+
     <script src="/static/js/validation.js"></script>
     <script src="/static/js/settings.js"></script>
     <script src="/static/js/user_dropdown.js"></script>

@@ -9,6 +9,19 @@
     --r: 12px; --r-sm: 8px; --ease: all 0.2s cubic-bezier(.4,0,.2,1);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Global zoom-to-fit: scale the page down on narrower-than-1600px viewports so
+   it fits at 100% browser zoom (Windows 125-150% scaling / macOS Safari) instead
+   of overflowing. See dashboard.css for the full rationale. >1600px and <1024px
+   stay at scale 1. */
+@media (max-width: 1600px) { :root { --app-zoom: 0.94; } }
+@media (max-width: 1440px) { :root { --app-zoom: 0.88; } }
+@media (max-width: 1366px) { :root { --app-zoom: 0.82; } }
+@media (max-width: 1280px) { :root { --app-zoom: 0.78; } }
+@media (max-width: 1152px) { :root { --app-zoom: 0.72; } }
+@media (max-width: 1024px) { :root { --app-zoom: 1; } }
+html { zoom: var(--app-zoom, 1); }
+
 body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 .bg-gradient { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(8,145,178,0.04), transparent 60%); }
 .hidden { display: none !important; }

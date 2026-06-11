@@ -10,7 +10,11 @@ const Auth = {
 
     // Organisation setup state
     selectedCoreValues: [],
-    MAX_CORE_VALUES: 10,
+    MAX_CORE_VALUES: 5,
+    // Custom core-value agents drafted during workplace setup (held client-side
+    // because the org row does not exist yet; persisted on org-setup submit).
+    customAgents: [],
+    _voiceCatalog: null,
 
     // The 25 core-value interviewer agents (mirrors CORE_VALUES_AGENTS in
     // src/screening_round_interview.py). id -> submitted value; name -> label;
@@ -121,6 +125,13 @@ const Auth = {
             if (ms && !ms.contains(e.target)) this.closeCoreValuesPanel();
         });
 
+        // Create-your-own core-value agent builder
+        document.getElementById('orgcv-create-form')?.addEventListener('submit', (e) => this.handleCreateAgent(e));
+        document.getElementById('orgcv-back')?.addEventListener('click', () => this.backToOrgSetup());
+        document.getElementById('orgcv-preview')?.addEventListener('click', () => this.previewVoice());
+        document.getElementById('orgcv-gender')?.addEventListener('change', () => { this._stopVoicePreview(); this.populateVoiceOptions(); });
+        document.getElementById('orgcv-voice')?.addEventListener('change', () => this._stopVoicePreview());
+
         // Company logo upload: reflect the chosen file name
         const orgLogo = document.getElementById('org-logo');
         orgLogo?.addEventListener('change', () => {
@@ -169,6 +180,11 @@ const Auth = {
 
     hideAllPanels() {
         document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+        // Clear any transient status message so it doesn't linger on the next panel.
+        document.querySelectorAll('[data-auth-msg]').forEach(el => {
+            el.textContent = '';
+            el.classList.remove('show', 'success', 'error');
+        });
     },
 
     showPanel(panelId) {
@@ -178,12 +194,36 @@ const Auth = {
         if (tabsEl) tabsEl.style.display = 'none';
     },
 
+    // Status feedback (errors, "Signing in…", "Login successful") is shown in the
+    // message slot INSIDE the currently active modal panel — login, signup,
+    // verify, etc. — so it never lands on the page banner behind the open modal.
+    // Only when the modal is closed (e.g. a redirect landed with ?msg=…) does it
+    // fall back to the hero banner.
     showMessage(text, type = 'error') {
+        const modalOpen = document.getElementById('auth-modal')?.classList.contains('show');
+        const panel = document.querySelector('.auth-panel.active');
+        const el = panel && panel.querySelector('[data-auth-msg]');
+        if (modalOpen && el) {
+            this.renderPanelMsg(el, text, type);
+            return;
+        }
         const alert = document.getElementById('auth-alert');
         if (alert) {
             alert.textContent = text;
             alert.className = `alert alert-${type} show`;
             setTimeout(() => this.hideMessage(), 5000);
+        }
+    },
+
+    // Write a status message into a panel's slot. Works for both the boxed-now-
+    // plain .auth-inline-msg elements and the .reg-error elements (signup flow).
+    renderPanelMsg(el, text, type = 'error') {
+        el.textContent = text || '';
+        if (el.classList.contains('reg-error')) {
+            el.classList.toggle('show', !!text);
+            el.classList.toggle('success', type === 'success');
+        } else {
+            el.className = 'auth-inline-msg' + (text ? ' show ' + type : '');
         }
     },
 
@@ -241,6 +281,7 @@ const Auth = {
         const el = document.getElementById(errorId);
         if (el) {
             el.textContent = message;
+            el.classList.remove('success');  // a validation error is never green
             el.classList.add('show');
         }
         inputIds.forEach(id => document.getElementById(id)?.classList.add('has-error'));
@@ -250,7 +291,7 @@ const Auth = {
         const el = document.getElementById(errorId);
         if (el) {
             el.textContent = '';
-            el.classList.remove('show');
+            el.classList.remove('show', 'success');
         }
         inputIds.forEach(id => document.getElementById(id)?.classList.remove('has-error'));
     },
@@ -271,22 +312,32 @@ const Auth = {
     renderCoreValueCards() {
         const grid = document.getElementById('org-values-grid');
         if (!grid) return;
-        grid.innerHTML = this.CORE_VALUES.map((cv, i) => {
+        const cards = this.CORE_VALUES.map((cv, i) => {
             const gradient = this.CV_GRADIENTS[i % this.CV_GRADIENTS.length];
-            const initial = cv.name.charAt(0).toUpperCase();
+            const initial = (cv.name || '?').charAt(0).toUpperCase();
             return `
                 <button type="button" class="reg-cv-card" data-cv="${cv.id}">
                     <span class="reg-cv-avatar" style="background:${gradient}">${initial}</span>
                     <span class="reg-cv-name">${cv.name}</span>
-                    <span class="reg-cv-role">${cv.agent}</span>
                 </button>`;
-        }).join('');
+        });
+        // "Create your own" entry — opens the custom-agent builder.
+        cards.push(`
+            <button type="button" class="reg-cv-card reg-cv-create" id="org-cv-create-card">
+                <span class="reg-cv-avatar">+</span>
+                <span class="reg-cv-name">Create your own</span>
+            </button>`);
+        grid.innerHTML = cards.join('');
 
-        grid.querySelectorAll('.reg-cv-card').forEach(card => {
+        grid.querySelectorAll('.reg-cv-card[data-cv]').forEach(card => {
             card.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.toggleCoreValue(card.dataset.cv);
             });
+        });
+        document.getElementById('org-cv-create-card')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.openCreateAgentPanel();
         });
         this.updateCoreValuesUI();
     },
@@ -307,8 +358,9 @@ const Auth = {
         const selected = this.selectedCoreValues;
         const atLimit = selected.length >= this.MAX_CORE_VALUES;
 
-        // Card highlight + disable unselected ones once the limit is reached
-        document.querySelectorAll('#org-values-grid .reg-cv-card').forEach(card => {
+        // Card highlight + disable unselected ones once the limit is reached.
+        // The "Create your own" card has no data-cv, so it is never disabled.
+        document.querySelectorAll('#org-values-grid .reg-cv-card[data-cv]').forEach(card => {
             const isSel = selected.includes(card.dataset.cv);
             card.classList.toggle('selected', isSel);
             card.classList.toggle('disabled', atLimit && !isSel);
@@ -353,6 +405,188 @@ const Auth = {
     closeCoreValuesPanel() {
         document.getElementById('org-values-panel')?.setAttribute('hidden', '');
         document.getElementById('org-values-trigger')?.setAttribute('aria-expanded', 'false');
+    },
+
+    // ==================== Create-your-own core-value agent ====================
+
+    async openCreateAgentPanel() {
+        this.closeCoreValuesPanel();
+        this._stopVoicePreview();
+        // Reset the form
+        ['orgcv-value', 'orgcv-agent', 'orgcv-desc'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        const gender = document.getElementById('orgcv-gender');
+        if (gender) gender.value = 'female';
+        this.clearFieldError('orgcv-error');
+        this.showPanel('orgcv-create-panel');
+        await this.populateVoiceOptions();
+    },
+
+    backToOrgSetup() {
+        this._stopVoicePreview();
+        this.showPanel('orgsetup-panel');
+    },
+
+    // Fetch the curated Sarvam voice catalog once and cache it.
+    async loadVoiceCatalog() {
+        if (this._voiceCatalog) return this._voiceCatalog;
+        try {
+            const res = await fetch(`${this.API_BASE}/api/core-value-agents/voices`);
+            const data = await res.json();
+            this._voiceCatalog = Array.isArray(data.voices) ? data.voices : [];
+        } catch (_) {
+            this._voiceCatalog = [];
+        }
+        return this._voiceCatalog;
+    },
+
+    // Fill the voice <select> with the speakers matching the chosen gender.
+    async populateVoiceOptions() {
+        const sel = document.getElementById('orgcv-voice');
+        if (!sel) return;
+        const gender = (document.getElementById('orgcv-gender') || {}).value || 'female';
+        const catalog = await this.loadVoiceCatalog();
+        const voices = catalog.filter(v => v.gender === gender);
+        sel.innerHTML = voices.map(v => `<option value="${v.voice}">${v.label}</option>`).join('')
+            || '<option value="">No voices available</option>';
+    },
+
+    // Swap the preview button between its three clear states so the user always
+    // knows what a click will do: idle (play icon) -> loading (spinner) ->
+    // playing (pause icon, click to stop).
+    _PV_ICONS: {
+        idle: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
+        playing: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="15" y="5" width="4" height="14" rx="1"/></svg>',
+        loading: '<span class="reg-voice-spin" aria-hidden="true"></span>',
+    },
+    _setPreviewState(state) {
+        const btn = document.getElementById('orgcv-preview');
+        if (!btn) return;
+        btn.dataset.pvState = state;
+        btn.classList.toggle('playing', state === 'playing');
+        btn.classList.toggle('loading', state === 'loading');
+        btn.innerHTML = this._PV_ICONS[state] || this._PV_ICONS.idle;
+        btn.setAttribute('aria-label',
+            state === 'playing' ? 'Stop voice sample'
+            : state === 'loading' ? 'Loading voice sample'
+            : 'Play voice sample');
+    },
+
+    _stopVoicePreview() {
+        // Bump the token so any in-flight fetch resolves into a no-op.
+        this._previewToken = (this._previewToken || 0) + 1;
+        if (this._previewAudio) {
+            try { this._previewAudio.pause(); } catch (_) {}
+            this._previewAudio = null;
+        }
+        this._setPreviewState('idle');
+    },
+
+    async previewVoice() {
+        const btn = document.getElementById('orgcv-preview');
+        const state = btn ? btn.dataset.pvState : 'idle';
+        // A click while loading or playing stops it (true toggle).
+        if (state === 'playing' || state === 'loading') {
+            this._stopVoicePreview();
+            return;
+        }
+        const sel = document.getElementById('orgcv-voice');
+        const voice = sel && sel.value;
+        if (!voice) return;
+
+        const token = (this._previewToken || 0) + 1;
+        this._previewToken = token;
+        this._setPreviewState('loading');
+        try {
+            const res = await fetch(`${this.API_BASE}/api/core-value-agents/voice-preview`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ voice }),
+            });
+            if (token !== this._previewToken) return;   // superseded/stopped
+            if (!res.ok) throw new Error('preview failed');
+            const blob = await res.blob();
+            if (token !== this._previewToken) return;
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            this._previewAudio = audio;
+            audio.onended = () => { URL.revokeObjectURL(url); if (token === this._previewToken) this._stopVoicePreview(); };
+            await audio.play();
+            if (token !== this._previewToken) { try { audio.pause(); } catch (_) {} return; }
+            this._setPreviewState('playing');
+        } catch (_) {
+            if (token === this._previewToken) {
+                this._setPreviewState('idle');
+                this.showFieldError('orgcv-error', 'Could not play a sample for this voice. Please try another.');
+            }
+        }
+    },
+
+    // Validate + draft a custom agent (AI dup-check + template), then add it to
+    // the picker and return to the org-setup step with it selected.
+    async handleCreateAgent(e) {
+        e.preventDefault();
+        const valueName = document.getElementById('orgcv-value').value.trim();
+        const agentName = document.getElementById('orgcv-agent').value.trim();
+        const gender = document.getElementById('orgcv-gender').value;
+        const voice = document.getElementById('orgcv-voice').value;
+        const description = document.getElementById('orgcv-desc').value.trim();
+
+        this.clearFieldError('orgcv-error');
+        if (!valueName) return this.showFieldError('orgcv-error', 'Please enter a core value name.');
+        if (!agentName) return this.showFieldError('orgcv-error', 'Please enter an agent name.');
+        if (!voice) return this.showFieldError('orgcv-error', 'Please choose a voice.');
+
+        const ownerEmail = this.pendingSignup ? this.pendingSignup.email
+            : (this.pendingOAuth ? this.pendingOAuth.email : null);
+
+        this.setLoading('orgcv-save', true);
+        try {
+            const res = await fetch(`${this.API_BASE}/api/core-value-agents/draft`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    value_name: valueName,
+                    agent_name: agentName,
+                    gender, voice, description,
+                    existing_customs: this.customAgents.map(a => a.value_name),
+                    email: ownerEmail,
+                }),
+            });
+            const data = await res.json().catch(() => ({}));
+            this.setLoading('orgcv-save', false);
+
+            if (res.status === 409) {
+                // Hard block — a semantically similar value already exists.
+                return this.showFieldError('orgcv-error', data.detail || 'A similar core value already exists. Please describe a distinct one.');
+            }
+            if (!res.ok || !data.agent) {
+                return this.showFieldError('orgcv-error', data.detail || 'Could not create the agent. Please try again.');
+            }
+
+            const agent = data.agent;
+            // Keep the full draft (sent to the backend on org-setup submit) ...
+            this.customAgents.push(agent);
+            // ... and add a card to the picker catalog.
+            this.CORE_VALUES.push({ id: agent.agent_id, name: agent.value_name, agent: agent.agent_name, custom: true });
+            this.renderCoreValueCards();
+
+            // Auto-select it if there's room under the cap.
+            if (this.selectedCoreValues.length < this.MAX_CORE_VALUES) {
+                this.selectedCoreValues.push(agent.agent_id);
+            }
+            this._stopVoicePreview();
+            this.showPanel('orgsetup-panel');
+            this.updateCoreValuesUI();
+            if (this.selectedCoreValues.indexOf(agent.agent_id) === -1) {
+                this.showFieldError('orgsetup-error', `Created ${agent.value_name}. You already have ${this.MAX_CORE_VALUES} selected — deselect one to add it.`);
+            }
+        } catch (err) {
+            this.setLoading('orgcv-save', false);
+            this.showFieldError('orgcv-error', 'Connection error. Please try again.');
+        }
     },
 
     setLoading(btnId, loading) {
@@ -623,6 +857,9 @@ const Auth = {
             fd.append('email', email);
             fd.append('org_name', document.getElementById('org-name').value.trim());
             fd.append('core_values', JSON.stringify(this.selectedCoreValues));
+            // Only send custom agents that are actually selected.
+            const usedCustoms = this.customAgents.filter(a => this.selectedCoreValues.includes(a.agent_id));
+            fd.append('custom_agents', JSON.stringify(usedCustoms));
             if (logoFile) fd.append('logo', logoFile);
 
             const res = await fetch(`${this.API_BASE}/api/organisation/setup`, {
@@ -839,7 +1076,9 @@ const Auth = {
         }
     },
 
-    handleGoogleSignIn() {
+    handleGoogleSignIn(mode) {
+        // mode 'login' = sign in only (no account creation); default 'signup'.
+        this.oauthMode = mode === 'login' ? 'login' : 'signup';
         if (!this.googleClientId) {
             this.showMessage('Google sign-in is not configured yet.', 'error');
             return;
@@ -899,13 +1138,17 @@ const Auth = {
             const res = await fetch(`${this.API_BASE}/api/auth/google`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ credential: response.credential })
+                body: JSON.stringify({ credential: response.credential, mode: this.oauthMode || 'signup' })
             });
 
             const data = await res.json();
 
             if (res.ok && data.success) {
                 this.completeOAuth(data.user, data.needs_onboarding);
+            } else if (data.no_account) {
+                // Sign-in-only attempt for an email with no account.
+                this.switchTab('login');
+                this.showLoginMsg('No account found for this email. Please sign up first.', 'error');
             } else {
                 this.showMessage(data.detail || 'Google sign-in failed', 'error');
             }
@@ -933,7 +1176,6 @@ const Auth = {
                     'Please sign up with your company email. Personal accounts (Gmail, Outlook, etc.) are not allowed.',
                     ['register-email']
                 );
-                this.showMessage('Personal email accounts cannot create a workspace. Use your company email.', 'error');
                 return;
             }
             // Do NOT log in yet — the user must finish org setup first, so a
@@ -969,10 +1211,12 @@ const Auth = {
         window.location.href = `${this.API_BASE}/api/auth/linkedin`;
     },
 
-    handleMicrosoftSignIn() {
+    handleMicrosoftSignIn(mode) {
         // Server-side auth-code flow: backend redirects to Microsoft, then back
         // to /login with the result in the URL fragment (see initOAuthResume).
-        window.location.href = `${this.API_BASE}/api/auth/microsoft`;
+        // mode 'login' = sign in only (no account creation); default 'signup'.
+        const q = mode === 'login' ? '?mode=login' : '';
+        window.location.href = `${this.API_BASE}/api/auth/microsoft${q}`;
     },
 
     // ==================== Workspace Ready popup ====================
@@ -1009,6 +1253,14 @@ const Auth = {
     // Returns true if a fragment was consumed (so init() skips the auth check).
     initOAuthResume() {
         const hash = window.location.hash || '';
+
+        if (hash.indexOf('msnoaccount=') !== -1) {
+            // Microsoft sign-in (login mode) for an email with no account.
+            try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch (_) {}
+            if (typeof this.openModal === 'function') this.openModal('login');
+            this.showLoginMsg('No account found for this email. Please sign up first.', 'error');
+            return true;
+        }
 
         if (hash.indexOf('mserror=') !== -1) {
             const msg = decodeURIComponent(hash.split('mserror=')[1] || 'Microsoft sign-in failed');

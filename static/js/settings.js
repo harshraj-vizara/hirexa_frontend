@@ -53,7 +53,25 @@
     ];
     const CV_LABELS = {}, CV_AGENTS = {}, CV_GRAD = {};
     CV_DATA.forEach((r, i) => { CV_LABELS[r[0]] = r[1]; CV_AGENTS[r[0]] = r[2]; CV_GRAD[r[0]] = CV_GRADIENTS[i % CV_GRADIENTS.length]; });
-    const MAX_CV = 10;
+    const MAX_CV = 5;
+
+    // Org-authored custom core-value agents (cv_c*). Ids appended to the picker
+    // at runtime so the built-in CV_DATA list never has to be edited.
+    let customIds = [];
+    let _voiceCatalog = null;
+    let _previewAudio = null;
+
+    // Register one custom agent into the lookup maps + picker list.
+    function addCustomToMaps(a, i) {
+        if (!a || !a.id) return;
+        CV_LABELS[a.id] = a.name || a.id;
+        CV_AGENTS[a.id] = a.agent || 'Custom interviewer';
+        CV_GRAD[a.id] = CV_GRADIENTS[(CV_DATA.length + (i || 0)) % CV_GRADIENTS.length];
+        if (!customIds.includes(a.id)) customIds.push(a.id);
+    }
+
+    // All selectable core-value ids (built-ins + org customs).
+    function allCvIds() { return CV_DATA.map(r => r[0]).concat(customIds); }
 
     const el = (id) => document.getElementById(id);
 
@@ -210,21 +228,32 @@
     function renderSuggest(q) {
         const box = el('set-cv-suggest');
         if (!box) return;
-        q = (q || '').trim().toLowerCase();
+        q = (q || '').trim();
+        const ql = q.toLowerCase();
         const atLimit = selectedCV.length >= MAX_CV;
-        const ids = CV_DATA.map(r => r[0]).filter(id => !q || CV_LABELS[id].toLowerCase().includes(q));
+        const ids = allCvIds().filter(id => !ql || (CV_LABELS[id] || '').toLowerCase().includes(ql));
+        // "Create your own" row (admins only) — pre-fills the typed query.
+        const createRow = editable
+            ? '<button type="button" class="set-cv-card set-cv-create" data-create="1">' +
+              '<span class="set-cv-avatar set-cv-create-avatar">+</span>' +
+              '<span class="set-cv-cardmeta"><span class="set-cv-name">' +
+              (q ? 'Create "' + escapeHtml(q) + '"' : 'Create your own') +
+              '</span><span class="set-cv-role">Build a custom core-value agent</span></span></button>'
+            : '';
         if (!ids.length) {
-            box.innerHTML = '<div class="set-cv-suggest-empty">No matching core value.</div>';
-            box.hidden = false; return;
+            box.innerHTML = createRow || '<div class="set-cv-suggest-empty">No matching core value.</div>';
+            box.hidden = false;
+            wireCreateRow(box);
+            return;
         }
-        box.innerHTML = ids.map(id => {
+        box.innerHTML = createRow + ids.map(id => {
             const sel = selectedCV.includes(id);
             const cls = 'set-cv-card' + (sel ? ' selected' : (atLimit ? ' disabled' : ''));
+            // Show ONLY the core value name in the list (no evaluator/agent name).
             return '<button type="button" class="' + cls + '" data-add="' + id + '">' +
                 '<span class="set-cv-avatar" style="background:' + CV_GRAD[id] + '">' + escapeHtml(CV_LABELS[id].charAt(0)) + '</span>' +
                 '<span class="set-cv-cardmeta">' +
                 '<span class="set-cv-name">' + escapeHtml(CV_LABELS[id]) + '</span>' +
-                '<span class="set-cv-role">' + escapeHtml(CV_AGENTS[id]) + '</span>' +
                 '</span>' +
                 (sel ? '<span class="set-cv-check"><svg viewBox="0 0 12 12" fill="none" stroke="#4CABF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.2 L4.6 8.6 L10 3.5"/></svg></span>' : '') +
                 '</button>';
@@ -244,7 +273,20 @@
                 renderSuggest(el('set-cv-search') ? el('set-cv-search').value : '');
             });
         });
+        wireCreateRow(box);
         box.hidden = false;
+    }
+
+    // Wire the "Create your own" row in the suggest dropdown.
+    function wireCreateRow(box) {
+        const row = box.querySelector('[data-create]');
+        if (!row) return;
+        row.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const q = (el('set-cv-search') && el('set-cv-search').value || '').trim();
+            box.hidden = true;
+            openCreateModal(q);
+        });
     }
 
     // -------- Load --------
@@ -264,6 +306,11 @@
                 if (isAdmin) setStatus('Finish your workspace setup first.', 'error');
                 return;
             }
+
+            // Register the org's custom agents before rendering chips/suggest so
+            // their names resolve everywhere.
+            customIds = [];
+            if (Array.isArray(d.custom_agents)) d.custom_agents.forEach((a, i) => addCustomToMaps(a, i));
 
             selectedCV = Array.isArray(d.core_values) ? d.core_values.slice() : [];
             renderChips();
@@ -332,6 +379,167 @@
         btn.disabled = false; btn.textContent = orig;
     }
 
+    // -------- Create-your-own core-value agent --------
+    function cvmStatus(msg, kind) {
+        const s = el('set-cvm-status'); if (!s) return;
+        s.textContent = msg || ''; s.className = 'set-cvm-status' + (kind ? ' ' + kind : '');
+    }
+
+    async function loadVoiceCatalog() {
+        if (_voiceCatalog) return _voiceCatalog;
+        try {
+            const res = await fetch(API + '/api/core-value-agents/voices');
+            const data = await res.json();
+            _voiceCatalog = Array.isArray(data.voices) ? data.voices : [];
+        } catch (_) { _voiceCatalog = []; }
+        return _voiceCatalog;
+    }
+
+    async function cvmPopulateVoices() {
+        const sel = el('set-cvm-voice');
+        if (!sel) return;
+        const gender = (el('set-cvm-gender') || {}).value || 'female';
+        const catalog = await loadVoiceCatalog();
+        const voices = catalog.filter(v => v.gender === gender);
+        sel.innerHTML = voices.map(v => '<option value="' + v.voice + '">' + escapeHtml(v.label) + '</option>').join('')
+            || '<option value="">No voices available</option>';
+    }
+
+    // Three clear states for the preview button: idle (play) -> loading
+    // (spinner) -> playing (pause, click to stop).
+    const PV_ICONS = {
+        idle: '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
+        playing: '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="15" y="5" width="4" height="14" rx="1"/></svg>',
+        loading: '<span class="set-cvm-spin" aria-hidden="true"></span>',
+    };
+    let _previewToken = 0;
+    function cvmSetPreviewState(state) {
+        const b = el('set-cvm-preview');
+        if (!b) return;
+        b.dataset.pvState = state;
+        b.classList.toggle('playing', state === 'playing');
+        b.classList.toggle('loading', state === 'loading');
+        b.innerHTML = PV_ICONS[state] || PV_ICONS.idle;
+        b.setAttribute('aria-label',
+            state === 'playing' ? 'Stop voice sample'
+            : state === 'loading' ? 'Loading voice sample'
+            : 'Play voice sample');
+    }
+
+    function cvmStopPreview() {
+        _previewToken += 1;   // invalidate any in-flight fetch
+        if (_previewAudio) { try { _previewAudio.pause(); } catch (_) {} _previewAudio = null; }
+        cvmSetPreviewState('idle');
+    }
+
+    async function cvmPreview() {
+        const b = el('set-cvm-preview');
+        const state = b ? b.dataset.pvState : 'idle';
+        if (state === 'playing' || state === 'loading') { cvmStopPreview(); return; }
+        const sel = el('set-cvm-voice');
+        const voice = sel && sel.value;
+        if (!voice) return;
+
+        const token = ++_previewToken;
+        cvmSetPreviewState('loading');
+        try {
+            const res = await fetch(API + '/api/core-value-agents/voice-preview', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ voice }),
+            });
+            if (token !== _previewToken) return;
+            if (!res.ok) throw new Error('preview failed');
+            const blob = await res.blob();
+            if (token !== _previewToken) return;
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            _previewAudio = audio;
+            audio.onended = () => { URL.revokeObjectURL(url); if (token === _previewToken) cvmStopPreview(); };
+            await audio.play();
+            if (token !== _previewToken) { try { audio.pause(); } catch (_) {} return; }
+            cvmSetPreviewState('playing');
+        } catch (_) {
+            if (token === _previewToken) {
+                cvmSetPreviewState('idle');
+                cvmStatus('Could not play a sample for this voice. Please try another.', 'error');
+            }
+        }
+    }
+
+    async function openCreateModal(prefillName) {
+        if (!editable) return;   // admins, unlocked only
+        cvmStopPreview();
+        setVal('set-cvm-value', prefillName || '');
+        setVal('set-cvm-agent', '');
+        setVal('set-cvm-desc', '');
+        const g = el('set-cvm-gender'); if (g) g.value = 'female';
+        cvmStatus('', '');
+        const ov = el('set-cv-modal'); if (ov) ov.hidden = false;
+        await cvmPopulateVoices();
+    }
+
+    function closeCreateModal() {
+        cvmStopPreview();
+        const ov = el('set-cv-modal'); if (ov) ov.hidden = true;
+    }
+
+    async function submitCreate() {
+        const valueName = val('set-cvm-value');
+        const agentName = val('set-cvm-agent');
+        const gender = (el('set-cvm-gender') || {}).value || 'female';
+        const voice = (el('set-cvm-voice') || {}).value || '';
+        const description = val('set-cvm-desc');
+
+        cvmStatus('', '');
+        if (!valueName) return cvmStatus('Please enter a core value name.', 'error');
+        if (!agentName) return cvmStatus('Please enter an agent name.', 'error');
+        if (!voice) return cvmStatus('Please choose a voice.', 'error');
+
+        const saveBtn = el('set-cvm-save');
+        saveBtn.disabled = true; const orig = saveBtn.textContent; saveBtn.textContent = 'Saving…';
+        try {
+            // 1) Draft: AI dup-check (hard block) + template generation.
+            const dr = await fetch(API + '/api/core-value-agents/draft', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    value_name: valueName, agent_name: agentName, gender, voice, description,
+                    existing_customs: customIds.map(id => CV_LABELS[id]).filter(Boolean),
+                    email: userEmail,
+                }),
+            });
+            const draft = await dr.json().catch(() => ({}));
+            if (dr.status === 409) { cvmStatus(draft.detail || 'A similar core value already exists. Please describe a distinct one.', 'error'); return; }
+            if (!dr.ok || !draft.agent) { cvmStatus(draft.detail || 'Could not create the agent. Please try again.', 'error'); return; }
+
+            // 2) Persist to the org (it exists here) + auto-select.
+            const cr = await fetch(API + '/api/core-value-agents', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail, agent: draft.agent }),
+            });
+            const created = await cr.json().catch(() => ({}));
+            if (!cr.ok || !created.agent) { cvmStatus(created.detail || 'Could not save the agent. Please try again.', 'error'); return; }
+
+            const a = created.agent;
+            addCustomToMaps({ id: a.agent_id, name: a.value, agent: a.name }, customIds.length);
+            // Mirror the server's selection (it respects the 5-cap on new adds).
+            if (Array.isArray(created.core_values)) selectedCV = created.core_values.slice();
+
+            renderChips();
+            closeCreateModal();
+            if (created.selected === false) {
+                setStatus('Created ' + (a.value || 'core value') + '. You already have ' + MAX_CV + ' selected — deselect one to add it.', 'error');
+            } else {
+                setStatus('Created ' + (a.value || 'core value') + '.', 'success');
+            }
+            const search = el('set-cv-search');
+            if (search) { search.value = ''; renderSuggest(''); }
+        } catch (_) {
+            cvmStatus('Connection error. Please try again.', 'error');
+        } finally {
+            saveBtn.disabled = false; saveBtn.textContent = orig;
+        }
+    }
+
     // -------- Wire up --------
     document.addEventListener('DOMContentLoaded', () => {
         load().finally(hideLoader);
@@ -345,6 +553,17 @@
         document.addEventListener('click', (e) => {
             const box = el('set-cv-suggest');
             if (box && !box.hidden && !e.target.closest('.set-cv-search-wrap')) box.hidden = true;
+        });
+
+        // Create-your-own core-value agent modal
+        el('set-cvm-save')?.addEventListener('click', submitCreate);
+        el('set-cvm-cancel')?.addEventListener('click', closeCreateModal);
+        el('set-cvm-close')?.addEventListener('click', closeCreateModal);
+        el('set-cvm-preview')?.addEventListener('click', cvmPreview);
+        el('set-cvm-gender')?.addEventListener('change', () => { cvmStopPreview(); cvmPopulateVoices(); });
+        el('set-cvm-voice')?.addEventListener('change', cvmStopPreview);
+        el('set-cv-modal')?.addEventListener('click', (e) => {
+            if (e.target && e.target.id === 'set-cv-modal') closeCreateModal();
         });
 
         // Company Email -> reuse the dashboard Connect Company Email flow.

@@ -93,11 +93,27 @@ const PL = {
             });
         } else if (p.get('posting')) {
             this.postingId = p.get('posting');
+            // Returning from a LinkedIn connect. We do NOT auto-post (that caused
+            // the redirect loop) — the button just flips to the green "Post Now"
+            // stage and the recruiter clicks once to publish.
+            const justConnected = p.get('li_connect') === '1';
+            const autoCompany = p.get('li_company') === '1';
+            if (justConnected || autoCompany) {
+                history.replaceState(null, '', `/c8qr?posting=${this.postingId}`);
+            }
             document.querySelectorAll('.pl-step').forEach(s => s.classList.add('hidden'));
             this._showPageLoader(true);
             this._loadPostingDetail().then(() => {
                 this._showPageLoader(false);
                 this._navigateToStep(hashStep || 2);
+                if (justConnected) {
+                    setTimeout(() => {
+                        this._checkLinkedIn();
+                        this.toast('LinkedIn connected. Click "Post Now" to publish.', 'success');
+                    }, 400);
+                } else if (autoCompany) {
+                    setTimeout(() => this.postToCompanyPage(null, true), 300);
+                }
             }).catch(() => {
                 this._showPageLoader(false);
                 this._navigateToStep(hashStep || 2);
@@ -210,6 +226,7 @@ const PL = {
         const jd = document.getElementById('f-jd').value.trim();
         const loc = document.getElementById('f-location').value.trim();
         const joining = document.getElementById('f-joining').value;
+        const grade = document.getElementById('f-grade').value;
         const cur = document.getElementById('f-currency').value;
         const bmin = document.getElementById('f-bmin').value.trim();
         const bmax = document.getElementById('f-bmax').value.trim();
@@ -228,6 +245,7 @@ const PL = {
             }
         }
         if (!joining) return this.toast('Select joining timeline', 'error');
+        if (!grade) return this.toast('Select the role level', 'error');
         if (!bmin || !bmax) return this.toast('Enter budget range', 'error');
         // Budget sanity: Min must not exceed Max (and Max not be below Min).
         const bminNum = parseInt(String(bmin).replace(/[^\d]/g, ''), 10);
@@ -282,7 +300,7 @@ const PL = {
             if (!r.ok || !d.success) throw new Error(d.detail || 'Failed to create posting');
 
             this.postingId = d.posting_id;
-            this.data = { ...d, raw_jd: jd, status: 'active' };
+            this.data = { ...d, raw_jd: jd, grade: grade, status: 'active' };
 
             // 2. Create pipeline immediately (linked to posting)
             await this._createPipeline();
@@ -354,6 +372,8 @@ const PL = {
             }
             if (el('f-location')) el('f-location').value = p.job_location || '';
             if (el('f-joining') && p.joining_duration) el('f-joining').value = p.joining_duration;
+            // Role level lives on the pipeline config; restore it if we have it this session.
+            if (el('f-grade') && this.data.grade) el('f-grade').value = this.data.grade;
             if (el('f-currency') && p.budget_currency) el('f-currency').value = p.budget_currency;
             if (el('f-bmin') && p.budget_min) el('f-bmin').value = p.budget_min;
             if (el('f-bmax') && p.budget_max) el('f-bmax').value = p.budget_max;
@@ -488,40 +508,106 @@ const PL = {
         }
     },
 
+    // LinkedIn connect/post is a TWO-STAGE button:
+    //   stage 1 (not connected) → blue  "Connect LinkedIn to Post"
+    //   stage 2 (connected)     → green "LinkedIn Connected · Post Now"
+    // Splitting connect from post (no auto-post) is also what removes the old
+    // connect↔callback redirect loop.
+    _liConnected: false,
+
+    _setLiButtonState(state) {
+        const btn = document.getElementById('btn-li-post');
+        if (!btn) return;
+        const LI = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
+        const CHECK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+        const SPIN = '<div class="pl-btn-spinner"></div> ';
+        btn.classList.remove('pl-li-ready', 'pl-li-done');
+        btn.disabled = false;
+        if (state === 'connect') {
+            btn.innerHTML = LI + '<span>Connect LinkedIn to Post</span>';
+        } else if (state === 'connecting') {
+            btn.disabled = true;
+            btn.innerHTML = SPIN + '<span>Connecting…</span>';
+        } else if (state === 'ready') {
+            btn.classList.add('pl-li-ready');
+            btn.innerHTML = LI + '<span>LinkedIn Connected · Post Now</span>';
+        } else if (state === 'posting') {
+            btn.disabled = true;
+            btn.innerHTML = SPIN + '<span>Posting…</span>';
+        } else if (state === 'posted') {
+            btn.classList.add('pl-li-done');
+            btn.disabled = true;
+            btn.innerHTML = CHECK + '<span>Posted to LinkedIn</span>';
+        }
+    },
+
     async _checkLinkedIn() {
         try {
             const r = await fetch(`${this.API}/api/job-posting/linkedin-status?recruiter_email=${encodeURIComponent(this.user.email)}`);
             const d = await r.json();
-            const btn = document.getElementById('btn-li-post');
-            if (!d.connected) {
-                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> Connect LinkedIn & Post';
-            }
-        } catch (_) {}
+            this._liConnected = !!d.connected;
+        } catch (_) { this._liConnected = false; }
+        // Don't downgrade a freshly "Posted" button back to a stage label.
+        const btn = document.getElementById('btn-li-post');
+        if (btn && btn.classList.contains('pl-li-done')) return;
+        this._setLiButtonState(this._liConnected ? 'ready' : 'connect');
     },
 
     async postLinkedIn() {
-        const btn = document.getElementById('btn-li-post');
-        btn.disabled = true;
-        const orig = btn.innerHTML;
-        btn.innerHTML = '<div class="pl-btn-spinner"></div> Posting...';
+        // STAGE 1 — not connected: connect ONLY, then come back. No auto-post, so
+        // there is no connect↔callback redirect loop. After returning, the button
+        // flips to the green "Post Now" state and the recruiter clicks once more.
+        if (!this._liConnected) {
+            this._setLiButtonState('connecting');
+            try {
+                const r = await fetch(`${this.API}/api/job-posting/post-to-linkedin`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ recruiter_email: this.user.email, posting_id: this.postingId })
+                });
+                const d = await r.json();
+                if (d.needs_linkedin_auth && d.linkedin_auth_url) {
+                    this.toast('Taking you to LinkedIn to connect…', 'info');
+                    localStorage.setItem('linkedin_return_to', `/c8qr?posting=${this.postingId}&li_connect=1`);
+                    setTimeout(() => window.location.href = d.linkedin_auth_url, 800);
+                    return;
+                }
+                if (d.success) {   // already connected on the backend → it posted
+                    this._liConnected = true;
+                    this._setLiButtonState('posted');
+                    this.toast('Posted to LinkedIn!', 'success');
+                    return;
+                }
+                throw new Error(d.message || 'Could not connect to LinkedIn');
+            } catch (e) {
+                this.toast(e.message, 'error');
+                this._setLiButtonState('connect');
+            }
+            return;
+        }
+
+        // STAGE 2 — connected: publish.
+        this._setLiButtonState('posting');
         try {
             const r = await fetch(`${this.API}/api/job-posting/post-to-linkedin`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ recruiter_email: this.user.email, posting_id: this.postingId })
             });
             const d = await r.json();
-            if (d.needs_linkedin_auth && d.linkedin_auth_url) {
-                this.toast(d.message + ' Redirecting...', 'info');
-                localStorage.setItem('linkedin_return_to', `/c8qr?posting=${this.postingId}`);
-                setTimeout(() => window.location.href = d.linkedin_auth_url, 1200);
+            if (d.needs_linkedin_auth) {
+                // Token went stale — drop back to the connect stage. Do NOT
+                // auto-redirect (that's what looped before); let the recruiter click.
+                this._liConnected = false;
+                this._setLiButtonState('connect');
+                this.toast(d.message || 'LinkedIn needs reconnecting — click Connect.', 'error');
                 return;
             }
-            if (!d.success) throw new Error(d.message || 'Failed');
+            if (!d.success) throw new Error(d.message || 'Failed to post');
+            this._setLiButtonState('posted');
             this.toast('Posted to LinkedIn!', 'success');
-            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Posted!';
-            btn.style.background = '#059669';
-        } catch (e) { this.toast(e.message, 'error'); btn.innerHTML = orig; }
-        finally { btn.disabled = false; }
+        } catch (e) {
+            this.toast(e.message, 'error');
+            this._setLiButtonState('ready');
+        }
     },
 
     // Post the job to a LinkedIn Company Page the recruiter administers.
@@ -529,7 +615,7 @@ const PL = {
     // (w_organization_social); until then the org-scope consent fails at LinkedIn
     // and we show the reconnect prompt. Personal "Connect LinkedIn & Post" is
     // unaffected.
-    async postToCompanyPage(orgId) {
+    async postToCompanyPage(orgId, autoAfterConnect = false) {
         const btn = document.getElementById('btn-li-company');
         btn.disabled = true;
         const orig = btn.innerHTML;
@@ -547,8 +633,15 @@ const PL = {
             const d = await r.json();
 
             if (d.needs_linkedin_auth && d.linkedin_auth_url) {
+                // Just returned from connecting and it still needs auth → stop, don't
+                // re-redirect (prevents the connect↔callback loop).
+                if (autoAfterConnect) {
+                    this.toast(d.message || 'LinkedIn connected, but the post could not be published. Please try again.', 'error');
+                    btn.innerHTML = orig;
+                    return;
+                }
                 this.toast((d.message || 'Connect LinkedIn to post to your company page.') + ' Redirecting...', 'info');
-                localStorage.setItem('linkedin_return_to', `/c8qr?posting=${this.postingId}`);
+                localStorage.setItem('linkedin_return_to', `/c8qr?posting=${this.postingId}&li_company=1`);
                 setTimeout(() => window.location.href = d.linkedin_auth_url, 1200);
                 return;
             }
@@ -617,6 +710,7 @@ const PL = {
                     company_name: this.data.company_name || '',
                     job_location: this.data.job_location || '',
                     job_description: this.data.raw_jd || this.data.formatted_jd || '',
+                    config: { grade: this.data.grade || '' },
                 })
             });
             const d = await r.json();
@@ -722,7 +816,7 @@ const PL = {
     fc: {
         all: [],            // Full candidate list (last fetch)
         filter: 'all',      // Active filter id ('all' | 'top90' | `loc:<city>` | 'github')
-        autoStarted: false, // Have we kicked off the Apollo search this session?
+        autoStarted: false, // Have we kicked off the LinkedIn search this session?
     },
 
     async _setupStep4() {
@@ -745,9 +839,9 @@ const PL = {
             }
         } catch (_) {}
 
-        // First visit → fire Apollo search and start polling
+        // First visit → fire LinkedIn search and start polling
         if (!this.searchStarted) {
-            this._showFCLoader(true, 'Sourcing candidates from Apollo & LinkedIn…');
+            this._showFCLoader(true, 'Sourcing candidates from LinkedIn…');
             this._autoStartSearch();
         }
     },
@@ -793,7 +887,7 @@ const PL = {
     async retrySearch() {
         this._searchPollCount = 0;
         this._lastCandCount = -1;
-        this._showFCLoader(true, 'Searching again — re-querying Apollo with the latest JD…');
+        this._showFCLoader(true, 'Searching again — re-querying LinkedIn with the latest JD…');
         try {
             const r = await fetch(`${this.API}/api/pipeline/${this.pipelineId}/start-search`, { method: 'POST' });
             this._startSearchPoll();

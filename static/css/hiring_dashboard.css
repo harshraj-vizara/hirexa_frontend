@@ -378,7 +378,6 @@ html, body { height: 100vh; overflow: hidden; }
     letter-spacing: 0.05em;
     text-transform: capitalize;
 }
-.hd-source-apollo    { color: #9886E9; }
 .hd-source-linkedin  { color: #005CB5; }
 .hd-source-referral  { color: #EAB000; }
 .hd-source-application { color: #4CABF6; }

@@ -21,14 +21,8 @@
 
     // Mirrors src/screening_round_interview.py AGENT_PROFILES + CORE_VALUES_AGENTS
     const AGENT_CATALOG = {
-        priya:   { name: 'Priya',   role: 'HR Screener' },
-        rajesh:  { name: 'Rajesh',  role: 'Technical Lead' },
-        ananya:  { name: 'Ananya',  role: 'Behavioral Expert' },
-        vikram:  { name: 'Vikram',  role: 'Domain Expert' },
-        deepa:   { name: 'Deepa',   role: 'Cultural Fit' },
-        arjun:   { name: 'Arjun',   role: 'Stress Tester' },
-        meera:   { name: 'Meera',   role: 'Communication Coach' },
-        sanjay:  { name: 'Sanjay',  role: 'Industry Veteran' },
+        priya:   { name: 'Priya',   role: 'HR' },
+        arjun:   { name: 'Arjun',   role: 'Domain Expert' },
     };
     // Mirrors src/screening_round_interview.py CORE_VALUES_AGENTS — real agent
     // names + their evaluator role labels.
@@ -111,6 +105,27 @@
                     roleTrig.classList.remove('open');
                 }
             });
+        },
+
+        // Merge the org's CUSTOM core-value agents (cv_c*) into CV_CATALOG so they
+        // render + are selectable like the built-ins. The interview engine already
+        // resolves and runs them, so a selected custom agent asks questions
+        // exactly like a normal core-value agent.
+        async _loadCustomAgents() {
+            if (!this.recruiterEmail) return;
+            try {
+                const r = await fetch(`${API}/api/company/profile?email=${encodeURIComponent(this.recruiterEmail)}`);
+                if (!r.ok) return;
+                const d = await r.json();
+                const list = (d && Array.isArray(d.custom_agents)) ? d.custom_agents : [];
+                list.forEach(c => {
+                    if (!c || !c.id) return;
+                    CV_CATALOG[c.id] = {
+                        name: c.agent || c.name || 'Interviewer',
+                        role: c.role || ((c.name || 'Core Value') + ' Evaluator'),
+                    };
+                });
+            } catch (e) { /* noop — falls back to built-ins only */ }
         },
 
         async _loadPipelines() {
@@ -426,6 +441,9 @@
     document.addEventListener('DOMContentLoaded', async () => {
         QI._initUser();
         QI._wireForm();
+        // Load the org's custom interviewer agents before pipelines / deep-link
+        // auto-pick, so the panel can render + select them from the first paint.
+        await QI._loadCustomAgents();
         await QI._loadPipelines();
         // Deep-link from /hiring-dashboard's "+ Add Candidate" button (and
         // anywhere else that wants to drop the recruiter here with a role
