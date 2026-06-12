@@ -61,8 +61,16 @@
                 return;
             }
 
+            // Posting-connect flow (state starts with "connect.") is NOT a login:
+            // it attaches LinkedIn posting credentials to the already-logged-in
+            // recruiter. It must never create an account or overwrite the session.
+            const isConnect = (state || '').indexOf('connect.') === 0;
+
             try {
-                const res = await fetch(`${window.location.origin}/api/auth/linkedin/callback`, {
+                const endpoint = isConnect
+                    ? '/api/auth/linkedin/connect-callback'
+                    : '/api/auth/linkedin/callback';
+                const res = await fetch(`${window.location.origin}${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ code, state: state || '' })
@@ -71,14 +79,18 @@
                 const data = await res.json();
 
                 if (res.ok && data.success) {
-                    localStorage.setItem('fluenzoUser', JSON.stringify(data.user));
+                    // Only the LOGIN flow establishes a session. The posting-connect
+                    // flow leaves the current logged-in user untouched.
+                    if (!isConnect && data.user) {
+                        localStorage.setItem('fluenzoUser', JSON.stringify(data.user));
+                    }
                     document.getElementById('status-text').textContent = 'Success! Redirecting...';
-                    // Check if we should return to a specific page (e.g. job posting after connecting LinkedIn)
+                    // Return to where we started (e.g. the job posting Step 2).
                     const returnTo = localStorage.getItem('linkedin_return_to');
                     localStorage.removeItem('linkedin_return_to');
                     setTimeout(() => window.location.href = returnTo || '/b4kx', 500);
                 } else {
-                    showError(data.detail || 'LinkedIn authentication failed. Please try again.');
+                    showError(data.detail || 'LinkedIn connection failed. Please try again.');
                 }
             } catch (err) {
                 showError('Connection error. Please try again.');

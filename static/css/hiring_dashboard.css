@@ -463,6 +463,18 @@ body {
 .hd-source-other {
   color: #828d97;
 }
+.hd-source-linkedin {
+  color: #005cb5;
+}
+.hd-source-referral {
+  color: #eab000;
+}
+.hd-source-application {
+  color: #4cabf6;
+}
+.hd-source-other {
+  color: #828d97;
+}
 
 /* Resume — Preview button */
 .hd-preview-btn {

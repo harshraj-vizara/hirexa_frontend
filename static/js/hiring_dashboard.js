@@ -397,7 +397,7 @@ const HD = {
 
             case 'source': {
                 const src = (c.source || 'other').toLowerCase();
-                const srcCls = ['apollo','linkedin','referral','application'].includes(src) ? src : 'other';
+                const srcCls = ['linkedin','referral','application'].includes(src) ? src : 'other';
                 const srcLabel = src.charAt(0).toUpperCase() + src.slice(1);
                 return wrap(`<span class="hd-source hd-source-${srcCls}">${this._esc(srcLabel)}</span>`);
             }

@@ -51,6 +51,12 @@
             this.onresult = null;
             this.onerror = null;
             this.onend = null;
+            // Extra (non-Web-Speech): fires ~5x/sec with the mic RMS level of the
+            // latest audio frame, so the room can detect that the candidate is
+            // audibly speaking INDEPENDENTLY of Sarvam's transcript latency. Used
+            // to keep the auto-submit watchdog from firing mid-answer and to show
+            // a live "listening" cue.
+            this.onaudio = null;
 
             // Internal state
             this._ws = null;
@@ -218,9 +224,19 @@
             sess.stream = stream;
             if (stale()) return;
 
-            // Use a dedicated AudioContext at the system default rate; the
-            // worklet downsamples to this.sampleRate (16 kHz).
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            // Run the capture AudioContext AT the target rate (16 kHz) so the
+            // browser's own high-quality resampler converts the mic stream — far
+            // cleaner than our linear worklet downsample, which aliased high
+            // frequencies and garbled consonants (hurting recognition accuracy).
+            // If the browser ignores the sampleRate hint (e.g. Safari), the
+            // worklet's anti-aliased decimator handles the remaining ratio.
+            const AC = window.AudioContext || window.webkitAudioContext;
+            let audioCtx;
+            try {
+                audioCtx = new AC({ sampleRate: this.sampleRate });
+            } catch (_) {
+                audioCtx = new AC();
+            }
             sess.audioCtx = audioCtx;
             // AudioWorklet modules are PER-AudioContext, not per-instance, so
             // we always addModule on the freshly-created context. (The browser
@@ -251,6 +267,21 @@
                 // can't feed duplicate audio into the live upstream. Send to THIS
                 // session's socket (sess.ws), never the shared this._ws.
                 if (myGen !== this._gen) return;
+                // Mic-energy cue: compute the frame RMS (0..1) BEFORE sending, so
+                // the room knows the candidate is speaking even while Sarvam's
+                // transcript is still catching up. Cheap — sampled, ~16 frames.
+                if (typeof this.onaudio === 'function') {
+                    try {
+                        const pcm = new Int16Array(e.data);
+                        const step = Math.max(1, Math.floor(pcm.length / 256));
+                        let sumSq = 0, n = 0;
+                        for (let i = 0; i < pcm.length; i += step) {
+                            const v = pcm[i] / 32768;
+                            sumSq += v * v; n++;
+                        }
+                        this.onaudio(n ? Math.sqrt(sumSq / n) : 0);
+                    } catch (_) {}
+                }
                 if (sess.ws && sess.ws.readyState === WebSocket.OPEN) {
                     try { sess.ws.send(e.data); } catch (_) {}
                 }

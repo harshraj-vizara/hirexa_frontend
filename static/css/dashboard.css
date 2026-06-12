@@ -42,6 +42,33 @@ body {
   overflow-x: hidden;
 }
 
+/* ============================================================
+   GLOBAL ZOOM-TO-FIT
+   ------------------------------------------------------------
+   The UI is laid out against a ~1600px canvas. On screens where the effective
+   CSS viewport is narrower at 100% browser zoom (Windows 125-150% display
+   scaling, macOS/Safari), the fixed widths + side padding used to overflow:
+   elements got cut off / overlapped and users had to manually zoom the browser
+   to ~85%. We instead scale the whole page down proportionally so it always
+   fits at 100% — like browser zoom, but automatic and width-driven.
+
+   Modern browsers (current Chrome/Edge/Safari, Firefox >=126) adjust viewport
+   units under `zoom`, so height:100vh / calc(100vh - 80px) app-shell pages
+   still fill the screen exactly — no height math needed here.
+
+   >1600px is untouched (scale = 1), so wide/hi-DPI screens look exactly as
+   before. Below 1024px the existing tablet/phone stacking rules take over, so
+   the scale resets to 1 there. Values chosen so effective width (viewport /
+   scale) stays >= ~1600px across the band. Tune per QA if a page over-compacts. */
+:root { --app-zoom: 1; }
+@media (max-width: 1600px) { :root { --app-zoom: 0.94; } }
+@media (max-width: 1440px) { :root { --app-zoom: 0.88; } }
+@media (max-width: 1366px) { :root { --app-zoom: 0.82; } }
+@media (max-width: 1280px) { :root { --app-zoom: 0.78; } }
+@media (max-width: 1152px) { :root { --app-zoom: 0.72; } }
+@media (max-width: 1024px) { :root { --app-zoom: 1; } }
+html { zoom: var(--app-zoom); }
+
 .dashboard {
   position: relative;
   min-height: 100vh;

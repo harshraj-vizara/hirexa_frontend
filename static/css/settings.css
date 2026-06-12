@@ -501,6 +501,166 @@
   opacity: 0.6;
 }
 
+/* ---------- Create-your-own row in the suggest dropdown ---------- */
+.set-cv-card.set-cv-create { border: 1px dashed #B6DEFB; background: #F7FBFF; }
+.set-cv-card.set-cv-create:hover { border-color: #4CABF6; background: #F4FAFF; }
+.set-cv-create-avatar {
+    background: #EAF4FE !important;
+    color: #4CABF6 !important;
+    font-weight: 400;
+    font-size: 18px;
+}
+
+/* ---------- Create-core-value-agent modal ---------- */
+.set-cv-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: rgba(36, 40, 43, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+.set-cv-modal-overlay[hidden] { display: none; }
+.set-cv-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 30px 30px 26px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    font-family: 'Lexend Deca', sans-serif;
+}
+.set-cvm-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #24282B;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+.set-cvm-close:hover { background: #F3F3F3; }
+.set-cvm-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 21px;
+    color: #24282B;
+    margin: 0 0 6px;
+}
+.set-cvm-sub {
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 19px;
+    color: #656D79;
+    margin: 0 0 18px;
+}
+.set-cvm-label {
+    display: block;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: #24282B;
+    margin: 14px 0 6px;
+}
+.set-cvm-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.set-cvm-select-wrap { position: relative; }
+.set-cvm-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 34px;
+    cursor: pointer;
+}
+.set-cvm-select-wrap .set-cvm-chevron {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+.set-cvm-voice-wrap .set-cvm-select { padding-right: 64px; }
+.set-cvm-voice-wrap .set-cvm-chevron { right: 40px; }
+.set-cvm-preview {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 6px;
+    background: #EAF4FE;
+    color: #4CABF6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.set-cvm-preview:hover,
+.set-cvm-preview.playing,
+.set-cvm-preview.loading { background: #4CABF6; color: #FFFFFF; }
+.set-cvm-preview:disabled { opacity: 0.6; cursor: default; }
+.set-cvm-spin {
+    width: 13px;
+    height: 13px;
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    border-top-color: #FFFFFF;
+    border-radius: 50%;
+    display: block;
+    animation: set-cvm-spin 0.6s linear infinite;
+}
+@keyframes set-cvm-spin { to { transform: rotate(360deg); } }
+.set-cvm-textarea { height: auto; min-height: 76px; padding: 11px 13px; line-height: 19px; resize: vertical; }
+.set-cvm-status { min-height: 18px; margin: 12px 0 4px; font-size: 12.5px; font-weight: 300; }
+.set-cvm-status.error { color: #D93025; }
+.set-cvm-status.success { color: #1E8E3E; }
+.set-cvm-actions { display: flex; gap: 12px; margin-top: 10px; }
+.set-cvm-cancel {
+    flex: none;
+    width: 110px;
+    height: 44px;
+    background: #FFFFFF;
+    border: 1px solid #DDE0E5;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 14px;
+    color: #656D79;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+.set-cvm-cancel:hover { border-color: #B6DEFB; color: #24282B; }
+.set-cvm-save {
+    flex: 1;
+    height: 44px;
+    background: #4CABF6;
+    border: 0;
+    border-radius: 8px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.set-cvm-save:hover { background: #3FA1F2; }
+.set-cvm-save:disabled { opacity: 0.7; cursor: default; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
   /* Tablet landscape: reduce left padding (sidebar is 66px; less gap needed) */
