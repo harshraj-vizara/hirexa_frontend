@@ -693,16 +693,46 @@ body {
   background: #b7491f;
 }
 
-/* Responsive — narrow viewport tightens main padding so the table card has
-   more room before its cells start clipping. Match% / Score columns stay
-   visible at every breakpoint since they're now part of the filter contract. */
-@media (max-width: 1340px) {
+/* Responsive — progressively reduce padding and allow horizontal scroll so the
+   table fits without clipping on laptop viewports (1280-1536px physical).
+   At 1440px and below, the table card uses overflow-x: auto so all filter
+   columns remain accessible via scroll rather than being clipped. */
+@media (max-width: 1600px) {
+  .hd-main {
+    padding-left: 110px;
+    padding-right: 44px;
+  }
+  .hd-cta-row {
+    left: 110px;
+    right: 44px;
+    width: auto !important;
+  }
+  /* Card becomes the horizontal scroll container.
+     tbody uses width:max-content so its rows fill the tbody exactly —
+     no horizontal overflow inside tbody, and overflow-x:hidden stays
+     intact (avoiding the browser's visible→auto promotion quirk). */
+  .hd-table-card {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .hd-tbody {
+    width: max-content;
+  }
+  .hd-toolbar {
+    width: auto !important;
+    max-width: 100%;
+  }
+}
+@media (max-width: 1440px) {
   .hd-main {
     padding-left: 90px;
-    padding-right: 32px;
+    padding-right: 24px;
   }
   .hd-cta-row {
     left: 90px;
+    right: 24px;
+    width: auto !important;
   }
 }
 @media (max-width: 900px) {
@@ -712,6 +742,8 @@ body {
   }
   .hd-cta-row {
     left: 80px;
+    right: 16px;
+    width: auto !important;
   }
   .hd-table-card {
     overflow-x: auto;
@@ -721,7 +753,7 @@ body {
     min-width: 800px;
   }
   .hd-tbody {
-    overflow-x: visible;
+    width: max-content;
   }
   .hd-title {
     font-size: 32px;

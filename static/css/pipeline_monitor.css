@@ -797,15 +797,39 @@ body {
   background: #b7491f;
 }
 
-/* Responsive — narrow viewport tightens the 146px inset and drops Created column */
-@media (max-width: 1180px) {
+/* Responsive — progressively reduce padding and enable horizontal scroll so
+   the ~1300px table fits on laptop viewports (1280-1536px physical) without
+   clipping. The table card scrolls internally; the page never scrolls. */
+@media (max-width: 1600px) {
+  .pm-main {
+    padding-left: 110px;
+    padding-right: 40px;
+  }
+  .pm-cta-row {
+    left: 110px;
+    right: 40px;
+    width: auto !important;
+  }
+  /* Card is the horizontal scroll container; tbody uses width:max-content so
+     its rows sit fully inside it — overflow-x:hidden on tbody is preserved,
+     avoiding the browser's visible→auto promotion on overflow axes. */
+  .pm-table-card {
+    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+  }
+  .pm-tbody {
+    width: max-content;
+  }
+}
+@media (max-width: 1440px) {
   .pm-main {
     padding-left: 90px;
-    padding-right: 32px;
+    padding-right: 24px;
   }
   .pm-cta-row {
     left: 90px;
-    right: 32px;
+    right: 24px;
   }
 }
 @media (max-width: 980px) {
@@ -831,7 +855,7 @@ body {
     min-width: 760px;
   }
   .pm-tbody {
-    overflow-x: visible;
+    width: max-content;
   }
   .pm-title {
     font-size: 38px;

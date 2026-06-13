@@ -14,8 +14,8 @@
 .hxa-userdd-trigger {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 4px 6px;
+    gap: 12px;
+    padding: 0;
     background: transparent;
     border: 0;
     cursor: pointer;
@@ -25,8 +25,8 @@
 }
 
 .hxa-userdd-avatar {
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background: #24282B;
     display: inline-flex;
@@ -34,12 +34,12 @@
     justify-content: center;
     flex-shrink: 0;
 }
-.hxa-userdd-avatar svg { width: 18px; height: 18px; display: block; }
+.hxa-userdd-avatar svg { width: 20px; height: 20px; display: block; }
 
 .hxa-userdd-name {
     font-family: 'Poppins', 'Inter', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 400;
     color: #24282B;
     white-space: nowrap;
     line-height: 1;

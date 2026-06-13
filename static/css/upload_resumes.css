@@ -389,6 +389,27 @@
 .ur-toast.success { background: #1E7A4D; }
 
 /* ---------- Responsive ---------- */
+@media (max-width: 1600px) {
+    .ur-main {
+        padding-left: 110px;
+        padding-right: 44px;
+    }
+}
+@media (max-width: 1440px) {
+    .ur-main {
+        padding-left: 90px;
+        padding-right: 32px;
+    }
+}
+@media (max-width: 1320px) {
+    .ur-main {
+        padding-left: 80px;
+        padding-right: 24px;
+    }
+    .ur-grid {
+        column-gap: 28px;
+    }
+}
 @media (max-width: 1080px) {
     /* On narrow viewports both cards stack — fall back to natural page scroll
        so nothing gets clipped. */

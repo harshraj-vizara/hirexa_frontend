@@ -4319,6 +4319,103 @@ body {
   }
 }
 
+/* 1600px: switch step 1's fixed-width grid to fluid columns so the preview
+   panel remains visible at all common laptop resolutions (1280-1536px physical)
+   without relying solely on the html zoom to expand the CSS layout viewport. */
+@media (max-width: 1600px) {
+  .dashboard .pl-main {
+    padding-left: 120px;
+    padding-right: 40px;
+  }
+  #step-1 .pl-grid {
+    grid-template-columns: minmax(0, 1fr) 400px;
+    gap: 48px;
+    margin-left: 40px;
+  }
+  .pl-grid-step2 {
+    margin-left: 40px;
+  }
+  .pl-stepper {
+    max-width: 100%;
+  }
+  .pl-step .pl-title,
+  .pl-step h1.pl-title,
+  .pl-step h1.pl-title-2,
+  .pl-title-desc {
+    margin-left: 40px;
+  }
+  #step-1 .pl-actions,
+  #step-2 .pl-actions {
+    margin-left: 40px;
+    max-width: 100%;
+  }
+}
+
+/* 1440px: further reduce padding; shrink preview column */
+@media (max-width: 1440px) {
+  .dashboard .pl-main {
+    padding-left: 110px;
+    padding-right: 32px;
+  }
+  #step-1 .pl-grid {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 40px;
+    margin-left: 30px;
+  }
+  .pl-grid-step2 {
+    margin-left: 30px;
+  }
+  .pl-step .pl-title,
+  .pl-step h1.pl-title,
+  .pl-step h1.pl-title-2,
+  .pl-title-desc {
+    margin-left: 30px;
+  }
+  #step-1 .pl-actions,
+  #step-2 .pl-actions {
+    margin-left: 30px;
+    max-width: 100%;
+  }
+}
+
+/* 1320px: collapse step 1's AI preview to give the form full width. Step 2
+   sidebar (Application URL + referrals) stays visible — it uses a fluid
+   min-content column and is not hidden. */
+@media (max-width: 1320px) {
+  .dashboard .pl-main {
+    padding-left: 96px;
+    padding-right: 24px;
+  }
+  #step-1 .pl-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-left: 16px;
+  }
+  .pl-preview-col {
+    display: none;
+  }
+  .pl-grid-step2 {
+    margin-left: 16px;
+    gap: 20px;
+  }
+  .pl-step .pl-title,
+  .pl-step h1.pl-title,
+  .pl-step h1.pl-title-2,
+  .pl-title-desc {
+    margin-left: 16px;
+  }
+  #step-1 .pl-actions,
+  #step-2 .pl-actions {
+    margin-left: 16px;
+  }
+  .pl-li-row {
+    margin-left: 16px;
+  }
+  #step-2 .pl-jd-details {
+    margin-left: 16px;
+  }
+}
+
 /* 1200px: further reduce padding & tighten indent offsets */
 @media (max-width: 1200px) {
   .dashboard .pl-main {
