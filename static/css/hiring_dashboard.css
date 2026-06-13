@@ -5,196 +5,240 @@
    search box, table card, source/status/interview pills, platform icons, CTA.
    ========================================================================== */
 
-html, body { height: 100vh; overflow: hidden; }
+html,
+body {
+  height: 100vh;
+  overflow: hidden;
+}
 
 .hd-main {
-    padding: 28px 60px 24px 146px;
-    height: calc(100vh - 80px);
-    box-sizing: border-box;
-    position: relative;
-    overflow: hidden;
+  padding: 28px 60px 24px 146px;
+  height: calc(100vh - 80px);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
 /* === Title row: role + status pill + meta === */
 .hd-title-row {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin: 8px 0 4px 0;
-    /* Cap so the meta info doesn't drift into the yellow blob area on wide screens.
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 8px 0 4px 0;
+  /* Cap so the meta info doesn't drift into the yellow blob area on wide screens.
        1300px matches the table card so all four band widths line up. */
-    max-width: 1300px;
+  max-width: 1300px;
 }
 .hd-title {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    font-size: 42px;
-    line-height: 1.15;
-    color: #24282B;
-    letter-spacing: -0.01em;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 42px;
+  line-height: 1.15;
+  color: #24282b;
+  letter-spacing: -0.01em;
 }
 .hd-status-pill {
-    display: inline-flex;
-    align-items: center;
-    height: 22px;
-    padding: 0 14px;
-    border-radius: 11px;
-    background: #FFD33C;
-    color: #24282B;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 400;
-    font-size: 11px;
-    letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 14px;
+  border-radius: 11px;
+  background: #ffd33c;
+  color: #24282b;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.08em;
 }
-.hd-status-pill.searching     { background: #C6E6FF; }
-.hd-status-pill.interviewing  { background: #FFD33C; }
-.hd-status-pill.disabled      { background: #CFCFCF; }
-.hd-status-pill.completed     { background: #D7FFE3; color: #1F6E32; }
+.hd-status-pill.searching {
+  background: #c6e6ff;
+}
+.hd-status-pill.interviewing {
+  background: #ffd33c;
+}
+.hd-status-pill.disabled {
+  background: #cfcfcf;
+}
+.hd-status-pill.completed {
+  background: #d7ffe3;
+  color: #1f6e32;
+}
 
 .hd-meta-group {
-    display: inline-flex;
-    align-items: center;
-    gap: 18px;
-    /* Sit immediately after the status pill (Figma layout), not pushed to the
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  /* Sit immediately after the status pill (Figma layout), not pushed to the
        far right of the viewport. */
-    margin-left: 8px;
+  margin-left: 8px;
 }
 .hd-meta-item {
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 300;
-    font-size: 12px;
-    line-height: 15px;
-    letter-spacing: 0.05em;
-    color: #9B9C9E;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: 0.05em;
+  color: #9b9c9e;
 }
 /* Deadline value (date + optional "(Closed)") is always red — calls attention
    to the cutoff date. The "Deadline:" label itself stays gray. */
 #hd-deadline {
-    color: #E63946;
-    font-weight: 500;
+  color: #e63946;
+  font-weight: 500;
 }
 
 .hd-sub {
-    margin: 0 0 22px 0;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 300;
-    font-size: 13.5px;
-    line-height: 17px;
-    letter-spacing: 0.05em;
-    color: #9B9C9E;
+  margin: 0 0 22px 0;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 13.5px;
+  line-height: 17px;
+  letter-spacing: 0.05em;
+  color: #9b9c9e;
 }
-.hd-sub#hd-company-loc { margin-bottom: 4px; }
-.hd-ctc { margin: 0 0 22px 0; }
-.hd-ctc.hidden { display: none; }
+.hd-sub#hd-company-loc {
+  margin-bottom: 4px;
+}
+.hd-ctc {
+  margin: 0 0 22px 0;
+}
+.hd-ctc.hidden {
+  display: none;
+}
 
 /* "Posted by: Name (Role)" — admin only, tucked tight under the CTC line.
    Whole line is Lexend Deca (matches the Figma); name is underlined. */
 .hd-posted-by {
-    margin: -18px 0 22px 0;
-    font-family: 'Lexend Deca', sans-serif;
+  margin: -18px 0 22px 0;
+  font-family: "Lexend Deca", sans-serif;
 }
-.hd-posted-by.hidden { display: none; }
+.hd-posted-by.hidden {
+  display: none;
+}
 /* If there's no CTC line, sit normally under the company·location line. */
-.hd-ctc.hidden ~ .hd-posted-by { margin-top: 0; }
+.hd-ctc.hidden ~ .hd-posted-by {
+  margin-top: 0;
+}
 .hd-posted-name {
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 400;
-    color: #24282B;
-    text-decoration: underline;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  color: #24282b;
+  text-decoration: underline;
 }
 
 /* === Toolbar: filter pills + search === */
 .hd-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 18px;
-    flex-wrap: wrap;
-    /* Width is set inline by JS to match the active filter's table card
-       width — so .hd-search's margin-left:auto pushes the search box to
-       a right edge that lines up with the table border below. */
-    max-width: 1300px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  /* Always fill the content area so the search bar's right edge stays fixed
+     regardless of which filter tab is active. JS sets an inline width that
+     varies per filter — !important ensures CSS always wins. */
+  width: auto !important;
+  max-width: 100%;
 }
 .hd-pills {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 .hd-pill {
-    height: 28px;
-    padding: 0 16px;
-    border-radius: 14px;
-    border: 0.5px solid transparent;
-    background: #EEF7FE;
-    color: #4CABF6;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 11px;
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.11);
-    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
-    white-space: nowrap;
+  height: 28px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 0.5px solid transparent;
+  background: #eef7fe;
+  color: #4cabf6;
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.11);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.1s ease;
+  white-space: nowrap;
 }
-.hd-pill:hover { transform: translateY(-1px); }
+.hd-pill:hover {
+  transform: translateY(-1px);
+}
 /* Active pill = dark with yellow text per Figma "Profile" tab style */
 .hd-pill.active {
-    background: #24282B;
-    color: #EAB000;
-    box-shadow: none;
+  background: #24282b;
+  color: #eab000;
+  box-shadow: none;
 }
 
 .hd-search {
-    position: relative;
-    margin-left: auto;
+  position: relative;
+  margin-left: auto;
 }
 .hd-search input {
-    width: 220px;
-    height: 30px;
-    padding: 0 36px 0 14px;
-    border: 0.5px solid #4CABF6;
-    border-radius: 16px;
-    background: #FFFFFF;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 300;
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    color: #24282B;
-    outline: none;
-    transition: box-shadow 0.15s ease;
+  width: 220px;
+  height: 30px;
+  padding: 0 36px 0 14px;
+  border: 0.5px solid #4cabf6;
+  border-radius: 16px;
+  background: #ffffff;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: #24282b;
+  outline: none;
+  transition: box-shadow 0.15s ease;
 }
-.hd-search input::placeholder { color: #9B9C9E; }
-.hd-search input:focus { box-shadow: 0 0 0 3px rgba(76, 171, 246, 0.15); }
+.hd-search input::placeholder {
+  color: #9b9c9e;
+}
+.hd-search input:focus {
+  box-shadow: 0 0 0 3px rgba(76, 171, 246, 0.15);
+}
 .hd-search-icon {
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 24px;
-    height: 24px;
-    background: #CEEAFF;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background: #ceeaff;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* === Empty state === */
 .hd-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 10px;
-    padding: 48px 24px;
-    max-width: 1100px;
-    color: #5B6168;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 48px 24px;
+  max-width: 1100px;
+  color: #5b6168;
 }
-.hd-empty.hidden { display: none; }
-.hd-empty h4 { margin: 0; font-size: 16px; color: #24282B; }
-.hd-empty p { margin: 0; font-size: 13px; color: #9B9C9E; max-width: 420px; }
+.hd-empty.hidden {
+  display: none;
+}
+.hd-empty h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #24282b;
+}
+.hd-empty p {
+  margin: 0;
+  font-size: 13px;
+  color: #9b9c9e;
+  max-width: 420px;
+}
 
 /* === Table card ===
    width: fit-content so the card hugs the active filter's column sum
@@ -203,92 +247,112 @@ html, body { height: 100vh; overflow: hidden; }
    Selected ~1330px (widest, with the X.X / 10 score column).
    Max-width caps the widest case. */
 .hd-table-card {
-    width: fit-content;
-    max-width: 1340px;
-    border: 0.5px solid #4CABF6;
-    border-radius: 6px;
-    background: #FFFFFF;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  width: fit-content;
+  max-width: 1340px;
+  border: 0.5px solid #4cabf6;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
-.hd-table-card.hidden { display: none; }
+.hd-table-card.hidden {
+  display: none;
+}
 
-.hd-thead, .hd-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0 18px;
+.hd-thead,
+.hd-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
 }
 .hd-thead {
-    height: 44px;
-    background: #FAFCFF;
-    border-bottom: 0.5px solid #4CABF6;
-    flex-shrink: 0;
+  height: 44px;
+  background: #fafcff;
+  border-bottom: 0.5px solid #4cabf6;
+  flex-shrink: 0;
 }
 .hd-th {
-    flex: 0 0 var(--w, auto);
-    min-width: 0;
-    max-width: var(--w, none);
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 15px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #828D97;
-    /* Uniform centering — each header sits in the middle of its column
+  flex: 0 0 var(--w, auto);
+  min-width: 0;
+  max-width: var(--w, none);
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #828d97;
+  /* Uniform centering — each header sits in the middle of its column
        so the visual gap between adjacent headers stays balanced regardless
        of the underlying column width (wide Candidate/Contact slots no
        longer leave huge right-side gutters that compress the next gap). */
-    text-align: center;
+  text-align: center;
 }
 
 /* tbody scrolls so the page never paginates. Capped ~90px short of the
    viewport bottom (~440px on top of the dash chrome above) so the absolute
    Add Candidate button at .hd-main bottom never overlaps the last row. */
 .hd-tbody {
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: calc(100vh - 440px);
-    min-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 440px);
+  min-height: 200px;
 }
-.hd-tbody::-webkit-scrollbar          { width: 8px; }
-.hd-tbody::-webkit-scrollbar-track    { background: transparent; }
-.hd-tbody::-webkit-scrollbar-thumb    { background: rgba(76, 171, 246, 0.35); border-radius: 4px; }
-.hd-tbody::-webkit-scrollbar-thumb:hover { background: rgba(76, 171, 246, 0.6); }
+.hd-tbody::-webkit-scrollbar {
+  width: 8px;
+}
+.hd-tbody::-webkit-scrollbar-track {
+  background: transparent;
+}
+.hd-tbody::-webkit-scrollbar-thumb {
+  background: rgba(76, 171, 246, 0.35);
+  border-radius: 4px;
+}
+.hd-tbody::-webkit-scrollbar-thumb:hover {
+  background: rgba(76, 171, 246, 0.6);
+}
 
 .hd-row {
-    min-height: 70px;
-    border-top: 0.5px solid #4CABF6;
-    transition: background 0.15s ease;
+  min-height: 70px;
+  border-top: 0.5px solid #4cabf6;
+  transition: background 0.15s ease;
 }
-.hd-row:first-child { border-top: none; }
-.hd-row:hover { background: #FAFCFF; }
-.hd-row-click { cursor: pointer; }
-.hd-row-click:hover { background: #F1F8FF; }
+.hd-row:first-child {
+  border-top: none;
+}
+.hd-row:hover {
+  background: #fafcff;
+}
+.hd-row-click {
+  cursor: pointer;
+}
+.hd-row-click:hover {
+  background: #f1f8ff;
+}
 .hd-row-empty {
-    justify-content: center;
-    padding: 40px 18px;
-    color: #9B9C9E;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 14px;
+  justify-content: center;
+  padding: 40px 18px;
+  color: #9b9c9e;
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 14px;
 }
 
 .hd-cell {
-    flex: 0 0 var(--w, auto);
-    min-width: 0;
-    max-width: var(--w, none);
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 14px;
-    color: #24282B;
-    /* Match the header — every value sits centered in its column so the
+  flex: 0 0 var(--w, auto);
+  min-width: 0;
+  max-width: var(--w, none);
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 14px;
+  color: #24282b;
+  /* Match the header — every value sits centered in its column so the
        header text and the value sit on the same vertical axis and the
        between-column whitespace stays symmetrical across the table.
        Centers inline text (1, 85%, 7.2), inline-flex pills (Preview,
        Selected, Not scheduled), and the inline-flex platform icon group. */
-    text-align: center;
+  text-align: center;
 }
 
 /* Opt-out applied to text-heavy columns (Candidate name+role line, Contact
@@ -296,131 +360,165 @@ html, body { height: 100vh; overflow: hidden; }
    it makes the second line hang awkwardly to the right of the first. */
 .hd-th.hd-align-left,
 .hd-cell.hd-align-left {
-    text-align: left;
-    justify-content: flex-start;
+  text-align: left;
+  justify-content: flex-start;
 }
 
 /* S No. */
 .hd-cell-sn {
-    font-weight: 400;
-    font-size: 15px;
-    color: #24282B;
-    letter-spacing: 0.06em;
+  font-weight: 400;
+  font-size: 15px;
+  color: #24282b;
+  letter-spacing: 0.06em;
 }
 
 /* Candidate (name + role) */
 .hd-cand-name {
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 500;
-    font-size: 15px;
-    line-height: 18px;
-    color: #24282B;
-    letter-spacing: 0.05em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 18px;
+  color: #24282b;
+  letter-spacing: 0.05em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .hd-cand-link {
-    background: transparent;
-    border: 0;
-    padding: 0;
-    /* Inherit cell centering — keeps the candidate name on the same vertical
+  background: transparent;
+  border: 0;
+  padding: 0;
+  /* Inherit cell centering — keeps the candidate name on the same vertical
        axis as the role line below it and the header above. */
-    text-align: inherit;
-    cursor: pointer;
-    display: block;
-    width: 100%;
-    transition: color 0.15s ease;
+  text-align: inherit;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  transition: color 0.15s ease;
 }
-.hd-cand-link:hover { color: #4CABF6; text-decoration: underline; }
-.hd-cand-link:focus-visible { outline: 2px solid #4CABF6; outline-offset: 2px; border-radius: 2px; }
+.hd-cand-link:hover {
+  color: #4cabf6;
+  text-decoration: underline;
+}
+.hd-cand-link:focus-visible {
+  outline: 2px solid #4cabf6;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
 .hd-cand-role {
-    margin-top: 4px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 300;
-    font-size: 12px;
-    line-height: 14px;
-    color: #828D97;
-    letter-spacing: 0.05em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  margin-top: 4px;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 14px;
+  color: #828d97;
+  letter-spacing: 0.05em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Contact (email + phone) */
 .hd-contact-email {
-    font-weight: 300;
-    font-size: 13px;
-    color: #24282B;
-    letter-spacing: 0.04em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  font-weight: 300;
+  font-size: 13px;
+  color: #24282b;
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .hd-contact-phone {
-    margin-top: 4px;
-    font-weight: 300;
-    font-size: 13px;
-    color: #4A5055;
-    letter-spacing: 0.04em;
+  margin-top: 4px;
+  font-weight: 300;
+  font-size: 13px;
+  color: #4a5055;
+  letter-spacing: 0.04em;
 }
 .hd-contact-empty {
-    font-style: italic;
-    color: #9B9C9E;
-    font-size: 13px;
+  font-style: italic;
+  color: #9b9c9e;
+  font-size: 13px;
 }
 
 /* Source — color-coded label */
 .hd-source {
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 400;
-    font-size: 13px;
-    letter-spacing: 0.05em;
-    text-transform: capitalize;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: capitalize;
 }
-.hd-source-linkedin  { color: #005CB5; }
-.hd-source-referral  { color: #EAB000; }
-.hd-source-application { color: #4CABF6; }
-.hd-source-other     { color: #828D97; }
+.hd-source-apollo {
+  color: #9886e9;
+}
+.hd-source-linkedin {
+  color: #005cb5;
+}
+.hd-source-referral {
+  color: #eab000;
+}
+.hd-source-application {
+  color: #4cabf6;
+}
+.hd-source-other {
+  color: #828d97;
+}
+.hd-source-linkedin {
+  color: #005cb5;
+}
+.hd-source-referral {
+  color: #eab000;
+}
+.hd-source-application {
+  color: #4cabf6;
+}
+.hd-source-other {
+  color: #828d97;
+}
 
 /* Resume — Preview button */
 .hd-preview-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    height: 28px;
-    padding: 0 14px;
-    background: #CEEAFF;
-    border: 0.5px solid #4CABF6;
-    border-radius: 5px;
-    color: #4CABF6;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 400;
-    font-size: 12px;
-    letter-spacing: 0.05em;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 14px;
+  background: #ceeaff;
+  border: 0.5px solid #4cabf6;
+  border-radius: 5px;
+  color: #4cabf6;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
-.hd-preview-btn:hover { background: #B7DFFF; }
+.hd-preview-btn:hover {
+  background: #b7dfff;
+}
 .hd-preview-btn.disabled {
-    background: #F0F1F3;
-    border-color: #CFCFCF;
-    color: #9B9C9E;
-    cursor: not-allowed;
-    pointer-events: none;
+  background: #f0f1f3;
+  border-color: #cfcfcf;
+  color: #9b9c9e;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Status (Shortlisted / Sourced / Pre-filtered) */
 .hd-cand-status {
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 400;
-    font-size: 13px;
-    color: #24282B;
-    letter-spacing: 0.05em;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: #24282b;
+  letter-spacing: 0.05em;
 }
-.hd-cand-status.muted { color: #9B9C9E; }
+.hd-cand-status.muted {
+  color: #9b9c9e;
+}
 
 /* Score — interview panel average, formatted as "X.X / 10" in the Selected
    filter. The numeric part is color-coded by band, the "/ 10" denominator
@@ -429,129 +527,241 @@ html, body { height: 100vh; overflow: hidden; }
      4-7   -> amber (#C28800)
      < 4   -> red   (#D64545)  */
 .hd-score {
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    color: #24282B;
-    letter-spacing: 0.04em;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #24282b;
+  letter-spacing: 0.04em;
 }
-.hd-score-high  { color: #1F9E47; }
-.hd-score-mid   { color: #C28800; }
-.hd-score-low   { color: #D64545; }
+.hd-score-high {
+  color: #1f9e47;
+}
+.hd-score-mid {
+  color: #c28800;
+}
+.hd-score-low {
+  color: #d64545;
+}
 .hd-score-denom {
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 400;
-    font-size: 14px;
-    color: #9B9C9E;
-    letter-spacing: 0.04em;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: #9b9c9e;
+  letter-spacing: 0.04em;
 }
-.hd-score.empty { color: #9B9C9E; font-weight: 300; }
+.hd-score.empty {
+  color: #9b9c9e;
+  font-weight: 300;
+}
 
 /* Platform icons (email + WhatsApp).
    No circle wrapper — the icon shape itself is the visual (matches Figma).
    Inactive = gray-tone shape. Active = brand colours (blue email, green WA). */
 .hd-platform {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 .hd-platform-icon {
-    width: 26px;
-    height: 26px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
 }
-.hd-platform-icon svg { display: block; }
+.hd-platform-icon svg {
+  display: block;
+}
 
 /* Interview status pill */
 .hd-iv-pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 26px;
-    min-width: 96px;
-    padding: 0 14px;
-    border-radius: 13px;
-    background: #CFCFCF;
-    color: #24282B;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 400;
-    font-size: 12px;
-    letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  min-width: 96px;
+  padding: 0 14px;
+  border-radius: 13px;
+  background: #cfcfcf;
+  color: #24282b;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.05em;
 }
-.hd-iv-pill.scheduled    { background: #C6E6FF; }
-.hd-iv-pill.interviewing { background: #FFD33C; }
-.hd-iv-pill.completed    { background: #3DC260; color: #FFFFFF; }
+.hd-iv-pill.scheduled {
+  background: #c6e6ff;
+}
+.hd-iv-pill.interviewing {
+  background: #ffd33c;
+}
+.hd-iv-pill.completed {
+  background: #3dc260;
+  color: #ffffff;
+}
 /* Post-interview states (feedback received): score > 60 = Selected (green,
    i.e. strictly above 6.0 on the 0-10 panel scale), <= 60 = Rejected (red),
    score not yet computed = Interviewed (neutral). */
-.hd-iv-pill.interviewed  { background: #E2E8F0; color: #24282B; }
-.hd-iv-pill.selected     { background: #3DC260; color: #FFFFFF; }
-.hd-iv-pill.rejected     { background: #E63946; color: #FFFFFF; }
-.hd-iv-pill.expired      { background: #CFCFCF; color: #4A5055; }
-.hd-iv-pill.none         { background: transparent; color: #9B9C9E; border: 0.5px dashed #CFCFCF; }
+.hd-iv-pill.interviewed {
+  background: #e2e8f0;
+  color: #24282b;
+}
+.hd-iv-pill.selected {
+  background: #3dc260;
+  color: #ffffff;
+}
+.hd-iv-pill.rejected {
+  background: #e63946;
+  color: #ffffff;
+}
+.hd-iv-pill.expired {
+  background: #cfcfcf;
+  color: #4a5055;
+}
+.hd-iv-pill.none {
+  background: transparent;
+  color: #9b9c9e;
+  border: 0.5px dashed #cfcfcf;
+}
 
 /* + Add Candidate floating CTA — matches the wizard's Continue button style
    (padding 12/28, radius 10, blue glow) so the bottom CTA reads as the same
    button family across the app. */
 .hd-cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 28px;
-    background: #4CABF6;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(76, 171, 246, 0.35), 0 2px 4px rgba(0, 0, 0, 0.08);
-    cursor: pointer;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 19px;
-    letter-spacing: 0.04em;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  background: #4cabf6;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  box-shadow:
+    0 4px 10px rgba(76, 171, 246, 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: 0.04em;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
-.hd-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(76, 171, 246, 0.4), 0 3px 6px rgba(0, 0, 0, 0.1); }
+.hd-cta:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 14px rgba(76, 171, 246, 0.4),
+    0 3px 6px rgba(0, 0, 0, 0.1);
+}
 /* Pinned to the bottom of .hd-main. Left-anchored at .hd-main's left
    padding; width is set inline by JS to match the active filter's table
    card width — flex-end pushes the button to the row's right edge so its
    right border lands exactly at the table card's right border per filter. */
 .hd-cta-row {
-    position: absolute;
-    bottom: 32px;
-    left: 146px;
-    display: flex;
-    justify-content: flex-end;
+  position: absolute;
+  bottom: 32px;
+  left: 146px;
+  right: 60px;          /* pin to content-area right edge (mirrors padding-right: 60px) */
+  width: auto !important; /* override JS inline width so button never shifts between filters */
+  display: flex;
+  justify-content: flex-end;
 }
 
 /* Toast (mirrors monitor) */
 .pl-toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 18px;
-    border-radius: 8px;
-    background: #24282B;
-    color: #FFFFFF;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 13px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    z-index: 100;
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: #24282b;
+  color: #ffffff;
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 13px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 100;
 }
-.pl-toast.hidden { display: none; }
-.pl-toast.success { background: #1F6E32; }
-.pl-toast.error   { background: #B7491F; }
-
-/* Responsive — narrow viewport tightens main padding so the table card has
-   more room before its cells start clipping. Match% / Score columns stay
-   visible at every breakpoint since they're now part of the filter contract. */
-@media (max-width: 1340px) {
-    .hd-main { padding-left: 90px; padding-right: 32px; }
-    .hd-cta-row { left: 90px; }
+.pl-toast.hidden {
+  display: none;
+}
+.pl-toast.success {
+  background: #1f6e32;
+}
+.pl-toast.error {
+  background: #b7491f;
 }
 
+/* Responsive — progressively reduce padding and allow horizontal scroll so the
+   table fits without clipping on laptop viewports (1280-1536px physical).
+   At 1440px and below, the table card uses overflow-x: auto so all filter
+   columns remain accessible via scroll rather than being clipped. */
+@media (max-width: 1600px) {
+  .hd-main {
+    padding-left: 110px;
+    padding-right: 44px;
+  }
+  .hd-cta-row {
+    left: 110px;
+    right: 44px;
+    width: auto !important;
+  }
+  /* Card becomes the horizontal scroll container.
+     tbody uses width:max-content so its rows fill the tbody exactly —
+     no horizontal overflow inside tbody, and overflow-x:hidden stays
+     intact (avoiding the browser's visible→auto promotion quirk). */
+  .hd-table-card {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .hd-tbody {
+    width: max-content;
+  }
+  .hd-toolbar {
+    width: auto !important;
+    max-width: 100%;
+  }
+}
+@media (max-width: 1440px) {
+  .hd-main {
+    padding-left: 90px;
+    padding-right: 24px;
+  }
+  .hd-cta-row {
+    left: 90px;
+    right: 24px;
+    width: auto !important;
+  }
+}
+@media (max-width: 900px) {
+  .hd-main {
+    padding-left: 80px;
+    padding-right: 16px;
+  }
+  .hd-cta-row {
+    left: 80px;
+    right: 16px;
+    width: auto !important;
+  }
+  .hd-table-card {
+    overflow-x: auto;
+  }
+  .hd-thead,
+  .hd-row {
+    min-width: 800px;
+  }
+  .hd-tbody {
+    width: max-content;
+  }
+  .hd-title {
+    font-size: 32px;
+  }
+  .hd-meta-group {
+    gap: 10px;
+  }
+}

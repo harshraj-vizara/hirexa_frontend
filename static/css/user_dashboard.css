@@ -244,3 +244,11 @@
     .ud-search input { width: 170px; }
     .ud-thead, .ud-row { padding: 0 14px; column-gap: 6px; }
 }
+@media (max-width: 900px) {
+    /* Tablet portrait: tighten padding, allow table to scroll horizontally
+       so the 8-col grid doesn't compress columns below usable widths. */
+    .ud-main { padding: 22px 16px 32px 80px; }
+    .ud-table-card { overflow-x: auto; }
+    .ud-thead, .ud-row { min-width: 700px; padding: 0 12px; column-gap: 4px; }
+    .ud-toolbar { width: 100%; }
+}

@@ -389,6 +389,27 @@
 .ur-toast.success { background: #1E7A4D; }
 
 /* ---------- Responsive ---------- */
+@media (max-width: 1600px) {
+    .ur-main {
+        padding-left: 110px;
+        padding-right: 44px;
+    }
+}
+@media (max-width: 1440px) {
+    .ur-main {
+        padding-left: 90px;
+        padding-right: 32px;
+    }
+}
+@media (max-width: 1320px) {
+    .ur-main {
+        padding-left: 80px;
+        padding-right: 24px;
+    }
+    .ur-grid {
+        column-gap: 28px;
+    }
+}
 @media (max-width: 1080px) {
     /* On narrow viewports both cards stack — fall back to natural page scroll
        so nothing gets clipped. */
@@ -409,8 +430,14 @@
     }
     .ur-dropzone { align-self: stretch; }
 }
-@media (max-width: 720px) {
+@media (max-width: 900px) {
+    /* Tablet portrait: reduce the 146px left padding that eats too much of
+       a 768px–900px viewport. Sidebar is still visible (hides at 700px). */
     .ur-main { padding: 50px 24px 40px 90px; }
+    .ur-title-bold, .ur-title-italic { font-size: 26px; }
+}
+@media (max-width: 720px) {
+    .ur-main { padding: 50px 20px 40px 88px; }
     .ur-title { gap: 6px; }
     .ur-title-bold, .ur-title-italic { font-size: 24px; }
     .ur-list-head { padding: 16px 20px 12px; }

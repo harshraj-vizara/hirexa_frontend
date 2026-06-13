@@ -2,334 +2,678 @@
    Hire XA — Admin Profile page
    ========================================================= */
 .profile-main {
-    position: relative;
-    z-index: 3;
-    padding: 28px 40px 44px 110px;
-    box-sizing: border-box;
-    min-height: calc(100vh - 80px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
+  position: relative;
+  z-index: 3;
+  padding: 28px 40px 44px 110px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
 .pf-card {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 600px;
-    background: #FFFFFF;
-    border: 0.5px dashed #D5D8DD;
-    box-shadow: 0 1px 4.2px rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 600px;
+  background: #ffffff;
+  border: 0.5px dashed #d5d8dd;
+  box-shadow: 0 1px 4.2px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
 }
 
 /* ---- Header card ---- */
 .pf-head-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 24px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 30px;
 }
-.pf-title { margin: 0 0 6px; font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 26px; color: #24282B; }
+.pf-title {
+  margin: 0 0 6px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 26px;
+  color: #24282b;
+}
 
 /* Workspace / company name in the header card — a premium gradient wordmark
    with a soft brand-blue glow. Smaller + tighter than the plain title so long
    legal names ("… Private Limited") sit cleanly on one or two lines. */
 #pf-company-name {
-    margin: 0 0 7px;
-    max-width: 100%;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 1.22;
-    letter-spacing: -0.012em;
-    background: linear-gradient(101deg, #222A31 0%, #36506B 58%, #4CABF6 116%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: #24282B;                                   /* fallback */
-    filter: drop-shadow(0 1px 7px rgba(76, 171, 246, 0.20));
+  margin: 0 0 7px;
+  max-width: 100%;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.22;
+  letter-spacing: -0.012em;
+  background: linear-gradient(101deg, #222a31 0%, #36506b 58%, #4cabf6 116%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #24282b; /* fallback */
+  filter: drop-shadow(0 1px 7px rgba(76, 171, 246, 0.2));
 }
-.pf-email { margin: 0; font-family: 'Lexend Deca', sans-serif; font-weight: 300; font-size: 13px; letter-spacing: 0.08em; color: #9B9C9E; }
+.pf-email {
+  margin: 0;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: #9b9c9e;
+}
 .pf-avatar-big {
-    flex: none;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: #24282B;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+  flex: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #24282b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
-.pf-avatar-big.has-logo { background: #FFFFFF; }
+.pf-avatar-big.has-logo {
+  background: #ffffff;
+}
 .pf-avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 
 /* ---- Main card ---- */
-.pf-main-card { position: relative; padding: 28px 30px 30px; }
+.pf-main-card {
+  position: relative;
+  padding: 28px 30px 30px;
+}
 
 /* Member (added user) view — Figma container scaled up 30% (width 491 -> 638,
    header padding scaled to match) and a divider. Scoped to .pf-member so the
    admin layout is unaffected. The view is locked to the viewport height and the
    main card flex-fills the remaining space, so the page never scrolls. */
 .profile-main.pf-member {
-    height: calc(100vh - 80px);
-    min-height: 0;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    overflow: hidden;
+  height: calc(100vh - 80px);
+  min-height: 0;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  overflow: hidden;
 }
-.profile-main.pf-member .pf-card { max-width: 638px; }
-.profile-main.pf-member .pf-head-card { padding: 31px 39px; flex: none; }
+.profile-main.pf-member .pf-card {
+  max-width: 638px;
+}
+.profile-main.pf-member .pf-head-card {
+  padding: 31px 39px;
+  flex: none;
+}
 /* Fixed card height — does NOT flex, so adjusting the footer never resizes it. */
-.profile-main.pf-member .pf-main-card { flex: none; min-height: 650px; }
+.profile-main.pf-member .pf-main-card {
+  flex: none;
+  min-height: 650px;
+}
 
-.pf-divider { display: none; }
+.pf-divider {
+  display: none;
+}
 .profile-main.pf-member .pf-divider {
-    display: block;
-    margin: 22px 0 0;
-    width: 100%;
-    height: 0;
-    border: 0;
-    border-top: 0.33px solid #9B9C9E;
-    opacity: 0.5;
+  display: block;
+  margin: 22px 0 0;
+  width: 100%;
+  height: 0;
+  border: 0;
+  border-top: 0.33px solid #9b9c9e;
+  opacity: 0.5;
 }
 
 /* "Powered by Hire XA" — sits just below the card's bottom border, centered. */
 .pf-powered {
-    margin-top: 14px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 300;
-    font-size: 11px;
-    line-height: 14px;
-    letter-spacing: 0.1em;
-    color: #9B9C9E;
-    text-align: center;
+  margin-top: 14px;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.1em;
+  color: #9b9c9e;
+  text-align: center;
 }
-.pf-edit-btn { position: absolute; top: 24px; right: 28px; background: none; border: 0; cursor: pointer; display: flex; }
-.pf-name { margin: 0 0 5px; font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 22px; color: #24282B; }
+.pf-edit-btn {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+}
+.pf-name {
+  margin: 0 0 5px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 22px;
+  color: #24282b;
+}
 
-.pf-info { margin: 22px 0 26px; display: flex; flex-direction: column; gap: 13px; }
-.pf-info-row { display: flex; align-items: center; }
-.pf-info-row[hidden] { display: none; }
-.pf-info-label { width: 150px; font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 14px; color: #24282B; }
-.pf-info-val { font-family: 'Lexend Deca', sans-serif; font-weight: 300; font-size: 14px; letter-spacing: 0.06em; color: #24282B; }
-.pf-pw { display: flex; align-items: center; gap: 16px; letter-spacing: 0.2em; }
-.pf-change { background: none; border: 0; cursor: pointer; font-family: 'Lexend Deca', sans-serif; font-size: 11px; letter-spacing: 0.08em; color: #4CABF6; padding: 0; }
-.pf-change:hover { text-decoration: underline; }
+.pf-info {
+  margin: 22px 0 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.pf-info-row {
+  display: flex;
+  align-items: center;
+}
+.pf-info-row[hidden] {
+  display: none;
+}
+.pf-info-label {
+  width: 150px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #24282b;
+}
+.pf-info-val {
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: #24282b;
+}
+.pf-pw {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  letter-spacing: 0.2em;
+}
+.pf-change {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #4cabf6;
+  padding: 0;
+}
+.pf-change:hover {
+  text-decoration: underline;
+}
 
 /* ---- Users ---- */
-.pf-users-section[hidden] { display: none; }
-.pf-users-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.pf-users-title { font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 15px; color: #24282B; }
-.pf-search { position: relative; }
-.pf-search input {
-    width: 160px;
-    height: 30px;
-    box-sizing: border-box;
-    padding: 0 32px 0 12px;
-    background: #FFFFFF;
-    border: 0.6px solid #4CABF6;
-    border-radius: 15px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 300;
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    color: #24282B;
-    outline: none;
+.pf-users-section[hidden] {
+  display: none;
 }
-.pf-search input::placeholder { color: #9B9C9E; }
-.pf-search-ic { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%; background: #CEEAFF; display: flex; align-items: center; justify-content: center; }
+.pf-users-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.pf-users-title {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: #24282b;
+}
+.pf-search {
+  position: relative;
+}
+.pf-search input {
+  width: 160px;
+  height: 30px;
+  box-sizing: border-box;
+  padding: 0 32px 0 12px;
+  background: #ffffff;
+  border: 0.6px solid #4cabf6;
+  border-radius: 15px;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: #24282b;
+  outline: none;
+}
+.pf-search input::placeholder {
+  color: #9b9c9e;
+}
+.pf-search-ic {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ceeaff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.pf-table { border: 0.33px solid #9B9C9E; border-radius: 10px; overflow: hidden; }
-.pf-table-head, .pf-row { display: grid; grid-template-columns: 1.7fr 1fr 0.8fr 0.7fr; align-items: center; padding: 11px 16px; }
-.pf-table-head { border-bottom: 0.33px solid #9B9C9E; }
-.pf-table-head span { font-family: 'Lexend Deca', sans-serif; font-weight: 400; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #828D97; }
-.pf-row { border-bottom: 0.33px solid #9B9C9E; }
-.pf-row:last-child { border-bottom: 0; }
-.pf-row-user { min-width: 0; }
-.pf-row-name { font-family: 'Lexend Deca', sans-serif; font-weight: 400; font-size: 12px; color: #24282B; }
-.pf-row-email { font-family: 'Lexend Deca', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: 0.04em; color: #9B9C9E; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pf-row-role { font-family: 'Lexend Deca', sans-serif; font-weight: 300; font-size: 11px; color: #9B9C9E; }
-.pf-badge { display: inline-block; padding: 3px 11px; border-radius: 8px; font-family: 'Lexend Deca', sans-serif; font-weight: 300; font-size: 9px; letter-spacing: 0.06em; color: #24282B; }
-.pf-badge.active { background: #8EC49E; }
-.pf-badge.pending { background: #F2D99B; }
-.pf-row-actions { display: flex; align-items: center; gap: 12px; }
-.pf-row-action { background: none; border: 0; cursor: pointer; display: flex; color: #4CABF6; padding: 0; }
-.pf-row-action.pf-del { color: #9B9C9E; }
-.pf-row-action.pf-del:hover { color: #E2574C; }
-.pf-empty { padding: 20px; text-align: center; font-family: 'Lexend Deca', sans-serif; font-size: 12px; color: #9B9C9E; }
+.pf-table {
+  border: 0.33px solid #9b9c9e;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.pf-table-head,
+.pf-row {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr 0.8fr 0.7fr;
+  align-items: center;
+  padding: 11px 16px;
+}
+.pf-table-head {
+  border-bottom: 0.33px solid #9b9c9e;
+}
+.pf-table-head span {
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #828d97;
+}
+.pf-row {
+  border-bottom: 0.33px solid #9b9c9e;
+}
+.pf-row:last-child {
+  border-bottom: 0;
+}
+.pf-row-user {
+  min-width: 0;
+}
+.pf-row-name {
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: #24282b;
+}
+.pf-row-email {
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: #9b9c9e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pf-row-role {
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  color: #9b9c9e;
+}
+.pf-badge {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 8px;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: #24282b;
+}
+.pf-badge.active {
+  background: #8ec49e;
+}
+.pf-badge.pending {
+  background: #f2d99b;
+}
+.pf-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pf-row-action {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  color: #4cabf6;
+  padding: 0;
+}
+.pf-row-action.pf-del {
+  color: #9b9c9e;
+}
+.pf-row-action.pf-del:hover {
+  color: #e2574c;
+}
+.pf-empty {
+  padding: 20px;
+  text-align: center;
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 12px;
+  color: #9b9c9e;
+}
 
 .pf-add-btn {
-    display: block;
-    margin: 22px auto 0;
-    min-width: 211px;
-    height: 38px;
-    padding: 0 32px;
-    background: #4CABF6;
-    border: 0;
-    border-radius: 8px;
-    box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.19);
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 500;
-    font-size: 15px;
-    letter-spacing: 0.1em;
-    color: #FFFFFF;
-    cursor: pointer;
-    transition: background 0.15s;
+  display: block;
+  margin: 22px auto 0;
+  min-width: 211px;
+  height: 38px;
+  padding: 0 32px;
+  background: #4cabf6;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 1px 2px 2.4px rgba(0, 0, 0, 0.19);
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s;
 }
-.pf-add-btn:hover { background: #3FA1F2; }
-.pf-add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.pf-add-btn:hover {
+  background: #3fa1f2;
+}
+.pf-add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* Link to the full standalone user dashboard (admin). */
 .pf-view-all {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    margin: 14px auto 0;
-    width: fit-content;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 400;
-    font-size: 12.5px;
-    letter-spacing: 0.06em;
-    color: #4CABF6;
-    text-decoration: none;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 14px auto 0;
+  width: fit-content;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: #4cabf6;
+  text-decoration: none;
+  cursor: pointer;
 }
-.pf-view-all svg { transition: transform 0.15s; }
-.pf-view-all:hover { text-decoration: underline; }
-.pf-view-all:hover svg { transform: translateX(3px); }
+.pf-view-all svg {
+  transition: transform 0.15s;
+}
+.pf-view-all:hover {
+  text-decoration: underline;
+}
+.pf-view-all:hover svg {
+  transform: translateX(3px);
+}
 
 /* ---- Modals ---- */
 .pf-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(36, 40, 43, 0.45);
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(36, 40, 43, 0.45);
 }
-.pf-modal[hidden] { display: none; }
+.pf-modal[hidden] {
+  display: none;
+}
 .pf-modal-card {
-    position: relative;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 420px;
-    background: #FFFFFF;
-    border-radius: 14px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
-    padding: 34px 32px 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  padding: 34px 32px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
-.pf-modal-close { position: absolute; top: 16px; right: 16px; background: none; border: 0; cursor: pointer; color: #24282B; }
-.pf-modal-title { margin: 0; font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 20px; color: #24282B; text-align: center; }
-.pf-modal-sub { margin: -6px 0 4px; font-family: 'Lexend Deca', sans-serif; font-weight: 300; font-size: 12px; color: #9B9C9E; text-align: center; line-height: 1.4; }
+.pf-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: #24282b;
+}
+.pf-modal-title {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: #24282b;
+  text-align: center;
+}
+.pf-modal-sub {
+  margin: -6px 0 4px;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  color: #9b9c9e;
+  text-align: center;
+  line-height: 1.4;
+}
 .pf-input {
-    box-sizing: border-box;
-    width: 100%;
-    height: 44px;
-    padding: 0 14px;
-    background: #FFFFFF;
-    border: 1px solid #DEE1E5;
-    border-radius: 8px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 300;
-    font-size: 14px;
-    color: #24282B;
-    outline: none;
+  box-sizing: border-box;
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  background: #ffffff;
+  border: 1px solid #dee1e5;
+  border-radius: 8px;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: #24282b;
+  outline: none;
 }
-.pf-input:focus { border-color: #4CABF6; }
-select.pf-input { cursor: pointer; }
+.pf-input:focus {
+  border-color: #4cabf6;
+}
+select.pf-input {
+  cursor: pointer;
+}
 /* Datalist inputs (Role pickers): replace the browser's solid ▼ indicator with
    a thin stroked chevron to match the rest of the UI. The native indicator is
    kept but made transparent so it still toggles the dropdown on click. */
 input.pf-input[list] {
-    -webkit-appearance: none;
-    appearance: none;
-    padding-right: 38px;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2324282B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 38px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2324282B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
 }
 input.pf-input[list]::-webkit-calendar-picker-indicator {
-    opacity: 0;
-    cursor: pointer;
+  opacity: 0;
+  cursor: pointer;
 }
-.pf-modal-err { min-height: 14px; font-family: 'Lexend Deca', sans-serif; font-size: 12px; color: #E2574C; }
+.pf-modal-err {
+  min-height: 14px;
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 12px;
+  color: #e2574c;
+}
 .pf-modal-btn {
-    height: 46px;
-    background: #4CABF6;
-    border: 0;
-    border-radius: 8px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-weight: 500;
-    font-size: 15px;
-    letter-spacing: 0.08em;
-    color: #FFFFFF;
-    cursor: pointer;
-    transition: background 0.15s;
+  height: 46px;
+  background: #4cabf6;
+  border: 0;
+  border-radius: 8px;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s;
 }
-.pf-modal-btn:hover { background: #3FA1F2; }
-.pf-modal-btn:disabled { opacity: 0.7; cursor: default; }
+.pf-modal-btn:hover {
+  background: #3fa1f2;
+}
+.pf-modal-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
 
 /* Edit-member modal: field label, admin toggle, footer actions */
-.pf-field-label { font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 13px; color: #24282B; margin: 2px 0 -6px; }
+.pf-field-label {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  color: #24282b;
+  margin: 2px 0 -6px;
+}
 
-.pf-toggle { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; margin: 2px 0; }
-.pf-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
-.pf-toggle-track { flex: none; position: relative; width: 38px; height: 22px; margin-top: 1px; background: #DEE1E5; border-radius: 11px; transition: background 0.18s; }
-.pf-toggle-thumb { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #FFFFFF; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.25); transition: transform 0.18s; }
-.pf-toggle input:checked + .pf-toggle-track { background: #4CABF6; }
-.pf-toggle input:checked + .pf-toggle-track .pf-toggle-thumb { transform: translateX(16px); }
-.pf-toggle input:focus-visible + .pf-toggle-track { box-shadow: 0 0 0 3px rgba(76,171,246,0.35); }
-.pf-toggle-text { display: flex; flex-direction: column; gap: 2px; }
-.pf-toggle-title { font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 13px; color: #24282B; }
-.pf-toggle-desc { font-family: 'Lexend Deca', sans-serif; font-weight: 300; font-size: 11px; line-height: 1.4; color: #9B9C9E; }
+.pf-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  margin: 2px 0;
+}
+.pf-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.pf-toggle-track {
+  flex: none;
+  position: relative;
+  width: 38px;
+  height: 22px;
+  margin-top: 1px;
+  background: #dee1e5;
+  border-radius: 11px;
+  transition: background 0.18s;
+}
+.pf-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.18s;
+}
+.pf-toggle input:checked + .pf-toggle-track {
+  background: #4cabf6;
+}
+.pf-toggle input:checked + .pf-toggle-track .pf-toggle-thumb {
+  transform: translateX(16px);
+}
+.pf-toggle input:focus-visible + .pf-toggle-track {
+  box-shadow: 0 0 0 3px rgba(76, 171, 246, 0.35);
+}
+.pf-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pf-toggle-title {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  color: #24282b;
+}
+.pf-toggle-desc {
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #9b9c9e;
+}
 
-.pf-modal-actions { display: flex; gap: 12px; }
-.pf-modal-actions .pf-modal-btn { flex: 1; }
-.pf-btn-danger { background: #FFFFFF; color: #E2574C; border: 1px solid #E2574C; }
-.pf-btn-danger:hover { background: #FDECEA; }
+.pf-modal-actions {
+  display: flex;
+  gap: 12px;
+}
+.pf-modal-actions .pf-modal-btn {
+  flex: 1;
+}
+.pf-btn-danger {
+  background: #ffffff;
+  color: #e2574c;
+  border: 1px solid #e2574c;
+}
+.pf-btn-danger:hover {
+  background: #fdecea;
+}
 
 /* "Admin" pill beside a promoted member's name; "You" marker on own row */
-.pf-admin-pill { display: inline-block; margin-left: 7px; padding: 1px 7px; border-radius: 7px; background: #E7F2FF; color: #2F8FE0; font-family: 'Lexend Deca', sans-serif; font-weight: 400; font-size: 8.5px; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: middle; }
-.pf-row-self { font-family: 'Lexend Deca', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: 0.06em; color: #9B9C9E; }
+.pf-admin-pill {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 1px 7px;
+  border-radius: 7px;
+  background: #e7f2ff;
+  color: #2f8fe0;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.pf-row-self {
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #9b9c9e;
+}
 
 /* ---- Toast ---- */
 .pf-toast {
-    position: fixed;
-    left: 50%;
-    bottom: 28px;
-    transform: translate(-50%, 16px);
-    z-index: 2100;
-    max-width: 480px;
-    padding: 13px 22px;
-    border-radius: 10px;
-    font-family: 'Lexend Deca', sans-serif;
-    font-size: 14px;
-    color: #FFFFFF;
-    background: #1F9D57;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
-    opacity: 0;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    text-align: center;
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 16px);
+  z-index: 2100;
+  max-width: 480px;
+  padding: 13px 22px;
+  border-radius: 10px;
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 14px;
+  color: #ffffff;
+  background: #1f9d57;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+  text-align: center;
 }
-.pf-toast[hidden] { display: none; }
-.pf-toast.show { opacity: 1; transform: translate(-50%, 0); }
-.pf-toast.error { background: #D6473C; }
+.pf-toast[hidden] {
+  display: none;
+}
+.pf-toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.pf-toast.error {
+  background: #d6473c;
+}
 
-@media (max-width: 760px) {
-    .profile-main { padding: 24px 16px 40px 88px; }
+@media (max-width: 1024px) {
+  .profile-main {
+    padding: 24px 24px 44px 90px;
+  }
+}
+@media (max-width: 768px) {
+  .profile-main {
+    padding: 20px 16px 40px 88px;
+  }
+}
+@media (max-width: 700px) {
+  .profile-main {
+    padding: 20px 16px 40px 16px;
+  }
 }

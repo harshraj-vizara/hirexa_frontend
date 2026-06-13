@@ -11,6 +11,25 @@ const PL = {
     pollTimer: null,
     API: window.location.origin,
 
+    // ── DEV MODE ──────────────────────────────────────────────────────────────
+    // Set DEV: true to skip all API calls and navigate freely between steps.
+    // Remove or set to false before deploying to production.
+    DEV: true,
+    _DEV_SAMPLE: {
+        postingId:  'DEV-POST-0001',
+        pipelineId: 'DEV-PIPE-0001',
+        step2: {
+            application_url: 'https://hirexa.ai/apply/DEV-POST-0001',
+            linkedin_post:   'We are hiring a **Frontend Engineer** at Vizara Technologies!\n\nJoin our team in Bengaluru and help build world-class recruitment infrastructure.\n\n📍 Bengaluru, India  |  💼 2–5 yrs  |  💰 ₹8L–15L\n\nApply: https://hirexa.ai/apply/DEV-POST-0001',
+            formatted_jd:    '## Frontend Engineer\n\n**Company:** Vizara Technologies Pvt Ltd\n**Location:** Bengaluru, India\n\n### About the Role\nBuild scalable, pixel-perfect web UIs for our AI-driven recruitment platform.\n\n### Responsibilities\n- Develop features in React + TypeScript\n- Collaborate with design and backend teams\n- Own performance and accessibility\n\n### Requirements\n- 2–5 years frontend experience\n- Proficient in React, JS (ES6+), CSS\n- Familiar with REST APIs and Git',
+            hiring_role:     'Frontend Engineer',
+            company_name:    'Vizara Technologies Pvt Ltd',
+            job_location:    'Bengaluru, India',
+            budget:          'INR 800000 - 1500000',
+        },
+    },
+    // ─────────────────────────────────────────────────────────────────────────
+
     init() {
         const u = localStorage.getItem('fluenzoUser');
         if (!u) { window.location.href = '/'; return; }
@@ -123,6 +142,8 @@ const PL = {
             // profile (the source of truth) so it isn't retyped every time.
             this._prefillCompanyName();
         }
+
+        if (this.DEV) this._devInit();
     },
 
     // Prefill the Company Name field with the org's registered name. Only fills
@@ -144,6 +165,69 @@ const PL = {
             })
             .catch(() => {});
     },
+
+    // ── DEV helpers ───────────────────────────────────────────────────────────
+    _devInit() {
+        this.postingId  = this._DEV_SAMPLE.postingId;
+        this.pipelineId = this._DEV_SAMPLE.pipelineId;
+        this.data = { ...this._DEV_SAMPLE.step2 };
+
+        // Pre-populate step 2 content so it renders immediately on first visit
+        this._showStep2Content(this._DEV_SAMPLE.step2);
+
+        // Floating step-picker bar (bottom-left, above any fixed action button)
+        const bar = document.createElement('div');
+        bar.id = 'dev-step-bar';
+        bar.style.cssText = [
+            'position:fixed', 'bottom:38px', 'left:150px', 'z-index:9999',
+            'display:flex', 'align-items:center', 'gap:6px',
+            'background:#24282b', 'border-radius:8px',
+            'padding:5px 10px', 'box-shadow:0 2px 8px rgba(0,0,0,.35)',
+            'font-family:monospace', 'font-size:11px',
+        ].join(';');
+
+        const btnStyle = [
+            'background:#3a3f44', 'color:#e0e4e8', 'border:none',
+            'border-radius:5px', 'padding:3px 9px', 'cursor:pointer',
+            'font-family:monospace', 'font-size:11px',
+        ].join(';');
+
+        bar.innerHTML = `
+            <span style="color:#eab000;letter-spacing:.06em;margin-right:2px">DEV</span>
+            <button style="${btnStyle}" onclick="PL._devGoto(1)">Step 1</button>
+            <button style="${btnStyle}" onclick="PL._devGoto(2)">Step 2</button>
+            <button style="${btnStyle}" onclick="PL._devGoto(3)">Step 3</button>
+            <button style="${btnStyle}" onclick="PL._devGoto(4)">Step 4</button>
+        `;
+        document.body.appendChild(bar);
+
+        // Keyboard: Alt+1 … Alt+4
+        document.addEventListener('keydown', e => {
+            if (e.altKey && e.key >= '1' && e.key <= '4') {
+                e.preventDefault();
+                PL._devGoto(parseInt(e.key));
+            }
+        });
+    },
+
+    _devGoto(n) {
+        this._navigateToStep(n);
+        if (n === 2) {
+            // Step 2 hides its content behind a loader by default; show it immediately
+            setTimeout(() => this._showStep2Content(this._DEV_SAMPLE.step2), 30);
+        }
+        if (n === 4) {
+            // Mark search as already started so _setupStep4 skips the auto-kick
+            this.searchStarted = true;
+        }
+        // Highlight the active button in the bar
+        const bar = document.getElementById('dev-step-bar');
+        if (bar) bar.querySelectorAll('button').forEach((b, i) => {
+            b.style.background = (i + 1 === n) ? '#4cabf6' : '#3a3f44';
+            b.style.color      = (i + 1 === n) ? '#fff'    : '#e0e4e8';
+        });
+    },
+    // ─────────────────────────────────────────────────────────────────────────
 
     _readHashStep() {
         const m = (window.location.hash || '').match(/step(\d+)/i);
@@ -221,6 +305,7 @@ const PL = {
 
     // ==================== Step 1: Job Details ====================
     async submitStep1() {
+        if (this.DEV) { this._devGoto(2); return; }
         const role = document.getElementById('f-role').value.trim();
         const company = document.getElementById('f-company').value.trim();
         const jd = document.getElementById('f-jd').value.trim();
@@ -731,6 +816,7 @@ const PL = {
     // Per recruiter request, we fire a fresh /suggest-interviewers call on EVERY
     // Step 3 visit (no caching) so JD edits between visits get reflected.
     async _setupStep3() {
+        if (this.DEV) return; // skip API suggestions in dev
         const PI = window.PickInterviewers;
         if (PI && typeof PI.refresh === 'function') PI.refresh();
         if (!PI || typeof PI.setAIPanel !== 'function') return;
@@ -820,6 +906,7 @@ const PL = {
     },
 
     async _setupStep4() {
+        if (this.DEV) { this._showFCEmpty(); return; } // skip API search in dev
         if (!this.pipelineId) await this._createPipeline();
         if (!this.pipelineId) return;
 

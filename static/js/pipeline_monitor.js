@@ -63,12 +63,15 @@ const PM = {
         this.refreshTimer = setInterval(() => this.load(), 30000);
     },
 
+    // TEMP sample data — remove before production
+    _SAMPLE_DATA: {"success":true,"pipelines":[{"pipeline_id":"RP-9D83888D","posting_id":"JP-2DA63741","hiring_role":"Product Manager","company_name":"Vizara Technologies Pvt Ltd","job_location":"Remote (India)","status":"active","current_step":"sourcing","paused":false,"outcome":"open","counts":{"total":0,"profiles":0,"with_email":0,"with_phone":0,"referrals":0,"screened":0,"pre_filtered":0,"scored_60_plus":0,"shortlisted":0,"contacted":0,"contacted_email":0,"contacted_phone":0,"contacted_whatsapp":0,"interviews_scheduled":0,"interviews_completed":0,"selections":0,"applications":0},"search_started_at":null,"created_at":"2026-06-12 07:14:40.275604"},{"pipeline_id":"RP-A5897BA5","posting_id":"JP-86C6D693","hiring_role":"Frontend Engineer","company_name":"Vizara Technologies Pvt Ltd","job_location":"Bengaluru, India","status":"active","current_step":"sourcing","paused":false,"outcome":"open","counts":{"total":0,"profiles":0,"with_email":0,"with_phone":0,"referrals":0,"screened":0,"pre_filtered":0,"scored_60_plus":0,"shortlisted":0,"contacted":0,"contacted_email":0,"contacted_phone":0,"contacted_whatsapp":0,"interviews_scheduled":0,"interviews_completed":0,"selections":0,"applications":0},"search_started_at":null,"created_at":"2026-06-12 07:14:40.275604"}]},
+
     async load() {
         if (this._loading) return;
         this._loading = true;
         try {
-            const r = await fetch(`/api/pipeline/list?recruiter_email=${encodeURIComponent(this.user.email)}&search=${encodeURIComponent(this.search || '')}`);
-            const d = await r.json();
+            // TEMP: use sample data instead of live API
+            const d = this._SAMPLE_DATA;
             if (!d.success) return;
             this.pipelines = d.pipelines || [];
             this.render();
